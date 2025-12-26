@@ -1,0 +1,1 @@
+{"openapi":"3.0.0","paths":{"/api":{"get":{"operationId":"AppController_getHello","parameters":[],"responses":{"200":{"description":""}},"tags":["App"]}}},"info":{"title":"API Docs | Google Maestro | 0.0.1 | @alpha","description":"","version":"0.0.1","contact":{}},"tags":[],"servers":[],"components":{"schemas":{}}}
