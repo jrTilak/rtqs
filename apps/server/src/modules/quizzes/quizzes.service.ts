@@ -1,14 +1,14 @@
 import { Injectable } from '@nestjs/common';
-import { CreateQuizDto } from './dto/create-quiz.dto';
+import { CreateQuizDto } from './dto/requests/create-quiz.dto';
 import { db } from '@/db';
 import { Quiz, quizModuleTable, quizTable } from './entity';
-import { ApiResponse } from '@/common/dto/response/api-response.dto';
 import { asc, eq, inArray } from 'drizzle-orm';
-import { UpdateQuizDto } from './dto/update-quiz.dto';
-import { DeleteQuizzesDto } from './dto/delete-quizzes.dto';
-import { CreateQuizModuleDto } from './dto/create-quiz-module.dto';
-import { UpdateQuizModuleDto } from './dto/update-quiz-module.dto';
-import { DeleteQuizModulesDto } from './dto/delete-quiz-module.dto';
+import { UpdateQuizDto } from './dto/requests/update-quiz.dto';
+import { DeleteQuizzesDto } from './dto/requests/delete-quizzes.dto';
+import { CreateQuizModuleDto } from './dto/requests/create-quiz-module.dto';
+import { UpdateQuizModuleDto } from './dto/requests/update-quiz-module.dto';
+import { DeleteQuizModulesDto } from './dto/requests/delete-quiz-module.dto';
+import { ApiResponse } from '@/common/dto/response/api-response.dto';
 
 @Injectable()
 export class QuizzesService {
@@ -62,4 +62,6 @@ export class QuizzesService {
       .orderBy(asc(quizModuleTable.index));
     return new ApiResponse(modules);
   }
+
+  //qns
 }

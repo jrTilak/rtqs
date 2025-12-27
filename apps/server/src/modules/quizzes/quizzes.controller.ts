@@ -8,14 +8,14 @@ import {
   Query,
 } from '@nestjs/common';
 import { QuizzesService } from './quizzes.service';
-import { CreateQuizDto } from './dto/create-quiz.dto';
-import { UpdateQuizDto } from './dto/update-quiz.dto';
-import { DeleteQuizzesDto } from './dto/delete-quizzes.dto';
+import { CreateQuizDto } from './dto/requests/create-quiz.dto';
+import { UpdateQuizDto } from './dto/requests/update-quiz.dto';
+import { DeleteQuizzesDto } from './dto/requests/delete-quizzes.dto';
 import { ApiDocs } from '@/common/decorators/api-docs.decorators';
 import { Roles } from '@thallesp/nestjs-better-auth';
-import { CreateQuizModuleDto } from './dto/create-quiz-module.dto';
-import { UpdateQuizModuleDto } from './dto/update-quiz-module.dto';
-import { DeleteQuizModulesDto } from './dto/delete-quiz-module.dto';
+import { CreateQuizModuleDto } from './dto/requests/create-quiz-module.dto';
+import { UpdateQuizModuleDto } from './dto/requests/update-quiz-module.dto';
+import { DeleteQuizModulesDto } from './dto/requests/delete-quiz-module.dto';
 
 @Controller('quizzes')
 export class QuizzesController {
