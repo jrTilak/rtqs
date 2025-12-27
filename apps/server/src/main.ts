@@ -63,7 +63,7 @@ async function bootstrap() {
   /**
    * Serve static files from public folder.
    */
-  app.use(express.static(path.join("public")));
+  app.use(express.static(path.join("dist","public")));
 
   /**
    * Enable Swagger if specified in env.
