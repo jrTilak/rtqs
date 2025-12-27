@@ -15,8 +15,8 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminAdminIndexRouteImport } from './routes/_admin/admin/index'
 import { Route as AdminAdminUsersRouteImport } from './routes/_admin/admin/users'
 import { Route as AdminAdminPlayRouteImport } from './routes/_admin/admin/play'
-import { Route as AdminAdminQuizesIndexRouteImport } from './routes/_admin/admin/quizes/index'
-import { Route as AdminAdminQuizesQuizIdRouteImport } from './routes/_admin/admin/quizes/$quiz-id'
+import { Route as AdminAdminQuizzesIndexRouteImport } from './routes/_admin/admin/quizzes/index'
+import { Route as AdminAdminQuizzesQuizIdRouteImport } from './routes/_admin/admin/quizzes/$quiz-id'
 
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
@@ -47,14 +47,14 @@ const AdminAdminPlayRoute = AdminAdminPlayRouteImport.update({
   path: '/admin/play',
   getParentRoute: () => AdminRoute,
 } as any)
-const AdminAdminQuizesIndexRoute = AdminAdminQuizesIndexRouteImport.update({
-  id: '/admin/quizes/',
-  path: '/admin/quizes/',
+const AdminAdminQuizzesIndexRoute = AdminAdminQuizzesIndexRouteImport.update({
+  id: '/admin/quizzes/',
+  path: '/admin/quizzes/',
   getParentRoute: () => AdminRoute,
 } as any)
-const AdminAdminQuizesQuizIdRoute = AdminAdminQuizesQuizIdRouteImport.update({
-  id: '/admin/quizes/$quiz-id',
-  path: '/admin/quizes/$quiz-id',
+const AdminAdminQuizzesQuizIdRoute = AdminAdminQuizzesQuizIdRouteImport.update({
+  id: '/admin/quizzes/$quiz-id',
+  path: '/admin/quizzes/$quiz-id',
   getParentRoute: () => AdminRoute,
 } as any)
 
@@ -64,8 +64,8 @@ export interface FileRoutesByFullPath {
   '/admin/play': typeof AdminAdminPlayRoute
   '/admin/users': typeof AdminAdminUsersRoute
   '/admin': typeof AdminAdminIndexRoute
-  '/admin/quizes/$quiz-id': typeof AdminAdminQuizesQuizIdRoute
-  '/admin/quizes': typeof AdminAdminQuizesIndexRoute
+  '/admin/quizzes/$quiz-id': typeof AdminAdminQuizzesQuizIdRoute
+  '/admin/quizzes': typeof AdminAdminQuizzesIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -73,8 +73,8 @@ export interface FileRoutesByTo {
   '/admin/play': typeof AdminAdminPlayRoute
   '/admin/users': typeof AdminAdminUsersRoute
   '/admin': typeof AdminAdminIndexRoute
-  '/admin/quizes/$quiz-id': typeof AdminAdminQuizesQuizIdRoute
-  '/admin/quizes': typeof AdminAdminQuizesIndexRoute
+  '/admin/quizzes/$quiz-id': typeof AdminAdminQuizzesQuizIdRoute
+  '/admin/quizzes': typeof AdminAdminQuizzesIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -84,8 +84,8 @@ export interface FileRoutesById {
   '/_admin/admin/play': typeof AdminAdminPlayRoute
   '/_admin/admin/users': typeof AdminAdminUsersRoute
   '/_admin/admin/': typeof AdminAdminIndexRoute
-  '/_admin/admin/quizes/$quiz-id': typeof AdminAdminQuizesQuizIdRoute
-  '/_admin/admin/quizes/': typeof AdminAdminQuizesIndexRoute
+  '/_admin/admin/quizzes/$quiz-id': typeof AdminAdminQuizzesQuizIdRoute
+  '/_admin/admin/quizzes/': typeof AdminAdminQuizzesIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -95,8 +95,8 @@ export interface FileRouteTypes {
     | '/admin/play'
     | '/admin/users'
     | '/admin'
-    | '/admin/quizes/$quiz-id'
-    | '/admin/quizes'
+    | '/admin/quizzes/$quiz-id'
+    | '/admin/quizzes'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -104,8 +104,8 @@ export interface FileRouteTypes {
     | '/admin/play'
     | '/admin/users'
     | '/admin'
-    | '/admin/quizes/$quiz-id'
-    | '/admin/quizes'
+    | '/admin/quizzes/$quiz-id'
+    | '/admin/quizzes'
   id:
     | '__root__'
     | '/'
@@ -114,8 +114,8 @@ export interface FileRouteTypes {
     | '/_admin/admin/play'
     | '/_admin/admin/users'
     | '/_admin/admin/'
-    | '/_admin/admin/quizes/$quiz-id'
-    | '/_admin/admin/quizes/'
+    | '/_admin/admin/quizzes/$quiz-id'
+    | '/_admin/admin/quizzes/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -168,18 +168,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminAdminPlayRouteImport
       parentRoute: typeof AdminRoute
     }
-    '/_admin/admin/quizes/': {
-      id: '/_admin/admin/quizes/'
-      path: '/admin/quizes'
-      fullPath: '/admin/quizes'
-      preLoaderRoute: typeof AdminAdminQuizesIndexRouteImport
+    '/_admin/admin/quizzes/': {
+      id: '/_admin/admin/quizzes/'
+      path: '/admin/quizzes'
+      fullPath: '/admin/quizzes'
+      preLoaderRoute: typeof AdminAdminQuizzesIndexRouteImport
       parentRoute: typeof AdminRoute
     }
-    '/_admin/admin/quizes/$quiz-id': {
-      id: '/_admin/admin/quizes/$quiz-id'
-      path: '/admin/quizes/$quiz-id'
-      fullPath: '/admin/quizes/$quiz-id'
-      preLoaderRoute: typeof AdminAdminQuizesQuizIdRouteImport
+    '/_admin/admin/quizzes/$quiz-id': {
+      id: '/_admin/admin/quizzes/$quiz-id'
+      path: '/admin/quizzes/$quiz-id'
+      fullPath: '/admin/quizzes/$quiz-id'
+      preLoaderRoute: typeof AdminAdminQuizzesQuizIdRouteImport
       parentRoute: typeof AdminRoute
     }
   }
@@ -189,16 +189,16 @@ interface AdminRouteChildren {
   AdminAdminPlayRoute: typeof AdminAdminPlayRoute
   AdminAdminUsersRoute: typeof AdminAdminUsersRoute
   AdminAdminIndexRoute: typeof AdminAdminIndexRoute
-  AdminAdminQuizesQuizIdRoute: typeof AdminAdminQuizesQuizIdRoute
-  AdminAdminQuizesIndexRoute: typeof AdminAdminQuizesIndexRoute
+  AdminAdminQuizzesQuizIdRoute: typeof AdminAdminQuizzesQuizIdRoute
+  AdminAdminQuizzesIndexRoute: typeof AdminAdminQuizzesIndexRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
   AdminAdminPlayRoute: AdminAdminPlayRoute,
   AdminAdminUsersRoute: AdminAdminUsersRoute,
   AdminAdminIndexRoute: AdminAdminIndexRoute,
-  AdminAdminQuizesQuizIdRoute: AdminAdminQuizesQuizIdRoute,
-  AdminAdminQuizesIndexRoute: AdminAdminQuizesIndexRoute,
+  AdminAdminQuizzesQuizIdRoute: AdminAdminQuizzesQuizIdRoute,
+  AdminAdminQuizzesIndexRoute: AdminAdminQuizzesIndexRoute,
 }
 
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
