@@ -1,23 +1,29 @@
-import { plainToInstance } from "class-transformer";
-import { validateSync, IsNotEmpty, IsOptional, IsString, IsEmail } from "class-validator";
-import { logger } from "@/lib/logger";
+import { plainToInstance } from 'class-transformer';
+import {
+  validateSync,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  IsEnum,
+} from 'class-validator';
+import { logger } from '@/lib/logger';
 
 class Env {
   @IsString()
   @IsOptional()
-  PORT?: string = "5000";
+  PORT?: string = '5000';
 
   @IsString()
   @IsNotEmpty()
-  NODE_ENV: "development" | "production" = "development";
+  NODE_ENV: 'development' | 'production' = 'development';
 
   @IsString()
   @IsOptional()
-  ENABLE_SWAGGER?: string = "true";
+  ENABLE_SWAGGER?: string = 'true';
 
   @IsString()
   @IsOptional()
-  LOG_LEVEL?: string = "info";
+  LOG_LEVEL?: string = 'info';
 
   @IsString()
   @IsOptional()
@@ -25,19 +31,18 @@ class Env {
 
   @IsString()
   @IsNotEmpty()
-  DATABASE_URL: string
+  DATABASE_URL: string;
 
   @IsString()
   @IsNotEmpty()
-  MAIL_CREDS_PATH: string
+  MAIL_CREDS_PATH: string;
 
   @IsString()
-  @IsNotEmpty()
-  @IsEmail()
-  SUPER_ADMIN_EMAIL: string
+  @IsEnum(['true', 'false'])
+  DISABLE_SIGNUP: 'true' | 'false';
 }
 
-export type EnvConfig = InstanceType<typeof Env>
+export type EnvConfig = InstanceType<typeof Env>;
 
 export const validateEnv = () => {
   // convert process.env to DTO
@@ -49,11 +54,10 @@ export const validateEnv = () => {
   });
 
   if (errors.length > 0) {
-    logger.error("Environment validation failed:");
+    logger.error('Environment validation failed:');
     logger.error(errors.map((err) => Object.values(err.constraints ?? {})));
     process.exit(1);
   }
-
   // overwrite process.env with validated values
   Object.entries(validatedConfig).forEach(([key, value]) => {
     if (value !== undefined) {
