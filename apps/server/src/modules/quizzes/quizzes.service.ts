@@ -1,14 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import { CreateQuizDto } from './dto/requests/create-quiz.dto';
 import { db } from '@/db';
-import { Quiz, quizModuleTable, quizTable } from './entity';
-import { asc, eq, inArray } from 'drizzle-orm';
+import { Quiz, quizModuleTable, quizQuestionTable, quizTable } from './entity';
+import { asc, desc, eq, inArray } from 'drizzle-orm';
 import { UpdateQuizDto } from './dto/requests/update-quiz.dto';
 import { DeleteQuizzesDto } from './dto/requests/delete-quizzes.dto';
 import { CreateQuizModuleDto } from './dto/requests/create-quiz-module.dto';
 import { UpdateQuizModuleDto } from './dto/requests/update-quiz-module.dto';
 import { DeleteQuizModulesDto } from './dto/requests/delete-quiz-module.dto';
 import { ApiResponse } from '@/common/dto/response/api-response.dto';
+import { AddQuestionsDto } from './dto/requests/add-questions.dto';
+import { UpdateQuestionDto } from './dto/requests/update-question.dto';
 
 @Injectable()
 export class QuizzesService {
@@ -16,6 +18,15 @@ export class QuizzesService {
     const [quiz] = await db.insert(quizTable).values(data).returning();
 
     return new ApiResponse(quiz);
+  }
+
+  async listQuizzes(): Promise<ApiResponse<Quiz[]>> {
+    const quizzes = await db
+      .select()
+      .from(quizTable)
+      .orderBy(desc(quizTable.updatedAt));
+
+    return new ApiResponse(quizzes);
   }
 
   async updateQuiz({ id, ...data }: UpdateQuizDto): Promise<ApiResponse<Quiz>> {
@@ -33,20 +44,18 @@ export class QuizzesService {
     return new ApiResponse();
   }
 
-  async listAllQuizzes(): Promise<ApiResponse<Quiz[]>> {
-    const quizzes = await db.select().from(quizTable);
-
-    return new ApiResponse(quizzes);
-  }
-
   // quiz modules
   async createQuizModule(data: CreateQuizModuleDto) {
     const [module] = await db.insert(quizModuleTable).values(data).returning();
     return new ApiResponse(module);
   }
 
-  async updateQuizModule(data: UpdateQuizModuleDto) {
-    const [module] = await db.update(quizModuleTable).set(data).returning();
+  async updateQuizModule({ id, ...data }: UpdateQuizModuleDto) {
+    const [module] = await db
+      .update(quizModuleTable)
+      .set(data)
+      .where(eq(quizModuleTable.id, id))
+      .returning();
     return new ApiResponse(module);
   }
 
@@ -64,4 +73,22 @@ export class QuizzesService {
   }
 
   //qns
+  async addQuestions(data: AddQuestionsDto) {
+    const [question] = await db
+      .insert(quizQuestionTable)
+      .values(data.questions)
+      .returning();
+    return new ApiResponse(question);
+  }
+
+  async updateQuestion({ id, ...data }: UpdateQuestionDto) {
+    const [question] = await db
+      .update(quizQuestionTable)
+      .set(data)
+      .where(eq(quizQuestionTable.id, id))
+      .returning();
+    return new ApiResponse(question);
+  }
+
+  async listQuestions() {}
 }

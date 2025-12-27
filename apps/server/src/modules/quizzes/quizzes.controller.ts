@@ -16,6 +16,12 @@ import { Roles } from '@thallesp/nestjs-better-auth';
 import { CreateQuizModuleDto } from './dto/requests/create-quiz-module.dto';
 import { UpdateQuizModuleDto } from './dto/requests/update-quiz-module.dto';
 import { DeleteQuizModulesDto } from './dto/requests/delete-quiz-module.dto';
+import {
+  ApiDeleteSuccess,
+  ApiGetSuccess,
+  ApiPostSuccess,
+} from '@/common/decorators/response/api-response-success.decorator';
+import { QuizDto } from './dto/response/quiz.dto';
 
 @Controller('quizzes')
 export class QuizzesController {
@@ -26,8 +32,23 @@ export class QuizzesController {
   })
   @Post('/')
   @Roles(['admin'])
+  @ApiPostSuccess({
+    type: QuizDto,
+  })
   createQuiz(@Body() body: CreateQuizDto) {
     return this._quizzesService.createQuiz(body);
+  }
+
+  @ApiDocs({
+    path: '/quizzes/list-quizzes.md',
+  })
+  @Get('/')
+  @ApiGetSuccess({
+    type: QuizDto,
+    isArray: true,
+  })
+  listAllQuizzes() {
+    return this._quizzesService.listQuizzes();
   }
 
   @ApiDocs({
@@ -44,18 +65,10 @@ export class QuizzesController {
   })
   @Delete('/')
   @Roles(['admin'])
+  @ApiDeleteSuccess()
   deleteQuizzes(@Query() query: DeleteQuizzesDto) {
     return this._quizzesService.deleteQuizzes(query);
   }
-
-  @ApiDocs({
-    path: '/quizzes/list-all-quizzes.md',
-  })
-  @Get('/')
-  listAllQuizzes() {
-    return this._quizzesService.listAllQuizzes();
-  }
-
   // quiz modules
   @ApiDocs({
     path: '/quizzes/create-quiz-module.md',

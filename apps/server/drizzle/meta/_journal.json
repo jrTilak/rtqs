@@ -8,6 +8,13 @@
       "when": 1766811318080,
       "tag": "0000_certain_nightcrawler",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1766825383280,
+      "tag": "0001_supreme_shockwave",
+      "breakpoints": true
     }
   ]
 }
