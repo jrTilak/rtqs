@@ -39,6 +39,7 @@ export class CreateQuizModuleDto {
     format: 'uuid',
     type: 'string',
     required: true,
+    example: 'fe69982d-e863-4a39-961b-62f3adad6e1c',
   })
   quizId: string;
 }

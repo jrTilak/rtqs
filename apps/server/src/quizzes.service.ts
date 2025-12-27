@@ -7,11 +7,10 @@ import { UpdateQuizDto } from './dto/requests/update-quiz.dto';
 import { DeleteQuizzesDto } from './dto/requests/delete-quizzes.dto';
 import { CreateQuizModuleDto } from './dto/requests/create-quiz-module.dto';
 import { UpdateQuizModuleDto } from './dto/requests/update-quiz-module.dto';
+import { DeleteQuizModulesDto } from './dto/requests/delete-quiz-module.dto';
 import { ApiResponse } from '@/common/dto/response/api-response.dto';
 import { AddQuestionsDto } from './dto/requests/add-questions.dto';
 import { UpdateQuestionDto } from './dto/requests/update-question.dto';
-import { DeleteQuizModulesDto } from './dto/requests/delete-quiz-module.dto';
-import { ListQuizModulesDto } from './dto/requests/list-quiz-modules.dto';
 
 @Injectable()
 export class QuizzesService {
@@ -51,11 +50,10 @@ export class QuizzesService {
     return new ApiResponse(module);
   }
 
-  async listQuizModules(query: ListQuizModulesDto) {
+  async listQuizModules() {
     const modules = await db
       .select()
       .from(quizModuleTable)
-      .where(eq(quizModuleTable.quizId, query.id))
       .orderBy(asc(quizModuleTable.index));
     return new ApiResponse(modules);
   }
@@ -73,7 +71,6 @@ export class QuizzesService {
     await db.delete(quizModuleTable).where(inArray(quizModuleTable.id, ids));
     return new ApiResponse();
   }
-
   //qns
   async addQuestions(data: AddQuestionsDto) {
     const [question] = await db

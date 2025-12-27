@@ -19,9 +19,12 @@ import { DeleteQuizModulesDto } from './dto/requests/delete-quiz-module.dto';
 import {
   ApiDeleteSuccess,
   ApiGetSuccess,
+  ApiPatchSuccess,
   ApiPostSuccess,
 } from '@/common/decorators/response/api-response-success.decorator';
 import { QuizDto } from './dto/response/quiz.dto';
+import { QuizModuleDto } from './dto/response/quiz-module.dto';
+import { ListQuizModulesDto } from './dto/requests/list-quiz-modules.dto';
 
 @Controller('quizzes')
 export class QuizzesController {
@@ -56,6 +59,9 @@ export class QuizzesController {
   })
   @Patch('/')
   @Roles(['admin'])
+  @ApiPatchSuccess({
+    type: QuizDto,
+  })
   updateQuiz(@Body() body: UpdateQuizDto) {
     return this._quizzesService.updateQuiz(body);
   }
@@ -69,13 +75,17 @@ export class QuizzesController {
   deleteQuizzes(@Query() query: DeleteQuizzesDto) {
     return this._quizzesService.deleteQuizzes(query);
   }
+
   // quiz modules
   @ApiDocs({
     path: '/quizzes/create-quiz-module.md',
   })
   @Post('/modules')
   @Roles(['admin'])
-  crateQuizModule(@Body() data: CreateQuizModuleDto) {
+  @ApiPostSuccess({
+    type: QuizModuleDto,
+  })
+  createQuizModule(@Body() data: CreateQuizModuleDto) {
     return this._quizzesService.createQuizModule(data);
   }
 
@@ -84,8 +94,12 @@ export class QuizzesController {
   })
   @Get('/modules')
   @Roles(['admin'])
-  listQuizModules() {
-    return this._quizzesService.listQuizModules();
+  @ApiGetSuccess({
+    type: QuizModuleDto,
+    isArray: true,
+  })
+  listQuizModules(@Query() query: ListQuizModulesDto) {
+    return this._quizzesService.listQuizModules(query);
   }
 
   @ApiDocs({
@@ -93,6 +107,9 @@ export class QuizzesController {
   })
   @Patch('/modules')
   @Roles(['admin'])
+  @ApiPatchSuccess({
+    type: QuizModuleDto,
+  })
   updateQuizModule(@Body() data: UpdateQuizModuleDto) {
     return this._quizzesService.updateQuizModule(data);
   }
@@ -102,6 +119,7 @@ export class QuizzesController {
   })
   @Delete('/modules')
   @Roles(['admin'])
+  @ApiDeleteSuccess()
   deleteQuizModules(@Query() query: DeleteQuizModulesDto) {
     return this._quizzesService.deleteQuizModules(query);
   }
