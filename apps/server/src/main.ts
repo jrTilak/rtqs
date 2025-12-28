@@ -1,23 +1,23 @@
-import { NestFactory } from "@nestjs/core";
-import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
-import * as express from "express";
+import { NestFactory } from '@nestjs/core';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import * as express from 'express';
 
-import { AppModule } from "./app.module";
-import { ResponseInterceptor } from "./common/interceptor/response.interceptor";
-import * as path from "path";
-import { apiReference } from "@scalar/nestjs-api-reference";
-import * as fs from "fs";
-import "dotenv/config";
-import { validateEnv } from "./common/validations/env.validation";
-import { AppValidationPipe } from "./common/pipe/app-validation.pipe";
-import { Logger } from "./lib/logger";
-import { APP_CONFIG } from "./config/app.config";
+import { AppModule } from './app.module';
+import { ResponseInterceptor } from './common/interceptor/response.interceptor';
+import * as path from 'path';
+import { apiReference } from '@scalar/nestjs-api-reference';
+import * as fs from 'fs';
+import 'dotenv/config';
+import { validateEnv } from './common/validations/env.validation';
+import { AppValidationPipe } from './common/pipe/app-validation.pipe';
+import { Logger } from './lib/logger';
+import { APP_CONFIG } from './config/app.config';
 
-const GLOBAL_PREFIX = "/api/";
+const GLOBAL_PREFIX = '/api/';
 
 validateEnv();
 
-const logger = new Logger("Bootstrap");
+const logger = new Logger('Bootstrap');
 
 logger.warn(`Warning: NODE_ENV is set to ${process.env.NODE_ENV}`);
 
@@ -56,50 +56,50 @@ async function bootstrap() {
   app.enableCors({
     credentials: true,
     origin: String(process.env.CORS_ORIGINS)
-      ?.split(",")
+      ?.split(',')
       .map((origin) => origin.trim()),
   });
 
   /**
    * Serve static files from public folder.
    */
-  app.use(express.static(path.join("dist","public")));
+  app.use(express.static(path.join('dist', 'public')));
 
   /**
    * Enable Swagger if specified in env.
    */
-  if (process.env.ENABLE_SWAGGER == "true") {
-    logger.info("Enabling Swagger");
+  if (process.env.ENABLE_SWAGGER == 'true') {
+    logger.info('Enabling Swagger');
     const config = new DocumentBuilder()
       .setTitle(
-        `API Docs | ${APP_CONFIG.NAME} | ${APP_CONFIG.CURRENT_VERSION} | @${APP_CONFIG.STATUS}`
+        `API Docs | ${APP_CONFIG.NAME} | ${APP_CONFIG.CURRENT_VERSION} | @${APP_CONFIG.STATUS}`,
       )
       .setVersion(APP_CONFIG.CURRENT_VERSION)
       .build();
 
     const document = SwaggerModule.createDocument(app, config);
 
-    const swaggerPath = process.env.SWAGGER_PATH ?? "/docs";
+    const swaggerPath = process.env.SWAGGER_PATH ?? '/docs';
 
     // create public folder if it doesn't exist
-    if (!fs.existsSync(path.join(__dirname, "..", "public"))) {
-      fs.mkdirSync(path.join(__dirname, "..", "public"));
+    if (!fs.existsSync(path.join(__dirname, '..', 'public'))) {
+      fs.mkdirSync(path.join(__dirname, '..', 'public'));
     }
 
     // save the document to a file
     fs.writeFileSync(
-      path.join(__dirname, "..", "public", "swagger.json"),
-      JSON.stringify(document)
+      path.join(__dirname, '..', 'public', 'swagger.json'),
+      JSON.stringify(document),
     );
 
     app.use(
       swaggerPath,
       apiReference({
         content: document,
-      })
+      }),
     );
   } else {
-    logger.log("Skipping swagger docs initialization!");
+    logger.log('Skipping swagger docs initialization!');
   }
 
   /**

@@ -1,5 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { Type } from 'class-transformer';
+import { ApiProperty, PartialType } from '@nestjs/swagger';
 import {
   ArrayNotEmpty,
   IsArray,
@@ -10,6 +9,8 @@ import {
   Min,
   ValidateNested,
 } from 'class-validator';
+import { ArrayOfIds } from '@/common/dto/requests/array-of-ids.dto';
+import { Type } from 'class-transformer';
 
 export class QuestionDto {
   @IsString()
@@ -55,7 +56,7 @@ export class QuestionDto {
   moduleId: string;
 }
 
-export class AddQuestionsDto {
+export class AddQuizQuestionsDto {
   @ApiProperty({
     type: QuestionDto,
     isArray: true,
@@ -66,3 +67,33 @@ export class AddQuestionsDto {
   @Type(() => QuestionDto)
   questions: QuestionDto[];
 }
+
+export class ListQuizQuestionsDto {
+  @IsString()
+  @IsUUID()
+  @IsNotEmpty()
+  @ApiProperty({
+    type: 'string',
+    required: true,
+    description: ' Id of the module to list the questions for',
+    format: 'uuid',
+    example: 'bd19acce-57f4-4fc3-8aaf-506c23044c84',
+  })
+  moduleId: string;
+}
+
+export class UpdateQuizQuestionDto extends PartialType(QuestionDto) {
+  @IsString()
+  @IsUUID()
+  @IsNotEmpty()
+  @ApiProperty({
+    type: 'string',
+    required: true,
+    description: ' Id of the question to update',
+    format: 'uuid',
+    example: '2c73a694-895f-40d1-bf6b-e9794ae454b8',
+  })
+  id: string;
+}
+
+export class DeleteQuizQuestionsDto extends ArrayOfIds {}

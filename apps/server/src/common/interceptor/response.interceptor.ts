@@ -4,9 +4,9 @@ import {
   HttpException,
   Injectable,
   NestInterceptor,
-} from "@nestjs/common";
-import { Observable, of } from "rxjs";
-import { catchError, map } from "rxjs/operators";
+} from '@nestjs/common';
+import { Observable, of } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 
 /**
  * Defines a standard structure for all outgoing responses.
@@ -26,7 +26,10 @@ type Response = {
  */
 function isEmptyObject(obj: unknown): boolean {
   return (
-    typeof obj === "object" && obj !== null && !Array.isArray(obj) && Object.keys(obj).length === 0
+    typeof obj === 'object' &&
+    obj !== null &&
+    !Array.isArray(obj) &&
+    Object.keys(obj).length === 0
   );
 }
 
@@ -47,58 +50,60 @@ export class ResponseInterceptor implements NestInterceptor<unknown, unknown> {
        * Handles successful responses.
        * Transforms the data into a standard Response object.
        */
-      map((data: { data?: unknown; error?: unknown; message?: string } = {}) => {
-        const responseObj = context.switchToHttp().getResponse();
+      map(
+        (data: { data?: unknown; error?: unknown; message?: string } = {}) => {
+          const responseObj = context.switchToHttp().getResponse();
 
-        /** Check if response content type is not application/json */
-        const contentType = responseObj.getHeader?.("content-type") as string;
-        if (contentType && !contentType.includes("application/json")) {
-          /** Return non-JSON responses as-is without transformation */
-          return data;
-        }
+          /** Check if response content type is not application/json */
+          const contentType = responseObj.getHeader?.('content-type') as string;
+          if (contentType && !contentType.includes('application/json')) {
+            /** Return non-JSON responses as-is without transformation */
+            return data;
+          }
 
-        /* Why: If no explicit status code is set, default to 200 (OK) */
-        const statusCode = responseObj.statusCode ?? 200;
+          /* Why: If no explicit status code is set, default to 200 (OK) */
+          const statusCode = responseObj.statusCode ?? 200;
 
-        /** Why: Build a standard response format */
-        const response: Response = {
-          message: (data?.message || responseObj.statusMessage) ?? "OK",
-          statusCode,
-          data: data?.data,
-        };
+          /** Why: Build a standard response format */
+          const response: Response = {
+            message: (data?.message || responseObj.statusMessage) ?? 'OK',
+            statusCode,
+            data: data?.data,
+          };
 
-        /** If data is not an object or is null/undefined, return as-is */
-        if (typeof data !== "object" || data === null || data === undefined) {
-          response.data = data;
-          return response;
-        }
-
-        /** If it's an object, check for known keys and assign accordingly */
-        if ("data" in data || "error" in data || "message" in data) {
-          // check if it has paginated keys
-          if ("meta" in data) {
+          /** If data is not an object or is null/undefined, return as-is */
+          if (typeof data !== 'object' || data === null || data === undefined) {
             response.data = data;
-          } else if ("data" in data) {
-            response.data = data?.data;
+            return response;
+          }
+
+          /** If it's an object, check for known keys and assign accordingly */
+          if ('data' in data || 'error' in data || 'message' in data) {
+            // check if it has paginated keys
+            if ('meta' in data) {
+              response.data = data;
+            } else if ('data' in data) {
+              response.data = data?.data;
+            } else {
+              response.data = data;
+            }
+
+            if ('message' in data && data.message) {
+              response.message = data?.message;
+            }
           } else {
+            /** If object doesn't contain standard keys, assign it directly */
             response.data = data;
           }
 
-          if ("message" in data && data.message) {
-            response.message = data?.message;
+          /** Convert empty objects to null */
+          if (isEmptyObject(response.data)) {
+            response.data = null;
           }
-        } else {
-          /** If object doesn't contain standard keys, assign it directly */
-          response.data = data;
-        }
 
-        /** Convert empty objects to null */
-        if (isEmptyObject(response.data)) {
-          response.data = null;
-        }
-
-        return response;
-      }),
+          return response;
+        },
+      ),
 
       /**
        * Handles errors thrown during request handling.
@@ -113,7 +118,9 @@ export class ResponseInterceptor implements NestInterceptor<unknown, unknown> {
 
         /** Extract message from error object or provide a generic fallback */
         const message: string =
-          err?.message ?? err?.response?.message ?? "Whoops! Something went wrong.";
+          err?.message ??
+          err?.response?.message ??
+          'Whoops! Something went wrong.';
 
         const response: Response = {
           message,
@@ -121,11 +128,11 @@ export class ResponseInterceptor implements NestInterceptor<unknown, unknown> {
           error: err?.response?.error || null,
         };
 
-        console.log("Error in response interceptor:", response);
+        console.log('Error in response interceptor:', response);
 
         /** Return the error response as an observable using `of` */
         return of(response); // 'of' creates an observable of the error response
-      })
+      }),
     );
   }
 }

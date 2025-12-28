@@ -3,21 +3,24 @@ import {
   UnprocessableEntityException,
   ValidationPipe,
   ValidationError,
-} from "@nestjs/common";
+} from '@nestjs/common';
 
 /**
  * Recursively extract validation errors into { field, errors[] }
  */
 function extractValidationErrors(
   errors: ValidationError[],
-  parentPath = ""
+  parentPath = '',
 ): { field: string; errors: string[] }[] {
   return errors.flatMap((err) => {
-    const fieldPath = parentPath ? `${parentPath}.${err.property}` : err.property;
+    const fieldPath = parentPath
+      ? `${parentPath}.${err.property}`
+      : err.property;
 
     const messages = err.constraints ? Object.values(err.constraints) : [];
 
-    const currentError = messages.length > 0 ? [{ field: fieldPath, errors: messages }] : [];
+    const currentError =
+      messages.length > 0 ? [{ field: fieldPath, errors: messages }] : [];
 
     const childErrors = err.children?.length
       ? extractValidationErrors(err.children, fieldPath)
@@ -36,10 +39,12 @@ export class AppValidationPipe extends ValidationPipe {
       exceptionFactory: (errors: ValidationError[]) => {
         const extracted = extractValidationErrors(errors);
 
-        const flatMessages = extracted.map((e) => `${e.field}: ${e.errors.join(", ")}`);
+        const flatMessages = extracted.map(
+          (e) => `${e.field}: ${e.errors.join(', ')}`,
+        );
 
         return new UnprocessableEntityException({
-          message: flatMessages.join("; "),
+          message: flatMessages.join('; '),
           error: extracted,
         });
       },

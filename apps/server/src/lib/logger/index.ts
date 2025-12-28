@@ -1,8 +1,8 @@
-import { Injectable, Logger as L, LogLevel } from "@nestjs/common";
-import * as fs from "fs";
-import * as path from "path";
+import { Injectable, Logger as L, LogLevel } from '@nestjs/common';
+import * as fs from 'fs';
+import * as path from 'path';
 
-type LogLevelWithInfo = LogLevel | "info";
+type LogLevelWithInfo = LogLevel | 'info';
 
 /**
  * Log levels ordered by severity, where lower number means higher priority.
@@ -66,13 +66,15 @@ class Logger extends L {
    *  Gets the current log level from the environment variable. `LOG_LEVEL` or defaults to 'log' if not set.
    */
   private _getLogLevel(): LogLevelWithInfo {
-    const envLogLevel = (process.env.LOG_LEVEL || "").toLowerCase() as LogLevelWithInfo;
+    const envLogLevel = (
+      process.env.LOG_LEVEL || ''
+    ).toLowerCase() as LogLevelWithInfo;
     const validLevels = Object.keys(LEVELS_SEVERITY) as LogLevelWithInfo[];
 
     if (validLevels.includes(envLogLevel)) {
       return envLogLevel;
     } else {
-      return "log";
+      return 'log';
     }
   }
 
@@ -80,9 +82,9 @@ class Logger extends L {
    * Parses the message to a string. If the message is an object, it will be stringified.
    */
   private _parseMessageToString(message: unknown): string {
-    if (message === null) return "null";
-    if (message === undefined) return "undefined";
-    if (typeof message === "string") return message;
+    if (message === null) return 'null';
+    if (message === undefined) return 'undefined';
+    if (typeof message === 'string') return message;
     try {
       return JSON.stringify(message, null, 2);
     } catch {
@@ -100,7 +102,10 @@ class Logger extends L {
     const currentLevelSeverity = LEVELS_SEVERITY[currentLevel];
     const messageLevelSeverity = LEVELS_SEVERITY[level];
 
-    if (currentLevelSeverity === undefined || messageLevelSeverity === undefined) {
+    if (
+      currentLevelSeverity === undefined ||
+      messageLevelSeverity === undefined
+    ) {
       return false;
     }
 
@@ -122,26 +127,30 @@ class Logger extends L {
    * Folder Hierarchy: .logs/{date}/{context}/{hour}.log
    * Example: .logs/2024-01-01/WorkspaceController/00-01.log
    */
-  private _writeToFile(level: LogLevelWithInfo, message: unknown, context?: string): void {
+  private _writeToFile(
+    level: LogLevelWithInfo,
+    message: unknown,
+    context?: string,
+  ): void {
     const now = new Date();
     const date = now.toISOString().slice(0, 10);
     const hour = now.getHours();
     const nextHour = (hour + 1) % 24;
-    const hourRange = `${hour.toString().padStart(2, "0")}-${nextHour.toString().padStart(2, "0")}`;
+    const hourRange = `${hour.toString().padStart(2, '0')}-${nextHour.toString().padStart(2, '0')}`;
 
-    const moduleName = context || this.context || "Unknown";
+    const moduleName = context || this.context || 'Unknown';
     const baseDir = path.resolve(`.logs/${date}/${moduleName}`);
     const filePath = path.join(baseDir, `${hourRange}.log`);
 
     this._ensureDir(baseDir);
 
-    const timeString = now.toLocaleString("en-US", {
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-      hour: "numeric",
-      minute: "2-digit",
-      second: "2-digit",
+    const timeString = now.toLocaleString('en-US', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: 'numeric',
+      minute: '2-digit',
+      second: '2-digit',
       hour12: true,
     });
 
@@ -150,7 +159,11 @@ class Logger extends L {
 
     fs.appendFile(filePath, logEntry, (err) => {
       if (err) {
-        super.error(`Failed to write log to file: ${filePath}`, err.message, "FileLogger");
+        super.error(
+          `Failed to write log to file: ${filePath}`,
+          err.message,
+          'FileLogger',
+        );
       }
     });
   }
@@ -158,54 +171,54 @@ class Logger extends L {
   /** PUBLIC METHODS */
 
   override log(message: unknown, context?: string): void {
-    if (this._isLevelEnabled("log")) {
+    if (this._isLevelEnabled('log')) {
       super.log(message, context);
-      this._writeToFile("log", message, context);
+      this._writeToFile('log', message, context);
     }
   }
 
   info(message: unknown, context?: string): void {
-    if (this._isLevelEnabled("info")) {
+    if (this._isLevelEnabled('info')) {
       super.log(message, context);
-      this._writeToFile("info", message, context);
+      this._writeToFile('info', message, context);
     }
   }
 
   override error(message: unknown, trace?: string, context?: string): void {
-    if (this._isLevelEnabled("error")) {
+    if (this._isLevelEnabled('error')) {
       super.error(message, trace, context);
-      this._writeToFile("error", message, context);
+      this._writeToFile('error', message, context);
     }
   }
 
   override warn(message: unknown, context?: string): void {
-    if (this._isLevelEnabled("warn")) {
+    if (this._isLevelEnabled('warn')) {
       super.warn(message, context);
-      this._writeToFile("warn", message, context);
+      this._writeToFile('warn', message, context);
     }
   }
 
   override debug(message: unknown, context?: string): void {
-    if (this._isLevelEnabled("debug")) {
+    if (this._isLevelEnabled('debug')) {
       super.debug(message, context);
-      this._writeToFile("debug", message, context);
+      this._writeToFile('debug', message, context);
     }
   }
 
   override verbose(message: unknown, context?: string): void {
-    if (this._isLevelEnabled("verbose")) {
+    if (this._isLevelEnabled('verbose')) {
       super.verbose(message, context);
-      this._writeToFile("verbose", message, context);
+      this._writeToFile('verbose', message, context);
     }
   }
 
   override fatal(message: unknown, context?: string): void {
-    if (this._isLevelEnabled("fatal")) {
+    if (this._isLevelEnabled('fatal')) {
       super.error(message, undefined, context);
-      this._writeToFile("fatal", message, context);
+      this._writeToFile('fatal', message, context);
     }
   }
 }
 
-const logger = new Logger("Default");
+const logger = new Logger('Default');
 export { logger, Logger };
