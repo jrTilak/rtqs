@@ -12,6 +12,8 @@ import { AddQuestionsDto } from './dto/requests/add-questions.dto';
 import { UpdateQuestionDto } from './dto/requests/update-question.dto';
 import { DeleteQuizModulesDto } from './dto/requests/delete-quiz-module.dto';
 import { ListQuizModulesDto } from './dto/requests/list-quiz-modules.dto';
+import { ListQuizQuestionsDto } from './dto/requests/list-quiz-questions.dto';
+import { DeleteQuizQuestionsDto } from './dto/requests/delete-quiz-questions.dto';
 
 @Injectable()
 export class QuizzesService {
@@ -76,11 +78,19 @@ export class QuizzesService {
 
   //qns
   async addQuestions(data: AddQuestionsDto) {
-    const [question] = await db
+    const question = await db
       .insert(quizQuestionTable)
       .values(data.questions)
       .returning();
     return new ApiResponse(question);
+  }
+
+  async listQuestions(data: ListQuizQuestionsDto) {
+    const questions = await db
+      .select()
+      .from(quizQuestionTable)
+      .where(eq(quizQuestionTable.moduleId, data.moduleId));
+    return new ApiResponse(questions);
   }
 
   async updateQuestion({ id, ...data }: UpdateQuestionDto) {
@@ -92,5 +102,10 @@ export class QuizzesService {
     return new ApiResponse(question);
   }
 
-  async listQuestions() {}
+  async deleteQuizQuestions({ ids }: DeleteQuizQuestionsDto) {
+    await db
+      .delete(quizQuestionTable)
+      .where(inArray(quizQuestionTable.id, ids));
+    return new ApiResponse();
+  }
 }

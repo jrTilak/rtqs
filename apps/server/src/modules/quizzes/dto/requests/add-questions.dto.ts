@@ -11,14 +11,6 @@ import {
   ValidateNested,
 } from 'class-validator';
 
-export class AddQuestionsDto {
-  @IsArray()
-  @ArrayNotEmpty()
-  @ValidateNested({ each: true })
-  @Type(() => QuestionDto)
-  questions: QuestionDto[];
-}
-
 export class QuestionDto {
   @IsString()
   @IsNotEmpty()
@@ -61,4 +53,16 @@ export class QuestionDto {
     format: 'uuid',
   })
   moduleId: string;
+}
+
+export class AddQuestionsDto {
+  @ApiProperty({
+    type: QuestionDto,
+    isArray: true,
+  })
+  @IsArray()
+  @ArrayNotEmpty()
+  @ValidateNested({ each: true })
+  @Type(() => QuestionDto)
+  questions: QuestionDto[];
 }

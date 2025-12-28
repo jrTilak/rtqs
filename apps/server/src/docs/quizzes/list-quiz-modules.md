@@ -1,3 +1,5 @@
 ---
-summary: 'List quiz modules ordered by index asc'
+summary: 'List quiz modules'
 ---
+
+Lists all the available modules for the given quiz, ordered by lowest index ie 0 first

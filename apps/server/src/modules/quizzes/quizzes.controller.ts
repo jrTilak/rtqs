@@ -25,6 +25,11 @@ import {
 import { QuizDto } from './dto/response/quiz.dto';
 import { QuizModuleDto } from './dto/response/quiz-module.dto';
 import { ListQuizModulesDto } from './dto/requests/list-quiz-modules.dto';
+import { AddQuestionsDto } from './dto/requests/add-questions.dto';
+import { QuizQuestion } from './dto/response/quiz-question.dto';
+import { ListQuizQuestionsDto } from './dto/requests/list-quiz-questions.dto';
+import { UpdateQuestionDto } from './dto/requests/update-question.dto';
+import { DeleteQuizQuestionsDto } from './dto/requests/delete-quiz-questions.dto';
 
 @Controller('quizzes')
 export class QuizzesController {
@@ -122,5 +127,54 @@ export class QuizzesController {
   @ApiDeleteSuccess()
   deleteQuizModules(@Query() query: DeleteQuizModulesDto) {
     return this._quizzesService.deleteQuizModules(query);
+  }
+
+  // quiz questions
+  @ApiDocs({
+    path: '/quizzes/add-quiz-questions.md',
+  })
+  @Post('/questions')
+  @Roles(['admin'])
+  @ApiPostSuccess({
+    type: QuizQuestion,
+    isArray: true,
+  })
+  addQuestions(@Body() body: AddQuestionsDto) {
+    return this._quizzesService.addQuestions(body);
+  }
+
+  @ApiDocs({
+    path: '/quizzes/list-quiz-questions.md',
+  })
+  @Get('/questions')
+  @Roles(['admin'])
+  @ApiGetSuccess({
+    type: QuizQuestion,
+    isArray: true,
+  })
+  listQuestions(@Query() query: ListQuizQuestionsDto) {
+    return this._quizzesService.listQuestions(query);
+  }
+
+  @ApiDocs({
+    path: '/quizzes/update-quiz-question.md',
+  })
+  @Patch('/questions')
+  @Roles(['admin'])
+  @ApiPatchSuccess({
+    type: QuizQuestion,
+  })
+  updateQuestion(@Body() body: UpdateQuestionDto) {
+    return this._quizzesService.updateQuestion(body);
+  }
+
+  @ApiDocs({
+    path: '/quizzes/delete-quiz-questions.md',
+  })
+  @Delete('/questions')
+  @Roles(['admin'])
+  @ApiDeleteSuccess()
+  deleteQuestions(@Query() query: DeleteQuizQuestionsDto) {
+    return this._quizzesService.deleteQuizQuestions(query);
   }
 }
