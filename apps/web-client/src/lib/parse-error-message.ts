@@ -4,13 +4,11 @@ export function parseErrorMessage(
   err: unknown,
   defaultMessage = "Unknown error occurred"
 ): string {
+  console.log("error", err);
   // Axios error
   if (axios.isAxiosError(err)) {
-    return (
-      err.response?.data?.message ||
-      err.message ||
-      defaultMessage
-    );
+    console.log("axios error", err.response?.data);
+    return err.response?.data?.message || err.message || defaultMessage;
   }
 
   // Normal Error
@@ -26,4 +24,3 @@ export function parseErrorMessage(
   // Anything else
   return defaultMessage;
 }
-
