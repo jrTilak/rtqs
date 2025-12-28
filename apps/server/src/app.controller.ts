@@ -4,7 +4,7 @@ import { AllowAnonymous } from '@thallesp/nestjs-better-auth';
 
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService) { }
+  constructor(private readonly appService: AppService) {}
 
   @AllowAnonymous()
   @Get()

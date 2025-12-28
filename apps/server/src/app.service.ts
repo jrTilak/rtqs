@@ -5,7 +5,7 @@ import { ApiResponse } from './common/dto/response/api-response.dto';
 export class AppService {
   getHello() {
     return new ApiResponse({
-      messsage: "Hello World!"
-    })
+      messsage: 'Hello World!',
+    });
   }
 }

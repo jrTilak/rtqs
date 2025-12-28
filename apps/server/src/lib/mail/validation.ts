@@ -1,21 +1,27 @@
-import { ArrayNotEmpty, IsArray, IsNotEmpty, IsString, ValidateNested, validateSync } from "class-validator";
-import { getMailCreds } from "./utils";
-import { plainToInstance, Type } from "class-transformer";
-import { logger } from "../logger";
+import {
+  ArrayNotEmpty,
+  IsArray,
+  IsNotEmpty,
+  IsString,
+  ValidateNested,
+  validateSync,
+} from 'class-validator';
+import { getMailCreds } from './utils';
+import { plainToInstance, Type } from 'class-transformer';
+import { logger } from '../logger';
 
 class MailCredsDto {
   @IsString()
   @IsNotEmpty()
-  name: string
-
-
-  @IsString()
-  @IsNotEmpty()
-  email: string
+  name: string;
 
   @IsString()
   @IsNotEmpty()
-  password: string
+  email: string;
+
+  @IsString()
+  @IsNotEmpty()
+  password: string;
 }
 
 class MailCredsArr {
@@ -23,23 +29,23 @@ class MailCredsArr {
   @ArrayNotEmpty()
   @ValidateNested({ each: true })
   @Type(() => MailCredsDto)
-  mails: MailCredsDto
+  mails: MailCredsDto;
 }
 
-export type MailCredsType = InstanceType<typeof MailCredsDto>
+export type MailCredsType = InstanceType<typeof MailCredsDto>;
 
 export const validateMailCreds = () => {
-  const mailCreds = getMailCreds()
+  const mailCreds = getMailCreds();
 
   const validatedConfig = plainToInstance(MailCredsArr, { mails: mailCreds });
 
   // validate
   const errors = validateSync(validatedConfig, {
-    whitelist: true
+    whitelist: true,
   });
 
   if (errors.length > 0) {
-    logger.error("Mail Creds validation failed:");
+    logger.error('Mail Creds validation failed:');
     logger.error(JSON.stringify(errors, null, 2));
     process.exit(1);
   }
