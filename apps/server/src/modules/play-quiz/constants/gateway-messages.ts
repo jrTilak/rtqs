@@ -1,0 +1,4 @@
+export const GATEWAY_MESSAGES = {
+  LOBBY_CREATED: 'LOBBY_CREATED',
+  CREATE_LOBBY: 'CREATE_LOBBY',
+} as const;
