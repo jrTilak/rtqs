@@ -35,7 +35,7 @@ function AlertDialogOverlay({
       data-slot="alert-dialog-overlay"
       className={cn(
         "data-open:animate-in data-closed:animate-out data-closed:fade-out-0 data-open:fade-in-0 bg-black/10 duration-100 supports-backdrop-filter:backdrop-blur-xs fixed inset-0 z-50",
-        className,
+        className
       )}
       {...props}
     />
@@ -64,8 +64,8 @@ function AlertDialogContent({
             // 📱 mobile: bottom sheet style
             "bottom-0 left-1/2 -translate-x-1/2 translate-y-0 sm:bottom-auto " +
             // 🖥️ sm+: top 30% dialog
-            "sm:top-[10%] sm:left-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2",
-          className,
+            "sm:top-[5%] sm:left-1/2 sm:-translate-x-1/2",
+          className
         )}
         {...props}
       />
@@ -82,7 +82,7 @@ function AlertDialogHeader({
       data-slot="alert-dialog-header"
       className={cn(
         "grid grid-rows-[auto_1fr] place-items-center gap-1.5 text-center has-data-[slot=alert-dialog-media]:grid-rows-[auto_auto_1fr] has-data-[slot=alert-dialog-media]:gap-x-6 sm:group-data-[size=default]/alert-dialog-content:place-items-start sm:group-data-[size=default]/alert-dialog-content:text-left sm:group-data-[size=default]/alert-dialog-content:has-data-[slot=alert-dialog-media]:grid-rows-[auto_1fr]",
-        className,
+        className
       )}
       {...props}
     />
@@ -98,7 +98,7 @@ function AlertDialogFooter({
       data-slot="alert-dialog-footer"
       className={cn(
         "flex flex-col-reverse gap-2 group-data-[size=sm]/alert-dialog-content:grid group-data-[size=sm]/alert-dialog-content:grid-cols-2 sm:flex-row sm:justify-end",
-        className,
+        className
       )}
       {...props}
     />
@@ -114,7 +114,7 @@ function AlertDialogMedia({
       data-slot="alert-dialog-media"
       className={cn(
         "bg-muted mb-2 inline-flex size-16 items-center justify-center rounded-md sm:group-data-[size=default]/alert-dialog-content:row-span-2 *:[svg:not([class*='size-'])]:size-8",
-        className,
+        className
       )}
       {...props}
     />
@@ -130,7 +130,7 @@ function AlertDialogTitle({
       data-slot="alert-dialog-title"
       className={cn(
         "text-lg font-medium sm:group-data-[size=default]/alert-dialog-content:group-has-data-[slot=alert-dialog-media]/alert-dialog-content:col-start-2",
-        className,
+        className
       )}
       {...props}
     />
@@ -146,7 +146,7 @@ function AlertDialogDescription({
       data-slot="alert-dialog-description"
       className={cn(
         "text-muted-foreground *:[a]:hover:text-foreground text-sm text-balance md:text-pretty *:[a]:underline *:[a]:underline-offset-3",
-        className,
+        className
       )}
       {...props}
     />
