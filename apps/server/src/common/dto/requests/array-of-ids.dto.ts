@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Transform } from 'class-transformer';
 import {
   ArrayNotEmpty,
   IsArray,
@@ -8,6 +9,7 @@ import {
 } from 'class-validator';
 
 export class ArrayOfIds {
+  @Transform(({ value }) => (Array.isArray(value) ? value : [value]))
   @IsArray()
   @ArrayNotEmpty()
   @IsString({ each: true })
