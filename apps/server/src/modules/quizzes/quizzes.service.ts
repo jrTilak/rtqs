@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateQuizDto } from './dto/requests/create-quiz.dto';
 import { db } from '@/db';
 import { Quiz, quizModuleTable, quizQuestionTable, quizTable } from './entity';
@@ -33,6 +33,15 @@ export class QuizzesService {
   }
 
   async updateQuiz({ id, ...data }: UpdateQuizDto): Promise<ApiResponse<Quiz>> {
+    const [exists] = await db
+      .select({ id: quizTable.id })
+      .from(quizTable)
+      .where(eq(quizTable.id, id));
+
+    if (!exists?.id) {
+      throw new NotFoundException('No Quiz found with provided id.');
+    }
+
     const [quiz] = await db
       .update(quizTable)
       .set(data)
@@ -63,6 +72,15 @@ export class QuizzesService {
   }
 
   async updateQuizModule({ id, ...data }: UpdateQuizModuleDto) {
+    const [exists] = await db
+      .select({ id: quizModuleTable.id })
+      .from(quizModuleTable)
+      .where(eq(quizModuleTable.id, id));
+
+    if (!exists?.id) {
+      throw new NotFoundException('No Quiz module found with provided id.');
+    }
+
     const [module] = await db
       .update(quizModuleTable)
       .set(data)
@@ -94,6 +112,15 @@ export class QuizzesService {
   }
 
   async updateQuestion({ id, ...data }: UpdateQuestionDto) {
+    const [exists] = await db
+      .select({ id: quizQuestionTable.id })
+      .from(quizQuestionTable)
+      .where(eq(quizQuestionTable.id, id));
+
+    if (!exists?.id) {
+      throw new NotFoundException('No Quiz question found with provided id.');
+    }
+
     const [question] = await db
       .update(quizQuestionTable)
       .set(data)
