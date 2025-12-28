@@ -96,6 +96,7 @@ async function bootstrap() {
       swaggerPath,
       apiReference({
         content: document,
+        theme: 'kepler',
       }),
     );
   } else {
