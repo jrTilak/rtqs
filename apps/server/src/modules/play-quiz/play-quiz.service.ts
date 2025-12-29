@@ -18,7 +18,7 @@ export class PlayQuizService {
     await db.insert(quizLobbyTable).values({
       quizId: payload.quizId,
       code: payload.code,
-      waitInLobbyUntill: new Date(payload.waitUntill),
+      waitInLobbyUntil: new Date(payload.waitUntil),
     });
   }
 }

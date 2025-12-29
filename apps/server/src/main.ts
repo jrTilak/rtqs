@@ -12,6 +12,7 @@ import { validateEnv } from './common/validations/env.validation';
 import { AppValidationPipe } from './common/pipe/app-validation.pipe';
 import { Logger } from './lib/logger';
 import { APP_CONFIG } from './config/app.config';
+import * as socketDto from '@/modules/play-quiz/dto';
 
 const GLOBAL_PREFIX = '/api/';
 
@@ -77,7 +78,9 @@ async function bootstrap() {
       .setVersion(APP_CONFIG.CURRENT_VERSION)
       .build();
 
-    const document = SwaggerModule.createDocument(app, config);
+    const document = SwaggerModule.createDocument(app, config, {
+      extraModels: [...Object.values(socketDto)],
+    });
 
     const swaggerPath = process.env.SWAGGER_PATH ?? '/docs';
 

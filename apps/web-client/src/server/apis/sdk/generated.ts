@@ -187,6 +187,15 @@ export interface SuccessResponseTypeDtoQuizQuestionDto10 {
   data: QuizQuestionDto;
 }
 
+export interface OnCreateLobbyDto {
+  /** The ID of the quiz to be played in the lobby */
+  quizId: string;
+  /** The date and time when the game will start */
+  waitUntil: string;
+  /** The unique code for the lobby */
+  code: string;
+}
+
 export type QuizzesControllerDeleteQuizzesParams = {
 /**
  * @minLength 1

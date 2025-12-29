@@ -22,7 +22,7 @@ export const quizLobbyTable = pgTable('quiz_lobby', {
     .references(() => quizTable.id, { onDelete: 'cascade' }),
 
   participantsCount: integer('participants_count').notNull().default(0),
-  waitInLobbyUntill: timestamp('wait_in_lobby_until').notNull(),
+  waitInLobbyUntil: timestamp('wait_in_lobby_until').notNull(),
 
   status: quizLobbyPgEnum().notNull().default(QuizLobbyEnum.IN_LOBBY),
 

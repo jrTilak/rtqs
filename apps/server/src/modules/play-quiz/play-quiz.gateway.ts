@@ -11,7 +11,7 @@ import { OnCreateLobbyDto } from './dto/requests/play-quiz.dto';
 
 @WebSocketGateway({
   cors: {
-    origin: '*',
+    origin: process.env.CORS_ORIGINS?.split(',') || '*',
     credentials: true,
   },
   namespace: 'play-quiz',
