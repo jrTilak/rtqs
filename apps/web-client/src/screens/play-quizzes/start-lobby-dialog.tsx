@@ -59,7 +59,7 @@ export const StartLobbyDialog = () => {
         <DialogHeader>
           <DialogTitle>Start Lobby</DialogTitle>
           <DialogDescription>
-            Enter your name to start a new lobby
+            Enter your lobby name to start a new lobby
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
@@ -69,9 +69,9 @@ export const StartLobbyDialog = () => {
               name="playerName"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Your Name</FormLabel>
+                  <FormLabel>Lobby Name</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter your name" {...field} autoFocus />
+                    <Input placeholder="Enter lobby name" {...field} autoFocus />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
