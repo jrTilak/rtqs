@@ -1,7 +1,7 @@
 import { BaseTableDto } from '@/common/dto/response/base-table.dto';
 import { ApiProperty } from '@nestjs/swagger';
 
-export class QuizQuestion extends BaseTableDto {
+export class QuizQuestionDto extends BaseTableDto {
   @ApiProperty({
     title: 'The question',
     required: true,

@@ -12,7 +12,7 @@ import {
 import { ArrayOfIds } from '@/common/dto/requests/array-of-ids.dto';
 import { Type } from 'class-transformer';
 
-export class QuestionDto {
+export class QuizQuestionDto {
   @IsString()
   @IsNotEmpty()
   @ApiProperty({
@@ -58,14 +58,14 @@ export class QuestionDto {
 
 export class AddQuizQuestionsDto {
   @ApiProperty({
-    type: QuestionDto,
+    type: QuizQuestionDto,
     isArray: true,
   })
   @IsArray()
   @ArrayNotEmpty()
   @ValidateNested({ each: true })
-  @Type(() => QuestionDto)
-  questions: QuestionDto[];
+  @Type(() => QuizQuestionDto)
+  questions: QuizQuestionDto[];
 }
 
 export class ListQuizQuestionsDto {
@@ -82,7 +82,7 @@ export class ListQuizQuestionsDto {
   moduleId: string;
 }
 
-export class UpdateQuizQuestionDto extends PartialType(QuestionDto) {
+export class UpdateQuizQuestionDto extends PartialType(QuizQuestionDto) {
   @IsString()
   @IsUUID()
   @IsNotEmpty()

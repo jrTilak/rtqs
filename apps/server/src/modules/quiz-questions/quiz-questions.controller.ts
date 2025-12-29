@@ -15,7 +15,7 @@ import {
   ApiPatchSuccess,
   ApiPostSuccess,
 } from '@/common/decorators/response/api-response-success.decorator';
-import { QuizQuestion } from './dto/response/quiz-question.dto';
+import { QuizQuestionDto } from './dto/response/quiz-question.dto';
 import {
   AddQuizQuestionsDto,
   DeleteQuizQuestionsDto,
@@ -36,7 +36,7 @@ export class QuizQuestionsController {
   })
   @Post('/')
   @ApiPostSuccess({
-    type: QuizQuestion,
+    type: QuizQuestionDto,
     isArray: true,
   })
   addQuizQuestions(@Body() body: AddQuizQuestionsDto) {
@@ -48,7 +48,7 @@ export class QuizQuestionsController {
   })
   @Get('/')
   @ApiGetSuccess({
-    type: QuizQuestion,
+    type: QuizQuestionDto,
     isArray: true,
   })
   listQuizQuestions(@Query() query: ListQuizQuestionsDto) {
@@ -60,7 +60,7 @@ export class QuizQuestionsController {
   })
   @Patch('/')
   @ApiPatchSuccess({
-    type: QuizQuestion,
+    type: QuizQuestionDto,
   })
   updateQuizQuestion(@Body() body: UpdateQuizQuestionDto) {
     return this._quizQuestionsService.updateQuizQuestion(body);
@@ -71,7 +71,7 @@ export class QuizQuestionsController {
   })
   @Delete('/')
   @ApiDeleteSuccess()
-  deleteQuestions(@Query() query: DeleteQuizQuestionsDto) {
+  deleteQuizQuestions(@Query() query: DeleteQuizQuestionsDto) {
     return this._quizQuestionsService.deleteQuizQuestions(query);
   }
 }

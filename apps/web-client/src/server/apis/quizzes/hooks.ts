@@ -2,10 +2,12 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   createQuiz,
   deleteQuizzes,
-  listAllQuizzes,
+  getAQuiz,
+  listQuizzes,
   updateQuiz,
   type CreateQuizParams,
   type DeleteQuizzesParams,
+  type GetAQuizParams,
   type UpdateQuizParams,
 } from ".";
 import { KEYS } from "../keys";
@@ -25,7 +27,14 @@ export const useCreateQuiz = () => {
 export const useListQuizzes = () => {
   return useQuery({
     queryKey: KEYS.quizzes.listQuizzes(),
-    queryFn: () => listAllQuizzes().then((d) => d.data),
+    queryFn: () => listQuizzes().then((d) => d.data),
+  });
+};
+
+export const useGetAQuiz = (params: GetAQuizParams) => {
+  return useQuery({
+    queryKey: KEYS.quizzes.getAQuiz(params),
+    queryFn: () => getAQuiz(params).then((d) => d.data),
   });
 };
 

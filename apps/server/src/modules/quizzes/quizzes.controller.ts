@@ -3,6 +3,8 @@ import {
   Controller,
   Delete,
   Get,
+  Param,
+  ParseUUIDPipe,
   Patch,
   Post,
   Query,
@@ -49,8 +51,19 @@ export class QuizzesController {
     type: QuizDto,
     isArray: true,
   })
-  listAllQuizzes() {
+  listQuizzes() {
     return this._quizzesService.listQuizzes();
+  }
+
+  @ApiDocs({
+    path: '/quizzes/get-a-quiz.md',
+  })
+  @Get('/:quiz_id')
+  @ApiGetSuccess({
+    type: QuizDto,
+  })
+  getAQuiz(@Param('quiz_id', new ParseUUIDPipe()) quizId: string) {
+    return this._quizzesService.getAQuiz(quizId);
   }
 
   @ApiDocs({

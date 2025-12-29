@@ -25,6 +25,17 @@ export class QuizzesService {
     return new ApiResponse(quizzes);
   }
 
+  async getAQuiz(id: string): Promise<ApiResponse<Quiz>> {
+    const [quiz] = await db
+      .select()
+      .from(quizTable)
+      .where(eq(quizTable.id, id));
+    if (!quiz) {
+      throw new NotFoundException('No Quiz found with provided id.');
+    }
+    return new ApiResponse(quiz);
+  }
+
   async updateQuiz({ id, ...data }: UpdateQuizDto): Promise<ApiResponse<Quiz>> {
     const [exists] = await db
       .select({ id: quizTable.id })
