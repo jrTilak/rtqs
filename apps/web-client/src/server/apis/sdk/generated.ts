@@ -37,6 +37,15 @@ export interface SuccessResponseTypeDtoQuizDto2 {
   data: QuizDto[];
 }
 
+export interface SuccessResponseTypeDtoQuizDto3 {
+  /** HTTP status code */
+  statusCode: number;
+  /** Response message */
+  message: string;
+  /** Retrieved successfully */
+  data: QuizDto;
+}
+
 export interface UpdateQuizDto {
   /** Name of quiz */
   name?: string;
@@ -45,7 +54,7 @@ export interface UpdateQuizDto {
   id: string;
 }
 
-export interface SuccessResponseTypeDtoQuizDto3 {
+export interface SuccessResponseTypeDtoQuizDto4 {
   /** HTTP status code */
   statusCode: number;
   /** Response message */
@@ -79,9 +88,10 @@ export interface QuizModuleDto {
   updatedAt: string;
   name: string;
   index: number;
+  quizId: string;
 }
 
-export interface SuccessResponseTypeDtoQuizModuleDto4 {
+export interface SuccessResponseTypeDtoQuizModuleDto5 {
   /** HTTP status code */
   statusCode: number;
   /** Response message */
@@ -90,7 +100,7 @@ export interface SuccessResponseTypeDtoQuizModuleDto4 {
   data: QuizModuleDto;
 }
 
-export interface SuccessResponseTypeDtoQuizModuleDto5 {
+export interface SuccessResponseTypeDtoQuizModuleDto6 {
   /** HTTP status code */
   statusCode: number;
   /** Response message */
@@ -113,13 +123,68 @@ export interface UpdateQuizModuleDto {
   id: string;
 }
 
-export interface SuccessResponseTypeDtoQuizModuleDto6 {
+export interface SuccessResponseTypeDtoQuizModuleDto7 {
   /** HTTP status code */
   statusCode: number;
   /** Response message */
   message: string;
   /** Updated successfully */
   data: QuizModuleDto;
+}
+
+export interface QuizQuestionDto {
+  /** Question */
+  question: string;
+  /** Correct answer of the question */
+  answer: string;
+  /** Order of the question */
+  index: number;
+  /** The module in which the question lies */
+  moduleId: string;
+}
+
+export interface AddQuizQuestionsDto {
+  questions: QuizQuestionDto[];
+}
+
+export interface SuccessResponseTypeDtoQuizQuestionDto8 {
+  /** HTTP status code */
+  statusCode: number;
+  /** Response message */
+  message: string;
+  /** Created successfully */
+  data: QuizQuestionDto[];
+}
+
+export interface SuccessResponseTypeDtoQuizQuestionDto9 {
+  /** HTTP status code */
+  statusCode: number;
+  /** Response message */
+  message: string;
+  /** Retrieved successfully */
+  data: QuizQuestionDto[];
+}
+
+export interface UpdateQuizQuestionDto {
+  /** Question */
+  question?: string;
+  /** Correct answer of the question */
+  answer?: string;
+  /** Order of the question */
+  index?: number;
+  /** The module in which the question lies */
+  moduleId?: string;
+  /**  Id of the question to update */
+  id: string;
+}
+
+export interface SuccessResponseTypeDtoQuizQuestionDto10 {
+  /** HTTP status code */
+  statusCode: number;
+  /** Response message */
+  message: string;
+  /** Updated successfully */
+  data: QuizQuestionDto;
 }
 
 export type QuizzesControllerDeleteQuizzesParams = {
@@ -129,14 +194,28 @@ export type QuizzesControllerDeleteQuizzesParams = {
 ids: string[];
 };
 
-export type QuizzesControllerListQuizModulesParams = {
+export type QuizModulesControllerListQuizModulesParams = {
 /**
  *  Id of the quiz to to list modules for
  */
 id: string;
 };
 
-export type QuizzesControllerDeleteQuizModulesParams = {
+export type QuizModulesControllerDeleteQuizModulesParams = {
+/**
+ * @minLength 1
+ */
+ids: string[];
+};
+
+export type QuizQuestionsControllerListQuizQuestionsParams = {
+/**
+ *  Id of the module to list the questions for
+ */
+moduleId: string;
+};
+
+export type QuizQuestionsControllerDeleteQuizQuestionsParams = {
 /**
  * @minLength 1
  */
@@ -175,7 +254,7 @@ const quizzesControllerCreateQuiz = (
  * No description available
  * @summary List all avaliable quizes
  */
-const quizzesControllerListAllQuizzes = (
+const quizzesControllerListQuizzes = (
     
  options?: SecondParameter<typeof apiClient<SuccessResponseTypeDtoQuizDto2>>,) => {
       return apiClient<SuccessResponseTypeDtoQuizDto2>(
@@ -190,8 +269,8 @@ const quizzesControllerListAllQuizzes = (
  */
 const quizzesControllerUpdateQuiz = (
     updateQuizDto: UpdateQuizDto,
- options?: SecondParameter<typeof apiClient<SuccessResponseTypeDtoQuizDto3>>,) => {
-      return apiClient<SuccessResponseTypeDtoQuizDto3>(
+ options?: SecondParameter<typeof apiClient<SuccessResponseTypeDtoQuizDto4>>,) => {
+      return apiClient<SuccessResponseTypeDtoQuizDto4>(
       {url: `/api/quizzes`, method: 'PATCH',
       headers: {'Content-Type': 'application/json', },
       data: updateQuizDto
@@ -215,13 +294,26 @@ const quizzesControllerDeleteQuizzes = (
   
 /**
  * No description available
+ * @summary Get a quiz
+ */
+const quizzesControllerGetAQuiz = (
+    quizId: string,
+ options?: SecondParameter<typeof apiClient<SuccessResponseTypeDtoQuizDto3>>,) => {
+      return apiClient<SuccessResponseTypeDtoQuizDto3>(
+      {url: `/api/quizzes/${quizId}`, method: 'GET'
+    },
+      options);
+    }
+  
+/**
+ * No description available
  * @summary Add a quiz module
  */
-const quizzesControllerCreateQuizModule = (
+const quizModulesControllerCreateQuizModule = (
     createQuizModuleDto: CreateQuizModuleDto,
- options?: SecondParameter<typeof apiClient<SuccessResponseTypeDtoQuizModuleDto4>>,) => {
-      return apiClient<SuccessResponseTypeDtoQuizModuleDto4>(
-      {url: `/api/quizzes/modules`, method: 'POST',
+ options?: SecondParameter<typeof apiClient<SuccessResponseTypeDtoQuizModuleDto5>>,) => {
+      return apiClient<SuccessResponseTypeDtoQuizModuleDto5>(
+      {url: `/api/quiz/modules`, method: 'POST',
       headers: {'Content-Type': 'application/json', },
       data: createQuizModuleDto
     },
@@ -229,14 +321,16 @@ const quizzesControllerCreateQuizModule = (
     }
   
 /**
- * No description available
- * @summary List quiz modules ordered by index asc
+ * 
+Lists all the available modules for the given quiz, ordered by lowest index ie 0 first
+
+ * @summary List quiz modules
  */
-const quizzesControllerListQuizModules = (
-    params: QuizzesControllerListQuizModulesParams,
- options?: SecondParameter<typeof apiClient<SuccessResponseTypeDtoQuizModuleDto5>>,) => {
-      return apiClient<SuccessResponseTypeDtoQuizModuleDto5>(
-      {url: `/api/quizzes/modules`, method: 'GET',
+const quizModulesControllerListQuizModules = (
+    params: QuizModulesControllerListQuizModulesParams,
+ options?: SecondParameter<typeof apiClient<SuccessResponseTypeDtoQuizModuleDto6>>,) => {
+      return apiClient<SuccessResponseTypeDtoQuizModuleDto6>(
+      {url: `/api/quiz/modules`, method: 'GET',
         params
     },
       options);
@@ -246,11 +340,11 @@ const quizzesControllerListQuizModules = (
  * No description available
  * @summary Update quiz module
  */
-const quizzesControllerUpdateQuizModule = (
+const quizModulesControllerUpdateQuizModule = (
     updateQuizModuleDto: UpdateQuizModuleDto,
- options?: SecondParameter<typeof apiClient<SuccessResponseTypeDtoQuizModuleDto6>>,) => {
-      return apiClient<SuccessResponseTypeDtoQuizModuleDto6>(
-      {url: `/api/quizzes/modules`, method: 'PATCH',
+ options?: SecondParameter<typeof apiClient<SuccessResponseTypeDtoQuizModuleDto7>>,) => {
+      return apiClient<SuccessResponseTypeDtoQuizModuleDto7>(
+      {url: `/api/quiz/modules`, method: 'PATCH',
       headers: {'Content-Type': 'application/json', },
       data: updateQuizModuleDto
     },
@@ -261,23 +355,88 @@ const quizzesControllerUpdateQuizModule = (
  * No description available
  * @summary Delete quiz modules
  */
-const quizzesControllerDeleteQuizModules = (
-    params: QuizzesControllerDeleteQuizModulesParams,
+const quizModulesControllerDeleteQuizModules = (
+    params: QuizModulesControllerDeleteQuizModulesParams,
  options?: SecondParameter<typeof apiClient<ApiResponseBaseDto>>,) => {
       return apiClient<ApiResponseBaseDto>(
-      {url: `/api/quizzes/modules`, method: 'DELETE',
+      {url: `/api/quiz/modules`, method: 'DELETE',
         params
     },
       options);
     }
   
-return {appControllerGetHello,quizzesControllerCreateQuiz,quizzesControllerListAllQuizzes,quizzesControllerUpdateQuiz,quizzesControllerDeleteQuizzes,quizzesControllerCreateQuizModule,quizzesControllerListQuizModules,quizzesControllerUpdateQuizModule,quizzesControllerDeleteQuizModules}};
+/**
+ * No description available
+ * @summary Add mutiple questions to a module
+ */
+const quizQuestionsControllerAddQuizQuestions = (
+    addQuizQuestionsDto: AddQuizQuestionsDto,
+ options?: SecondParameter<typeof apiClient<SuccessResponseTypeDtoQuizQuestionDto8>>,) => {
+      return apiClient<SuccessResponseTypeDtoQuizQuestionDto8>(
+      {url: `/api/quiz/questions`, method: 'POST',
+      headers: {'Content-Type': 'application/json', },
+      data: addQuizQuestionsDto
+    },
+      options);
+    }
+  
+/**
+ * 
+Lists all the available question for the given module, ordered by lowest index ie 0 first
+
+ * @summary List quiz questions
+ */
+const quizQuestionsControllerListQuizQuestions = (
+    params: QuizQuestionsControllerListQuizQuestionsParams,
+ options?: SecondParameter<typeof apiClient<SuccessResponseTypeDtoQuizQuestionDto9>>,) => {
+      return apiClient<SuccessResponseTypeDtoQuizQuestionDto9>(
+      {url: `/api/quiz/questions`, method: 'GET',
+        params
+    },
+      options);
+    }
+  
+/**
+ * No description available
+ * @summary Update a question
+ */
+const quizQuestionsControllerUpdateQuizQuestion = (
+    updateQuizQuestionDto: UpdateQuizQuestionDto,
+ options?: SecondParameter<typeof apiClient<SuccessResponseTypeDtoQuizQuestionDto10>>,) => {
+      return apiClient<SuccessResponseTypeDtoQuizQuestionDto10>(
+      {url: `/api/quiz/questions`, method: 'PATCH',
+      headers: {'Content-Type': 'application/json', },
+      data: updateQuizQuestionDto
+    },
+      options);
+    }
+  
+/**
+ * No description available
+ * @summary Delete quiz questions
+ */
+const quizQuestionsControllerDeleteQuizQuestions = (
+    params: QuizQuestionsControllerDeleteQuizQuestionsParams,
+ options?: SecondParameter<typeof apiClient<ApiResponseBaseDto>>,) => {
+      return apiClient<ApiResponseBaseDto>(
+      {url: `/api/quiz/questions`, method: 'DELETE',
+        params
+    },
+      options);
+    }
+  
+return {appControllerGetHello,quizzesControllerCreateQuiz,quizzesControllerListQuizzes,quizzesControllerUpdateQuiz,quizzesControllerDeleteQuizzes,quizzesControllerGetAQuiz,quizModulesControllerCreateQuizModule,quizModulesControllerListQuizModules,quizModulesControllerUpdateQuizModule,quizModulesControllerDeleteQuizModules,quizQuestionsControllerAddQuizQuestions,quizQuestionsControllerListQuizQuestions,quizQuestionsControllerUpdateQuizQuestion,quizQuestionsControllerDeleteQuizQuestions}};
 export type AppControllerGetHelloResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getAPIDocsGoogleMaestro001Alpha>['appControllerGetHello']>>>
 export type QuizzesControllerCreateQuizResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getAPIDocsGoogleMaestro001Alpha>['quizzesControllerCreateQuiz']>>>
-export type QuizzesControllerListAllQuizzesResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getAPIDocsGoogleMaestro001Alpha>['quizzesControllerListAllQuizzes']>>>
+export type QuizzesControllerListQuizzesResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getAPIDocsGoogleMaestro001Alpha>['quizzesControllerListQuizzes']>>>
 export type QuizzesControllerUpdateQuizResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getAPIDocsGoogleMaestro001Alpha>['quizzesControllerUpdateQuiz']>>>
 export type QuizzesControllerDeleteQuizzesResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getAPIDocsGoogleMaestro001Alpha>['quizzesControllerDeleteQuizzes']>>>
-export type QuizzesControllerCreateQuizModuleResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getAPIDocsGoogleMaestro001Alpha>['quizzesControllerCreateQuizModule']>>>
-export type QuizzesControllerListQuizModulesResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getAPIDocsGoogleMaestro001Alpha>['quizzesControllerListQuizModules']>>>
-export type QuizzesControllerUpdateQuizModuleResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getAPIDocsGoogleMaestro001Alpha>['quizzesControllerUpdateQuizModule']>>>
-export type QuizzesControllerDeleteQuizModulesResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getAPIDocsGoogleMaestro001Alpha>['quizzesControllerDeleteQuizModules']>>>
+export type QuizzesControllerGetAQuizResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getAPIDocsGoogleMaestro001Alpha>['quizzesControllerGetAQuiz']>>>
+export type QuizModulesControllerCreateQuizModuleResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getAPIDocsGoogleMaestro001Alpha>['quizModulesControllerCreateQuizModule']>>>
+export type QuizModulesControllerListQuizModulesResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getAPIDocsGoogleMaestro001Alpha>['quizModulesControllerListQuizModules']>>>
+export type QuizModulesControllerUpdateQuizModuleResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getAPIDocsGoogleMaestro001Alpha>['quizModulesControllerUpdateQuizModule']>>>
+export type QuizModulesControllerDeleteQuizModulesResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getAPIDocsGoogleMaestro001Alpha>['quizModulesControllerDeleteQuizModules']>>>
+export type QuizQuestionsControllerAddQuizQuestionsResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getAPIDocsGoogleMaestro001Alpha>['quizQuestionsControllerAddQuizQuestions']>>>
+export type QuizQuestionsControllerListQuizQuestionsResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getAPIDocsGoogleMaestro001Alpha>['quizQuestionsControllerListQuizQuestions']>>>
+export type QuizQuestionsControllerUpdateQuizQuestionResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getAPIDocsGoogleMaestro001Alpha>['quizQuestionsControllerUpdateQuizQuestion']>>>
+export type QuizQuestionsControllerDeleteQuizQuestionsResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getAPIDocsGoogleMaestro001Alpha>['quizQuestionsControllerDeleteQuizQuestions']>>>

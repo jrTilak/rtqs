@@ -17,4 +17,13 @@ export class QuizModuleDto extends BaseTableDto {
     title: 'order of module',
   })
   index: number;
+
+  @ApiProperty({
+    type: 'string',
+    required: true,
+    example: 'ba50dc8d-b547-4d31-a8d5-496e8648b637',
+    title: 'quiz id',
+    format: 'uuid',
+  })
+  quizId: string;
 }

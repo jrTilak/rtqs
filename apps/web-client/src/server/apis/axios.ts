@@ -1,8 +1,11 @@
 import axios, { type AxiosRequestConfig } from "axios";
 
 export const AXIOS_INSTANCE = axios.create({
-  // baseURL: process.env.VITE_PUBLIC_SERVER_URL,
-  baseURL: import.meta.env.VITE_PUBLIC_SERVER_URL,
+  baseURL: (() => {
+    // @ts-expect-error: process is not defined
+    if (typeof window === undefined) return process.env.VITE_PUBLIC_SERVER_URL;
+    return import.meta.env.VITE_PUBLIC_SERVER_URL;
+  })(),
   withCredentials: true,
   paramsSerializer: {
     indexes: null,
