@@ -17,6 +17,7 @@ import { Route as AdminAdminUsersRouteImport } from './routes/_admin/admin/users
 import { Route as AdminAdminPlayQuizRouteImport } from './routes/_admin/admin/play-quiz'
 import { Route as AdminAdminQuizzesIndexRouteImport } from './routes/_admin/admin/quizzes/index'
 import { Route as AdminAdminQuizzesQuizIdRouteImport } from './routes/_admin/admin/quizzes/$quiz-id'
+import { Route as AdminAdminLobbyLobbyIdRouteImport } from './routes/_admin/admin/lobby/$lobby-id'
 
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
@@ -57,6 +58,11 @@ const AdminAdminQuizzesQuizIdRoute = AdminAdminQuizzesQuizIdRouteImport.update({
   path: '/admin/quizzes/$quiz-id',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminAdminLobbyLobbyIdRoute = AdminAdminLobbyLobbyIdRouteImport.update({
+  id: '/admin/lobby/$lobby-id',
+  path: '/admin/lobby/$lobby-id',
+  getParentRoute: () => AdminRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -64,6 +70,7 @@ export interface FileRoutesByFullPath {
   '/admin/play-quiz': typeof AdminAdminPlayQuizRoute
   '/admin/users': typeof AdminAdminUsersRoute
   '/admin': typeof AdminAdminIndexRoute
+  '/admin/lobby/$lobby-id': typeof AdminAdminLobbyLobbyIdRoute
   '/admin/quizzes/$quiz-id': typeof AdminAdminQuizzesQuizIdRoute
   '/admin/quizzes': typeof AdminAdminQuizzesIndexRoute
 }
@@ -73,6 +80,7 @@ export interface FileRoutesByTo {
   '/admin/play-quiz': typeof AdminAdminPlayQuizRoute
   '/admin/users': typeof AdminAdminUsersRoute
   '/admin': typeof AdminAdminIndexRoute
+  '/admin/lobby/$lobby-id': typeof AdminAdminLobbyLobbyIdRoute
   '/admin/quizzes/$quiz-id': typeof AdminAdminQuizzesQuizIdRoute
   '/admin/quizzes': typeof AdminAdminQuizzesIndexRoute
 }
@@ -84,6 +92,7 @@ export interface FileRoutesById {
   '/_admin/admin/play-quiz': typeof AdminAdminPlayQuizRoute
   '/_admin/admin/users': typeof AdminAdminUsersRoute
   '/_admin/admin/': typeof AdminAdminIndexRoute
+  '/_admin/admin/lobby/$lobby-id': typeof AdminAdminLobbyLobbyIdRoute
   '/_admin/admin/quizzes/$quiz-id': typeof AdminAdminQuizzesQuizIdRoute
   '/_admin/admin/quizzes/': typeof AdminAdminQuizzesIndexRoute
 }
@@ -95,6 +104,7 @@ export interface FileRouteTypes {
     | '/admin/play-quiz'
     | '/admin/users'
     | '/admin'
+    | '/admin/lobby/$lobby-id'
     | '/admin/quizzes/$quiz-id'
     | '/admin/quizzes'
   fileRoutesByTo: FileRoutesByTo
@@ -104,6 +114,7 @@ export interface FileRouteTypes {
     | '/admin/play-quiz'
     | '/admin/users'
     | '/admin'
+    | '/admin/lobby/$lobby-id'
     | '/admin/quizzes/$quiz-id'
     | '/admin/quizzes'
   id:
@@ -114,6 +125,7 @@ export interface FileRouteTypes {
     | '/_admin/admin/play-quiz'
     | '/_admin/admin/users'
     | '/_admin/admin/'
+    | '/_admin/admin/lobby/$lobby-id'
     | '/_admin/admin/quizzes/$quiz-id'
     | '/_admin/admin/quizzes/'
   fileRoutesById: FileRoutesById
@@ -182,6 +194,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminAdminQuizzesQuizIdRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/_admin/admin/lobby/$lobby-id': {
+      id: '/_admin/admin/lobby/$lobby-id'
+      path: '/admin/lobby/$lobby-id'
+      fullPath: '/admin/lobby/$lobby-id'
+      preLoaderRoute: typeof AdminAdminLobbyLobbyIdRouteImport
+      parentRoute: typeof AdminRoute
+    }
   }
 }
 
@@ -189,6 +208,7 @@ interface AdminRouteChildren {
   AdminAdminPlayQuizRoute: typeof AdminAdminPlayQuizRoute
   AdminAdminUsersRoute: typeof AdminAdminUsersRoute
   AdminAdminIndexRoute: typeof AdminAdminIndexRoute
+  AdminAdminLobbyLobbyIdRoute: typeof AdminAdminLobbyLobbyIdRoute
   AdminAdminQuizzesQuizIdRoute: typeof AdminAdminQuizzesQuizIdRoute
   AdminAdminQuizzesIndexRoute: typeof AdminAdminQuizzesIndexRoute
 }
@@ -197,6 +217,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminAdminPlayQuizRoute: AdminAdminPlayQuizRoute,
   AdminAdminUsersRoute: AdminAdminUsersRoute,
   AdminAdminIndexRoute: AdminAdminIndexRoute,
+  AdminAdminLobbyLobbyIdRoute: AdminAdminLobbyLobbyIdRoute,
   AdminAdminQuizzesQuizIdRoute: AdminAdminQuizzesQuizIdRoute,
   AdminAdminQuizzesIndexRoute: AdminAdminQuizzesIndexRoute,
 }

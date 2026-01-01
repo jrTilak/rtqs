@@ -1,6 +1,6 @@
-import type { ListQuizModulesParams } from "./quiz-modules";
-import type { ListQuizQuestionsParams } from "./quiz-questions";
-import type { GetAQuizParams } from "./quizzes";
+import type { ListQuizModulesParams } from "./apis/quiz-modules";
+import type { ListQuizQuestionsParams } from "./apis/quiz-questions";
+import type { GetAQuizParams } from "./apis/quizzes";
 
 export const KEYS = {
   quizzes: {
@@ -20,5 +20,8 @@ export const KEYS = {
       "quizQuestions",
       params,
     ],
+  },
+  quizLobby: {
+    listLobbies: (params: { quizId: string }) => ["quiz", "lobbies", params],
   },
 };

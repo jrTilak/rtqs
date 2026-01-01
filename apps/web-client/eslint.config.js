@@ -9,7 +9,7 @@ import pluginRouter from "@tanstack/eslint-plugin-router";
 export default defineConfig([
   globalIgnores(["dist"]),
   {
-    files: ["**/*.{ts,tsx}"],
+    files: ['apps/web-client/**/*.{ts,tsx}'],
     extends: [
       js.configs.recommended,
       tseslint.configs.recommended,
@@ -20,6 +20,7 @@ export default defineConfig([
       ecmaVersion: 2020,
       globals: globals.browser,
     },
+
   },
   ...pluginRouter.configs["flat/recommended"],
   {

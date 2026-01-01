@@ -194,6 +194,43 @@ export interface OnCreateLobbyDto {
   waitUntil: string;
   /** The unique code for the lobby */
   code: string;
+  /** The name of the lobby */
+  name: string;
+}
+
+export interface OnJoinLobbyDto {
+  /** The code of the lobby to join */
+  code: string;
+}
+
+/**
+ * The status of the lobby
+ */
+export type LobbyDtoStatus = typeof LobbyDtoStatus[keyof typeof LobbyDtoStatus];
+
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const LobbyDtoStatus = {
+  IN_LOBBY: 'IN_LOBBY',
+  ENDED: 'ENDED',
+} as const;
+
+export interface LobbyDto {
+  id: string;
+  createdAt: string;
+  updatedAt: string;
+  /** The ID of the quiz to be played in the lobby */
+  quizId: string;
+  /** The number of participants in the lobby */
+  participantsCount: number;
+  /** The date and time when the game will start */
+  waitInLobbyUntil: string;
+  /** The unique code for the lobby */
+  code: string;
+  /** The name of the lobby */
+  name: string;
+  /** The status of the lobby */
+  status: LobbyDtoStatus;
 }
 
 export type QuizzesControllerDeleteQuizzesParams = {

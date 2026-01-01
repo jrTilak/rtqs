@@ -12,7 +12,7 @@ function RouteComponent() {
       <div className="flex justify-between items-center mb-6">
         <div>
           <H2>Play Quizzes</H2>
-          <P>Select a quiz below to start playing.</P>
+          <P>Select a quiz below to create a lobby.</P>
         </div>
       </div>
       <PlayQuizzesList />

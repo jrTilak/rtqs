@@ -1,14 +1,8 @@
+import { BaseTableDto } from '@/common/dto/response/base-table.dto';
 import { ApiProperty } from '@nestjs/swagger';
-import { Transform } from 'class-transformer';
-import {
-  IsDateString,
-  IsNotEmpty,
-  IsString,
-  IsUUID,
-  MinDate,
-} from 'class-validator';
+import { QuizLobbyEnum } from '../../entity';
 
-export class OnCreateLobbyDto {
+export class LobbyDto extends BaseTableDto {
   @ApiProperty({
     description: 'The ID of the quiz to be played in the lobby',
     example: '550e8400-e29b-41d4-a716-446655440000',
@@ -16,10 +10,15 @@ export class OnCreateLobbyDto {
     format: 'uuid',
     required: true,
   })
-  @IsString()
-  @IsUUID()
-  @IsNotEmpty()
   quizId: string;
+
+  @ApiProperty({
+    description: 'The number of participants in the lobby',
+    example: 10,
+    type: Number,
+    required: true,
+  })
+  participantsCount: number;
 
   @ApiProperty({
     description: 'The date and time when the game will start',
@@ -27,10 +26,7 @@ export class OnCreateLobbyDto {
     type: String,
     format: 'date-time',
   })
-  @IsString()
-  @IsDateString()
-  @MinDate(() => new Date())
-  waitUntil: string;
+  waitInLobbyUntil: string;
 
   @ApiProperty({
     description: 'The unique code for the lobby',
@@ -38,9 +34,6 @@ export class OnCreateLobbyDto {
     type: String,
     required: true,
   })
-  @IsString()
-  @IsNotEmpty()
-  @Transform(({ value }) => value.toUpperCase())
   code: string;
 
   @ApiProperty({
@@ -49,20 +42,13 @@ export class OnCreateLobbyDto {
     type: String,
     required: true,
   })
-  @IsString()
-  @IsNotEmpty()
   name: string;
-}
 
-export class OnJoinLobbyDto {
   @ApiProperty({
-    description: 'The code of the lobby to join',
-    example: 'QUIZ',
-    type: String,
+    description: 'The status of the lobby',
+    example: QuizLobbyEnum.IN_LOBBY,
+    enum: QuizLobbyEnum,
     required: true,
   })
-  @IsString()
-  @IsNotEmpty()
-  @Transform(({ value }) => value.toUpperCase())
-  code: string;
+  status: QuizLobbyEnum;
 }

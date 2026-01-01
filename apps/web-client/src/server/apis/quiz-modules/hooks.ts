@@ -9,7 +9,7 @@ import {
   type ListQuizModulesParams,
   type UpdateQuizModuleParams,
 } from ".";
-import { KEYS } from "../keys";
+import { KEYS } from "../../keys";
 
 export const useCreateQuizModule = () => {
   const queryClient = useQueryClient();
@@ -33,9 +33,11 @@ export const useListQuizModules = (params: ListQuizModulesParams) => {
 export const useDeleteQuizModule = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (params: DeleteQuizModulesParams &{
-      quizId: string;
-    }) => deleteQuizModules(params),
+    mutationFn: (
+      params: DeleteQuizModulesParams & {
+        quizId: string;
+      }
+    ) => deleteQuizModules(params),
     onSuccess: (_, params) => {
       queryClient.invalidateQueries({
         queryKey: KEYS.quizModules.listQuizModules({ id: params.quizId }),

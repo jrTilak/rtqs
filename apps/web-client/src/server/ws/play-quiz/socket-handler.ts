@@ -10,4 +10,8 @@ export const socketHandlers: Record<string, (e: unknown) => void> = {
   [MESSAGES.ERROR]: (error) => {
     console.error("Socket error:", error);
   },
+
+  [MESSAGES.LOBBY_CREATED]: (data) => {
+    console.log("Lobby created with data:", data);
+  },
 };

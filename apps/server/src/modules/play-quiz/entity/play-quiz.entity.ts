@@ -26,5 +26,6 @@ export const quizLobbyTable = pgTable('quiz_lobby', {
 
   status: quizLobbyPgEnum().notNull().default(QuizLobbyEnum.IN_LOBBY),
 
-  code: text('code').unique().notNull(),
+  code: text('code').notNull(),
+  name: text('name').notNull(),
 });

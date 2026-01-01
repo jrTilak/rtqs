@@ -1,17 +1,5 @@
-import { io } from "socket.io-client";
-import { socketHandlers } from "./play-quiz/socket-handler";
+import * as playQuiz from "./play-quiz/hooks";
 
-const socketClient = io(
-  (import.meta.env.VITE_PUBLIC_SERVER_URL as string) + "/play-quiz",
-  {
-    autoConnect: false,
-    withCredentials: true,
-    retries: 3,
-  }
-);
-
-export const socket = {
-  client: socketClient,
-  handlers: socketHandlers,
-  commands: {},
+export const ws = {
+  playQuiz,
 };
