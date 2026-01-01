@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as AdminRouteImport } from './routes/_admin'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as LobbyLobbyIdRouteImport } from './routes/lobby/$lobby-id'
 import { Route as AdminAdminIndexRouteImport } from './routes/_admin/admin/index'
 import { Route as AdminAdminUsersRouteImport } from './routes/_admin/admin/users'
 import { Route as AdminAdminPlayQuizRouteImport } from './routes/_admin/admin/play-quiz'
@@ -31,6 +32,11 @@ const AdminRoute = AdminRouteImport.update({
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LobbyLobbyIdRoute = LobbyLobbyIdRouteImport.update({
+  id: '/lobby/$lobby-id',
+  path: '/lobby/$lobby-id',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminAdminIndexRoute = AdminAdminIndexRouteImport.update({
@@ -67,6 +73,7 @@ const AdminAdminLobbyLobbyIdRoute = AdminAdminLobbyLobbyIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
+  '/lobby/$lobby-id': typeof LobbyLobbyIdRoute
   '/admin/play-quiz': typeof AdminAdminPlayQuizRoute
   '/admin/users': typeof AdminAdminUsersRoute
   '/admin': typeof AdminAdminIndexRoute
@@ -77,6 +84,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
+  '/lobby/$lobby-id': typeof LobbyLobbyIdRoute
   '/admin/play-quiz': typeof AdminAdminPlayQuizRoute
   '/admin/users': typeof AdminAdminUsersRoute
   '/admin': typeof AdminAdminIndexRoute
@@ -89,6 +97,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_admin': typeof AdminRouteWithChildren
   '/login': typeof LoginRoute
+  '/lobby/$lobby-id': typeof LobbyLobbyIdRoute
   '/_admin/admin/play-quiz': typeof AdminAdminPlayQuizRoute
   '/_admin/admin/users': typeof AdminAdminUsersRoute
   '/_admin/admin/': typeof AdminAdminIndexRoute
@@ -101,6 +110,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/login'
+    | '/lobby/$lobby-id'
     | '/admin/play-quiz'
     | '/admin/users'
     | '/admin'
@@ -111,6 +121,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/login'
+    | '/lobby/$lobby-id'
     | '/admin/play-quiz'
     | '/admin/users'
     | '/admin'
@@ -122,6 +133,7 @@ export interface FileRouteTypes {
     | '/'
     | '/_admin'
     | '/login'
+    | '/lobby/$lobby-id'
     | '/_admin/admin/play-quiz'
     | '/_admin/admin/users'
     | '/_admin/admin/'
@@ -134,6 +146,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRouteWithChildren
   LoginRoute: typeof LoginRoute
+  LobbyLobbyIdRoute: typeof LobbyLobbyIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -157,6 +170,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/lobby/$lobby-id': {
+      id: '/lobby/$lobby-id'
+      path: '/lobby/$lobby-id'
+      fullPath: '/lobby/$lobby-id'
+      preLoaderRoute: typeof LobbyLobbyIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_admin/admin/': {
@@ -228,6 +248,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRouteWithChildren,
   LoginRoute: LoginRoute,
+  LobbyLobbyIdRoute: LobbyLobbyIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

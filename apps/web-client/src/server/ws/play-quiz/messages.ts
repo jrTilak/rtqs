@@ -5,4 +5,5 @@ export const MESSAGES = {
 
   LOBBY_CREATED: "LOBBY_CREATED",
   CREATE_LOBBY: "CREATE_LOBBY",
+  JOIN_LOBBY: "JOIN_LOBBY",
 } as const;

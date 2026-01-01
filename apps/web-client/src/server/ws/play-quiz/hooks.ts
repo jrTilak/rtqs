@@ -8,7 +8,7 @@ export const useCreateLobby = () => {
     mutationFn: createLobby,
     onSuccess: (_, params) => {
       queryClient.invalidateQueries({
-        queryKey: KEYS.quizLobby.listLobbies({ quizId: params.quizId }),
+        queryKey: KEYS.playQuiz.listLobbies({ quizId: params.quizId }),
       });
     },
     onMutate: async (params) => {
