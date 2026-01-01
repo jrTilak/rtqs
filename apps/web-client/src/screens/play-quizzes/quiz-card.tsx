@@ -4,6 +4,7 @@ import type { Quiz } from "@/server/apis/quizzes/types";
 import { formatDistanceToNow } from "date-fns";
 import { Calendar, } from "lucide-react";
 import { StartLobbyDialog } from "./start-lobby-dialog";
+import { Lobbies } from "./lobbies";
 
 export const QuizCard = ({ quiz }: { quiz: Quiz }) => {
 
@@ -26,6 +27,7 @@ export const QuizCard = ({ quiz }: { quiz: Quiz }) => {
           </div>
           <StartLobbyDialog quizId={quiz.id} />
         </div>
+        <Lobbies quizId={quiz.id} />
       </CardContent>
     </Card>
   );

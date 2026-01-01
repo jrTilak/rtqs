@@ -10,7 +10,7 @@ import {
 import { NavMain, type NavMainProps } from "./nav-main";
 import { NavUser } from "./nav-user";
 import { TeamSwitcher } from "./team-switcher";
-import { PieChart, UsersRound, ListChecks} from "lucide-react";
+import { PieChart, UsersRound, ListChecks,Gamepad} from "lucide-react";
 
 const SIDEBAR_LINKS: NavMainProps[] = [
   {
@@ -20,6 +20,11 @@ const SIDEBAR_LINKS: NavMainProps[] = [
         url: "/admin",
         icon: PieChart,
       },
+      {
+        title: "Play Quiz",
+        url: "/admin/play-quiz",
+        icon: Gamepad,
+      }
     ],
   },
 

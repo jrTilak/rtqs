@@ -1,5 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { OnCreateLobbyDto, OnJoinLobbyDto } from './dto/requests/play-quiz.dto';
+import {
+  ListLobbiesDto,
+  OnCreateLobbyDto,
+  OnJoinLobbyDto,
+} from './dto/requests/play-quiz.dto';
 import { db } from '@/db';
 import { quizLobbyTable } from './entity';
 import { eq } from 'drizzle-orm';
@@ -8,6 +12,7 @@ import { UserSession } from '@thallesp/nestjs-better-auth';
 import { Socket } from 'socket.io';
 import { WsError } from '@/common/dto/response/ws-error.dto';
 import { WsResponse } from '@/common/dto/response/ws-response-dto';
+import { ApiResponse } from '@/common/dto/response/api-response.dto';
 
 @Injectable()
 export class PlayQuizService {
@@ -66,5 +71,13 @@ export class PlayQuizService {
       .returning();
 
     return new WsResponse(lobby);
+  }
+
+  async listLobbies(params: ListLobbiesDto) {
+    const lobbies = await db
+      .select()
+      .from(quizLobbyTable)
+      .where(eq(quizLobbyTable.quizId, params.quizId));
+    return new ApiResponse(lobbies);
   }
 }

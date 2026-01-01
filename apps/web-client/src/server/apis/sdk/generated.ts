@@ -187,22 +187,6 @@ export interface SuccessResponseTypeDtoQuizQuestionDto10 {
   data: QuizQuestionDto;
 }
 
-export interface OnCreateLobbyDto {
-  /** The ID of the quiz to be played in the lobby */
-  quizId: string;
-  /** The date and time when the game will start */
-  waitUntil: string;
-  /** The unique code for the lobby */
-  code: string;
-  /** The name of the lobby */
-  name: string;
-}
-
-export interface OnJoinLobbyDto {
-  /** The code of the lobby to join */
-  code: string;
-}
-
 /**
  * The status of the lobby
  */
@@ -231,6 +215,36 @@ export interface LobbyDto {
   name: string;
   /** The status of the lobby */
   status: LobbyDtoStatus;
+}
+
+export interface SuccessResponseTypeDtoLobbyDto11 {
+  /** HTTP status code */
+  statusCode: number;
+  /** Response message */
+  message: string;
+  /** Retrieved successfully */
+  data: LobbyDto[];
+}
+
+export interface OnCreateLobbyDto {
+  /** The ID of the quiz to be played in the lobby */
+  quizId: string;
+  /** The date and time when the game will start */
+  waitUntil: string;
+  /** The unique code for the lobby */
+  code: string;
+  /** The name of the lobby */
+  name: string;
+}
+
+export interface OnJoinLobbyDto {
+  /** The code of the lobby to join */
+  code: string;
+}
+
+export interface ListLobbiesDto {
+  /**  Id of the quiz to to list lobbies for */
+  quizId: string;
 }
 
 export type QuizzesControllerDeleteQuizzesParams = {
@@ -266,6 +280,13 @@ export type QuizQuestionsControllerDeleteQuizQuestionsParams = {
  * @minLength 1
  */
 ids: string[];
+};
+
+export type PlayQuizControllerListLobbiesParams = {
+/**
+ *  Id of the quiz to to list lobbies for
+ */
+quizId: string;
 };
 
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
@@ -471,7 +492,21 @@ const quizQuestionsControllerDeleteQuizQuestions = (
       options);
     }
   
-return {appControllerGetHello,quizzesControllerCreateQuiz,quizzesControllerListQuizzes,quizzesControllerUpdateQuiz,quizzesControllerDeleteQuizzes,quizzesControllerGetAQuiz,quizModulesControllerCreateQuizModule,quizModulesControllerListQuizModules,quizModulesControllerUpdateQuizModule,quizModulesControllerDeleteQuizModules,quizQuestionsControllerAddQuizQuestions,quizQuestionsControllerListQuizQuestions,quizQuestionsControllerUpdateQuizQuestion,quizQuestionsControllerDeleteQuizQuestions}};
+/**
+ * No description available
+ * @summary List all the available lobbies of a quiz
+ */
+const playQuizControllerListLobbies = (
+    params: PlayQuizControllerListLobbiesParams,
+ options?: SecondParameter<typeof apiClient<SuccessResponseTypeDtoLobbyDto11>>,) => {
+      return apiClient<SuccessResponseTypeDtoLobbyDto11>(
+      {url: `/api/play-quiz/lobbies`, method: 'GET',
+        params
+    },
+      options);
+    }
+  
+return {appControllerGetHello,quizzesControllerCreateQuiz,quizzesControllerListQuizzes,quizzesControllerUpdateQuiz,quizzesControllerDeleteQuizzes,quizzesControllerGetAQuiz,quizModulesControllerCreateQuizModule,quizModulesControllerListQuizModules,quizModulesControllerUpdateQuizModule,quizModulesControllerDeleteQuizModules,quizQuestionsControllerAddQuizQuestions,quizQuestionsControllerListQuizQuestions,quizQuestionsControllerUpdateQuizQuestion,quizQuestionsControllerDeleteQuizQuestions,playQuizControllerListLobbies}};
 export type AppControllerGetHelloResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getAPIDocsGoogleMaestro001Alpha>['appControllerGetHello']>>>
 export type QuizzesControllerCreateQuizResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getAPIDocsGoogleMaestro001Alpha>['quizzesControllerCreateQuiz']>>>
 export type QuizzesControllerListQuizzesResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getAPIDocsGoogleMaestro001Alpha>['quizzesControllerListQuizzes']>>>
@@ -486,3 +521,4 @@ export type QuizQuestionsControllerAddQuizQuestionsResult = NonNullable<Awaited<
 export type QuizQuestionsControllerListQuizQuestionsResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getAPIDocsGoogleMaestro001Alpha>['quizQuestionsControllerListQuizQuestions']>>>
 export type QuizQuestionsControllerUpdateQuizQuestionResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getAPIDocsGoogleMaestro001Alpha>['quizQuestionsControllerUpdateQuizQuestion']>>>
 export type QuizQuestionsControllerDeleteQuizQuestionsResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getAPIDocsGoogleMaestro001Alpha>['quizQuestionsControllerDeleteQuizQuestions']>>>
+export type PlayQuizControllerListLobbiesResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getAPIDocsGoogleMaestro001Alpha>['playQuizControllerListLobbies']>>>
