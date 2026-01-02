@@ -17,6 +17,7 @@ import { Route as LobbyLobbyIdRouteImport } from './routes/lobby/$lobby-id'
 import { Route as AdminAdminIndexRouteImport } from './routes/_admin/admin/index'
 import { Route as AdminAdminUsersRouteImport } from './routes/_admin/admin/users'
 import { Route as AdminAdminPlayQuizRouteImport } from './routes/_admin/admin/play-quiz'
+import { Route as AdminAdminReviewIndexRouteImport } from './routes/_admin/admin/review/index'
 import { Route as AdminAdminQuizzesIndexRouteImport } from './routes/_admin/admin/quizzes/index'
 import { Route as AdminAdminQuizzesQuizIdRouteImport } from './routes/_admin/admin/quizzes/$quiz-id'
 
@@ -59,6 +60,11 @@ const AdminAdminPlayQuizRoute = AdminAdminPlayQuizRouteImport.update({
   path: '/admin/play-quiz',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminAdminReviewIndexRoute = AdminAdminReviewIndexRouteImport.update({
+  id: '/admin/review/',
+  path: '/admin/review/',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminAdminQuizzesIndexRoute = AdminAdminQuizzesIndexRouteImport.update({
   id: '/admin/quizzes/',
   path: '/admin/quizzes/',
@@ -80,6 +86,7 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AdminAdminIndexRoute
   '/admin/quizzes/$quiz-id': typeof AdminAdminQuizzesQuizIdRoute
   '/admin/quizzes': typeof AdminAdminQuizzesIndexRoute
+  '/admin/review': typeof AdminAdminReviewIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -91,6 +98,7 @@ export interface FileRoutesByTo {
   '/admin': typeof AdminAdminIndexRoute
   '/admin/quizzes/$quiz-id': typeof AdminAdminQuizzesQuizIdRoute
   '/admin/quizzes': typeof AdminAdminQuizzesIndexRoute
+  '/admin/review': typeof AdminAdminReviewIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -104,6 +112,7 @@ export interface FileRoutesById {
   '/_admin/admin/': typeof AdminAdminIndexRoute
   '/_admin/admin/quizzes/$quiz-id': typeof AdminAdminQuizzesQuizIdRoute
   '/_admin/admin/quizzes/': typeof AdminAdminQuizzesIndexRoute
+  '/_admin/admin/review/': typeof AdminAdminReviewIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -117,6 +126,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/admin/quizzes/$quiz-id'
     | '/admin/quizzes'
+    | '/admin/review'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -128,6 +138,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/admin/quizzes/$quiz-id'
     | '/admin/quizzes'
+    | '/admin/review'
   id:
     | '__root__'
     | '/'
@@ -140,6 +151,7 @@ export interface FileRouteTypes {
     | '/_admin/admin/'
     | '/_admin/admin/quizzes/$quiz-id'
     | '/_admin/admin/quizzes/'
+    | '/_admin/admin/review/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -208,6 +220,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminAdminPlayQuizRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/_admin/admin/review/': {
+      id: '/_admin/admin/review/'
+      path: '/admin/review'
+      fullPath: '/admin/review'
+      preLoaderRoute: typeof AdminAdminReviewIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/_admin/admin/quizzes/': {
       id: '/_admin/admin/quizzes/'
       path: '/admin/quizzes'
@@ -231,6 +250,7 @@ interface AdminRouteChildren {
   AdminAdminIndexRoute: typeof AdminAdminIndexRoute
   AdminAdminQuizzesQuizIdRoute: typeof AdminAdminQuizzesQuizIdRoute
   AdminAdminQuizzesIndexRoute: typeof AdminAdminQuizzesIndexRoute
+  AdminAdminReviewIndexRoute: typeof AdminAdminReviewIndexRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
@@ -239,6 +259,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminAdminIndexRoute: AdminAdminIndexRoute,
   AdminAdminQuizzesQuizIdRoute: AdminAdminQuizzesQuizIdRoute,
   AdminAdminQuizzesIndexRoute: AdminAdminQuizzesIndexRoute,
+  AdminAdminReviewIndexRoute: AdminAdminReviewIndexRoute,
 }
 
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
