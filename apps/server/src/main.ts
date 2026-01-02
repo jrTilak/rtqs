@@ -27,7 +27,7 @@ const PORT = process.env.PORT || 5000;
 async function bootstrap() {
   const app = (
     await NestFactory.create(AppModule, {
-      bodyParser: true, // this is required by better auth, and after that better auth will automatically add body parser
+      bodyParser: false, // this is required by better auth, and after that better auth will automatically add body parser
     })
   ).setGlobalPrefix(GLOBAL_PREFIX);
 

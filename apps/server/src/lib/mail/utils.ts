@@ -1,11 +1,16 @@
 import { MailCredsType } from './validation';
 import fs from 'fs';
+import path from 'path';
+import 'dotenv/config';
+
 export const getMailCreds = (): MailCredsType[] => {
   try {
-    const json = fs.readFileSync(process.env.MAIL_CREDS_PATH, 'utf8');
+    const filePath = path.join(process.cwd(), process.env.MAIL_CREDS_PATH);
+    const json = fs.readFileSync(filePath, 'utf8');
     const parsed = JSON.parse(json);
     return parsed as MailCredsType[];
-  } catch {
+  } catch (err) {
+    console.error(err);
     return [];
   }
 };

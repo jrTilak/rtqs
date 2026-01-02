@@ -11,4 +11,5 @@ export default defineConfig({
   entities: ['dist/**/*.entity.js'],
   entitiesTs: ['src/**/*.entity.ts'],
   extensions: [Migrator, EntityGenerator, SeedManager],
+  allowGlobalContext: true,
 });

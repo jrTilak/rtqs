@@ -2,7 +2,6 @@
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -17,6 +16,7 @@ import {
 import { server } from "@/server/apis";
 import { parseErrorMessage } from "@/lib/parse-error-message";
 import { alert } from "@/components/ui/alert-dialog/utils";
+import { Input } from "@/components/ui/form/input";
 
 const formSchema = z.object({
   email: z
