@@ -1,6 +1,6 @@
 import { Controller, Get, Query } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { ListLobbiesDto, LobbyDto } from './dto';
+import { GetLobbyDto, ListLobbiesDto, LobbyDto } from './dto';
 import { Roles } from '@thallesp/nestjs-better-auth';
 import { PlayQuizService } from './play-quiz.service';
 import { ApiDocs } from '@/common/decorators/api-docs.decorators';
@@ -22,5 +22,14 @@ export class PlayQuizController {
   })
   listLobbies(@Query() query: ListLobbiesDto) {
     return this._playQuizService.listLobbies(query);
+  }
+
+  @ApiGetSuccess({
+    type: LobbyDto,
+  })
+  @Roles(['admin'])
+  @Get('/lobby')
+  getLobby(@Query() query: GetLobbyDto) {
+    return this._playQuizService.getLobby(query);
   }
 }

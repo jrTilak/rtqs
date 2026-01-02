@@ -80,3 +80,17 @@ export class ListLobbiesDto {
   })
   quizId: string;
 }
+
+export class GetLobbyDto {
+  @IsString()
+  @IsUUID()
+  @IsNotEmpty()
+  @ApiProperty({
+    type: 'string',
+    required: true,
+    description: ' Id of the lobby',
+    format: 'uuid',
+    example: 'bd19acce-57f4-4fc3-8aaf-506c23044c84',
+  })
+  lobbyId: string;
+}

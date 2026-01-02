@@ -1,5 +1,6 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import {
+  GetLobbyDto,
   ListLobbiesDto,
   OnCreateLobbyDto,
   OnJoinLobbyDto,
@@ -79,5 +80,18 @@ export class PlayQuizService {
       .from(quizLobbyTable)
       .where(eq(quizLobbyTable.quizId, params.quizId));
     return new ApiResponse(lobbies);
+  }
+
+  async getLobby(params: GetLobbyDto) {
+    const [lobby] = await db
+      .select()
+      .from(quizLobbyTable)
+      .where(eq(quizLobbyTable.id, params.lobbyId));
+
+    if (!lobby) {
+      throw new NotFoundException('Lobby with that id not found.');
+    }
+
+    return new ApiResponse(lobby);
   }
 }

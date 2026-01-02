@@ -226,6 +226,15 @@ export interface SuccessResponseTypeDtoLobbyDto11 {
   data: LobbyDto[];
 }
 
+export interface SuccessResponseTypeDtoLobbyDto12 {
+  /** HTTP status code */
+  statusCode: number;
+  /** Response message */
+  message: string;
+  /** Retrieved successfully */
+  data: LobbyDto;
+}
+
 export interface OnCreateLobbyDto {
   /** The ID of the quiz to be played in the lobby */
   quizId: string;
@@ -245,6 +254,11 @@ export interface OnJoinLobbyDto {
 export interface ListLobbiesDto {
   /**  Id of the quiz to to list lobbies for */
   quizId: string;
+}
+
+export interface GetLobbyDto {
+  /**  Id of the lobby */
+  lobbyId: string;
 }
 
 export type QuizzesControllerDeleteQuizzesParams = {
@@ -287,6 +301,13 @@ export type PlayQuizControllerListLobbiesParams = {
  *  Id of the quiz to to list lobbies for
  */
 quizId: string;
+};
+
+export type PlayQuizControllerGetLobbyParams = {
+/**
+ *  Id of the lobby
+ */
+lobbyId: string;
 };
 
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
@@ -494,7 +515,7 @@ const quizQuestionsControllerDeleteQuizQuestions = (
   
 /**
  * No description available
- * @summary List all the available lobbies of a quiz
+ * @summary List available lobbies of a quiz
  */
 const playQuizControllerListLobbies = (
     params: PlayQuizControllerListLobbiesParams,
@@ -506,7 +527,17 @@ const playQuizControllerListLobbies = (
       options);
     }
   
-return {appControllerGetHello,quizzesControllerCreateQuiz,quizzesControllerListQuizzes,quizzesControllerUpdateQuiz,quizzesControllerDeleteQuizzes,quizzesControllerGetAQuiz,quizModulesControllerCreateQuizModule,quizModulesControllerListQuizModules,quizModulesControllerUpdateQuizModule,quizModulesControllerDeleteQuizModules,quizQuestionsControllerAddQuizQuestions,quizQuestionsControllerListQuizQuestions,quizQuestionsControllerUpdateQuizQuestion,quizQuestionsControllerDeleteQuizQuestions,playQuizControllerListLobbies}};
+const playQuizControllerGetLobby = (
+    params: PlayQuizControllerGetLobbyParams,
+ options?: SecondParameter<typeof apiClient<SuccessResponseTypeDtoLobbyDto12>>,) => {
+      return apiClient<SuccessResponseTypeDtoLobbyDto12>(
+      {url: `/api/play-quiz/lobby`, method: 'GET',
+        params
+    },
+      options);
+    }
+  
+return {appControllerGetHello,quizzesControllerCreateQuiz,quizzesControllerListQuizzes,quizzesControllerUpdateQuiz,quizzesControllerDeleteQuizzes,quizzesControllerGetAQuiz,quizModulesControllerCreateQuizModule,quizModulesControllerListQuizModules,quizModulesControllerUpdateQuizModule,quizModulesControllerDeleteQuizModules,quizQuestionsControllerAddQuizQuestions,quizQuestionsControllerListQuizQuestions,quizQuestionsControllerUpdateQuizQuestion,quizQuestionsControllerDeleteQuizQuestions,playQuizControllerListLobbies,playQuizControllerGetLobby}};
 export type AppControllerGetHelloResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getAPIDocsGoogleMaestro001Alpha>['appControllerGetHello']>>>
 export type QuizzesControllerCreateQuizResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getAPIDocsGoogleMaestro001Alpha>['quizzesControllerCreateQuiz']>>>
 export type QuizzesControllerListQuizzesResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getAPIDocsGoogleMaestro001Alpha>['quizzesControllerListQuizzes']>>>
@@ -522,3 +553,4 @@ export type QuizQuestionsControllerListQuizQuestionsResult = NonNullable<Awaited
 export type QuizQuestionsControllerUpdateQuizQuestionResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getAPIDocsGoogleMaestro001Alpha>['quizQuestionsControllerUpdateQuizQuestion']>>>
 export type QuizQuestionsControllerDeleteQuizQuestionsResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getAPIDocsGoogleMaestro001Alpha>['quizQuestionsControllerDeleteQuizQuestions']>>>
 export type PlayQuizControllerListLobbiesResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getAPIDocsGoogleMaestro001Alpha>['playQuizControllerListLobbies']>>>
+export type PlayQuizControllerGetLobbyResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getAPIDocsGoogleMaestro001Alpha>['playQuizControllerGetLobby']>>>
