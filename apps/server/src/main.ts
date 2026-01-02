@@ -59,10 +59,17 @@ async function bootstrap() {
    */
   if (process.env.ENABLE_SWAGGER == 'true') {
     logger.info('Enabling Swagger');
+
+    const description = fs.readFileSync(
+      path.join('./', 'src', 'docs', 'api-info.md'),
+      'utf-8',
+    );
+
     const config = new DocumentBuilder()
       .setTitle(
         `API Docs | ${APP_CONFIG.NAME} | ${APP_CONFIG.CURRENT_VERSION} | @${APP_CONFIG.STATUS}`,
       )
+      .setDescription(description)
       .setVersion(APP_CONFIG.CURRENT_VERSION)
       .build();
 
