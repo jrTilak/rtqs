@@ -27,9 +27,10 @@ const PORT = process.env.PORT || 5000;
 async function bootstrap() {
   const app = (
     await NestFactory.create(AppModule, {
-      bodyParser: false,
+      bodyParser: false, // this is required by better auth, and after that better auth will automatically add body parser
     })
   ).setGlobalPrefix(GLOBAL_PREFIX);
+
   logger.info(`Starting server... on port ${PORT} http://localhost:${PORT}`);
 
   // logs incoming requests with method and route
@@ -37,19 +38,6 @@ async function bootstrap() {
     logger.info(`Incoming request: ${req.method} ${req.originalUrl}`);
     next();
   });
-
-  // const rawBodyRoutes = ["/webhooks/clerk/"];
-
-  // rawBodyRoutes.map((route) => {
-  //   app.use(
-  //     GLOBAL_PREFIX + route,
-  //     bodyParser.raw({ type: "application/json" }),
-  //     (req, res, next) => {
-  //       logger.info(`Disabling body parsing for ${req.originalUrl}`);
-  //       next();
-  //     }
-  //   );
-  // });
 
   /**
    * Enable CORS as * in development mode for testing.
@@ -79,6 +67,7 @@ async function bootstrap() {
       .build();
 
     const document = SwaggerModule.createDocument(app, config, {
+      // webscoket is not supported by swagger, so to pass the dto to the swagger, we need extra modules
       extraModels: [...Object.values(socketDto)],
     });
 
