@@ -28,12 +28,21 @@ type ApiResponseSuccessOptions = {
 
   /** Indicates, if the response is an array of items */
   isArray?: boolean;
+
+  example?: any;
 };
 
 let successResponseCounter = 0;
 
 export function ApiResponseSuccess(options: ApiResponseSuccessOptions) {
-  const { description, method, type, message = '', isArray = false } = options;
+  const {
+    description,
+    method,
+    type,
+    message = '',
+    isArray = false,
+    example,
+  } = options;
 
   /** Determine status code and default message based on HTTP method */
   const getStatusAndMessage = (httpMethod: string) => {
@@ -71,6 +80,7 @@ export function ApiResponseSuccess(options: ApiResponseSuccessOptions) {
       type: type,
       description: message || defaultMessage,
       isArray,
+      example,
     })
     data: ApiResponseSuccessOptions['type'] | undefined;
   }
@@ -107,7 +117,15 @@ export const ApiPatchSuccess = (options: ApiTypedResponseOptions) =>
 
 export const ApiDeleteSuccess = (
   options: Partial<ApiTypedResponseOptions> = {},
-) => ApiResponseSuccess({ type: undefined, ...options, method: 'DELETE' });
+) =>
+  ApiResponseSuccess({
+    type: String,
+    isArray: true,
+    description: 'Array of ids that are successfully deleted',
+    example: ['34bc82e0-ce4d-42ba-a054-a953ffae44f5'],
+    ...options,
+    method: 'DELETE',
+  });
 
 class ApiPaginatedResponseMetaBaseDto {
   @ApiProperty({

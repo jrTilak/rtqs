@@ -1,62 +1,50 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { db } from '@/db';
-import { Quiz, quizTable } from './entity';
-import { desc, eq, inArray } from 'drizzle-orm';
 import {
   CreateQuizDto,
   DeleteQuizzesDto,
   UpdateQuizDto,
 } from './dto/requests/quiz.dto';
-import { ApiResponse } from '@/common/dto/response/api-response.dto';
+import { QuizTable } from './entity';
+import { QuizzesRepository } from './quizzes.repository';
+
 @Injectable()
 export class QuizzesService {
-  async createQuiz(data: CreateQuizDto): Promise<ApiResponse<Quiz>> {
-    const [quiz] = await db.insert(quizTable).values(data).returning();
+  constructor(private readonly _quizzesRepository: QuizzesRepository) {}
 
-    return new ApiResponse(quiz);
+  async create(data: CreateQuizDto): Promise<QuizTable> {
+    return this._quizzesRepository.insert(data);
   }
 
-  async listQuizzes(): Promise<ApiResponse<Quiz[]>> {
-    const quizzes = await db
-      .select()
-      .from(quizTable)
-      .orderBy(desc(quizTable.updatedAt));
-
-    return new ApiResponse(quizzes);
+  async list(): Promise<QuizTable[]> {
+    return this._quizzesRepository.findAll();
   }
 
-  async getAQuiz(id: string): Promise<ApiResponse<Quiz>> {
-    const [quiz] = await db
-      .select()
-      .from(quizTable)
-      .where(eq(quizTable.id, id));
+  async getById(quizId: string): Promise<QuizTable> {
+    const quiz = await this._quizzesRepository.findOneById(quizId);
+
     if (!quiz) {
       throw new NotFoundException('No Quiz found with provided id.');
     }
-    return new ApiResponse(quiz);
+
+    return quiz;
   }
 
-  async updateQuiz({ id, ...data }: UpdateQuizDto): Promise<ApiResponse<Quiz>> {
-    const [exists] = await db
-      .select({ id: quizTable.id })
-      .from(quizTable)
-      .where(eq(quizTable.id, id));
-
-    if (!exists?.id) {
+  async update({ ...data }: UpdateQuizDto): Promise<QuizTable> {
+    if (await this._quizzesRepository.exists(data.id)) {
       throw new NotFoundException('No Quiz found with provided id.');
     }
 
-    const [quiz] = await db
-      .update(quizTable)
-      .set(data)
-      .where(eq(quizTable.id, id))
-      .returning();
-
-    return new ApiResponse(quiz);
+    return this._quizzesRepository.updateOneById(data);
   }
 
-  async deleteQuizzes({ ids }: DeleteQuizzesDto): Promise<ApiResponse> {
-    await db.delete(quizTable).where(inArray(quizTable.id, ids));
-    return new ApiResponse();
+  async delete({ ids }: DeleteQuizzesDto): Promise<string[]> {
+    const existing = await this._quizzesRepository.getExistingIds(ids);
+
+    if (existing.length === 0) {
+      throw new NotFoundException('No quizzes found with provided ids.');
+    }
+
+    await this._quizzesRepository.deleteMany(ids);
+    return existing;
   }
 }

@@ -32,3 +32,8 @@ export const auth = betterAuth({
     disabled: false,
   },
 });
+
+export const ROLES = {
+  ADMIN: 'admin',
+  USER: 'user',
+} as const;

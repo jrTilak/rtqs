@@ -1,4 +1,4 @@
-import { ArrayOfIds } from '@/common/dto/requests/array-of-ids.dto';
+import { IsArrayOfId } from '@/common/decorators/validations/is-array-of-id';
 import { ApiProperty, PartialType } from '@nestjs/swagger';
 import {
   IsInt,
@@ -73,4 +73,7 @@ export class UpdateQuizModuleDto extends PartialType(CreateQuizModuleDto) {
   id: string;
 }
 
-export class DeleteQuizModulesDto extends ArrayOfIds {}
+export class DeleteQuizModulesDto {
+  @IsArrayOfId()
+  ids: string[];
+}

@@ -10,7 +10,7 @@ export const quizTable = pgTable('quiz', {
   description: text('description').default(''),
 });
 
-export type Quiz = InferSelectModel<typeof quizTable>;
+export type QuizTable = InferSelectModel<typeof quizTable>;
 
 export const quizRelations = relations(quizTable, ({ many }) => ({
   modules: many(quizModuleTable),

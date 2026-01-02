@@ -1,3 +1,0 @@
----
-summary: 'Get a quiz'
----

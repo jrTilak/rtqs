@@ -10,7 +10,6 @@ import {
   Query,
 } from '@nestjs/common';
 import { QuizzesService } from './quizzes.service';
-import { ApiDocs } from '@/common/decorators/api-docs.decorators';
 import { Roles } from '@thallesp/nestjs-better-auth';
 import {
   ApiDeleteSuccess,
@@ -24,65 +23,66 @@ import {
   DeleteQuizzesDto,
   UpdateQuizDto,
 } from './dto/requests/quiz.dto';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ROLES } from '@/lib/auth';
 
 @Controller('quizzes')
-@Roles(['admin'])
+@Roles([ROLES.ADMIN])
 @ApiTags('Quizzes')
 export class QuizzesController {
   constructor(private readonly _quizzesService: QuizzesService) {}
 
-  @ApiDocs({
-    path: '/quizzes/create-quiz.md',
+  @ApiOperation({
+    summary: 'Create Quiz',
   })
   @Post('/')
   @ApiPostSuccess({
     type: QuizDto,
   })
-  createQuiz(@Body() body: CreateQuizDto) {
-    return this._quizzesService.createQuiz(body);
+  create(@Body() body: CreateQuizDto) {
+    return this._quizzesService.create(body);
   }
 
-  @ApiDocs({
-    path: '/quizzes/list-quizzes.md',
+  @ApiOperation({
+    summary: 'List All Quizzes',
   })
   @Get('/')
   @ApiGetSuccess({
     type: QuizDto,
     isArray: true,
   })
-  listQuizzes() {
-    return this._quizzesService.listQuizzes();
+  list() {
+    return this._quizzesService.list();
   }
 
-  @ApiDocs({
-    path: '/quizzes/get-a-quiz.md',
+  @ApiOperation({
+    summary: 'Get quiz by id',
   })
   @Get('/:quiz_id')
   @ApiGetSuccess({
     type: QuizDto,
   })
-  getAQuiz(@Param('quiz_id', new ParseUUIDPipe()) quizId: string) {
-    return this._quizzesService.getAQuiz(quizId);
+  getById(@Param('quiz_id', new ParseUUIDPipe()) quizId: string) {
+    return this._quizzesService.getById(quizId);
   }
 
-  @ApiDocs({
-    path: '/quizzes/update-quiz.md',
+  @ApiOperation({
+    summary: 'Update quiz',
   })
   @Patch('/')
   @ApiPatchSuccess({
     type: QuizDto,
   })
-  updateQuiz(@Body() body: UpdateQuizDto) {
-    return this._quizzesService.updateQuiz(body);
+  update(@Body() body: UpdateQuizDto) {
+    return this._quizzesService.update(body);
   }
 
-  @ApiDocs({
-    path: '/quizzes/delete-quizzes.md',
+  @ApiOperation({
+    summary: 'Delete quizzes',
   })
   @Delete('/')
   @ApiDeleteSuccess()
-  deleteQuizzes(@Query() query: DeleteQuizzesDto) {
-    return this._quizzesService.deleteQuizzes(query);
+  delete(@Query() query: DeleteQuizzesDto) {
+    return this._quizzesService.delete(query);
   }
 }

@@ -9,8 +9,8 @@ import {
   Min,
   ValidateNested,
 } from 'class-validator';
-import { ArrayOfIds } from '@/common/dto/requests/array-of-ids.dto';
 import { Type } from 'class-transformer';
+import { IsArrayOfId } from '@/common/decorators/validations/is-array-of-id';
 
 export class QuizQuestionDto {
   @IsString()
@@ -96,4 +96,7 @@ export class UpdateQuizQuestionDto extends PartialType(QuizQuestionDto) {
   id: string;
 }
 
-export class DeleteQuizQuestionsDto extends ArrayOfIds {}
+export class DeleteQuizQuestionsDto {
+  @IsArrayOfId()
+  ids: string[];
+}
