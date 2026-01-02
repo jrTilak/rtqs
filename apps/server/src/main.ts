@@ -12,7 +12,7 @@ import { validateEnv } from './common/validations/env.validation';
 import { AppValidationPipe } from './common/pipe/app-validation.pipe';
 import { Logger } from './lib/logger';
 import { APP_CONFIG } from './config/app.config';
-import * as socketDto from '@/modules/play-quiz/dto';
+// import * as socketDto from '@/modules/play-quiz/dto';
 
 const GLOBAL_PREFIX = '/api/';
 
@@ -27,7 +27,7 @@ const PORT = process.env.PORT || 5000;
 async function bootstrap() {
   const app = (
     await NestFactory.create(AppModule, {
-      bodyParser: false, // this is required by better auth, and after that better auth will automatically add body parser
+      bodyParser: true, // this is required by better auth, and after that better auth will automatically add body parser
     })
   ).setGlobalPrefix(GLOBAL_PREFIX);
 
@@ -75,7 +75,7 @@ async function bootstrap() {
 
     const document = SwaggerModule.createDocument(app, config, {
       // webscoket is not supported by swagger, so to pass the dto to the swagger, we need extra modules
-      extraModels: [...Object.values(socketDto)],
+      //  extraModels: [...Object.values(socketDto)],
     });
 
     const swaggerPath = process.env.SWAGGER_PATH ?? '/docs';

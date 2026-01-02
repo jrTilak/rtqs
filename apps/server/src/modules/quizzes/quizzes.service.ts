@@ -1,50 +1,27 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import {
-  CreateQuizDto,
-  DeleteQuizzesDto,
-  UpdateQuizDto,
-} from './dto/requests/quiz.dto';
-import { QuizTable } from './entity';
+import { Injectable } from '@nestjs/common';
+import { CreateQuizDto } from './dto/requests/quiz.dto';
 import { QuizzesRepository } from './quizzes.repository';
+import { EntityManager } from '@mikro-orm/postgresql';
+import { QuizEntity, QuizEntityType } from './entities';
+import { InjectRepository } from '@mikro-orm/nestjs';
 
 @Injectable()
 export class QuizzesService {
-  constructor(private readonly _quizzesRepository: QuizzesRepository) {}
+  constructor(
+    @InjectRepository(QuizEntity)
+    private readonly _quizzesRepo: QuizzesRepository,
+    private readonly _em: EntityManager,
+  ) {}
 
-  async create(data: CreateQuizDto): Promise<QuizTable> {
-    return this._quizzesRepository.insert(data);
-  }
+  async create(data: CreateQuizDto): Promise<QuizEntityType> {
+    const quiz = this._quizzesRepo.create({
+      ...data,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    });
 
-  async list(): Promise<QuizTable[]> {
-    return this._quizzesRepository.findAll();
-  }
-
-  async getById(quizId: string): Promise<QuizTable> {
-    const quiz = await this._quizzesRepository.findOneById(quizId);
-
-    if (!quiz) {
-      throw new NotFoundException('No Quiz found with provided id.');
-    }
+    await this._em.persist(quiz).flush();
 
     return quiz;
-  }
-
-  async update({ ...data }: UpdateQuizDto): Promise<QuizTable> {
-    if (await this._quizzesRepository.exists(data.id)) {
-      throw new NotFoundException('No Quiz found with provided id.');
-    }
-
-    return this._quizzesRepository.updateOneById(data);
-  }
-
-  async delete({ ids }: DeleteQuizzesDto): Promise<string[]> {
-    const existing = await this._quizzesRepository.getExistingIds(ids);
-
-    if (existing.length === 0) {
-      throw new NotFoundException('No quizzes found with provided ids.');
-    }
-
-    await this._quizzesRepository.deleteMany(ids);
-    return existing;
   }
 }
