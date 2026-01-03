@@ -32,7 +32,6 @@ export class QuizModulesService {
   ) {}
 
   async create(data: CreateQuizModuleDto): Promise<QuizModuleEntityType> {
-    console.log(this._quizzesRepo);
     const quiz = await this._quizzesRepo.findOne(
       {
         id: data.quizId,
@@ -67,7 +66,6 @@ export class QuizModulesService {
   }
 
   async findById(id: string): Promise<QuizModuleEntityType> {
-    console.log(id);
     const module = await this._quizModuleRepo.findOne({
       id: id,
     });

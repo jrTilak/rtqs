@@ -25,9 +25,12 @@ import {
   UpdateQuizModuleDto,
 } from './dto/requests/quiz-module.dto';
 import { ApiResponse } from '@/common/dto/response/api-response.dto';
+import { Roles } from '@thallesp/nestjs-better-auth';
+import { ROLES } from '@/lib/auth';
 
 @Controller('quiz/modules')
 @ApiTags('Quiz Modules')
+@Roles([ROLES.ADMIN])
 export class QuizModulesController {
   constructor(private readonly _quizModulesService: QuizModulesService) {}
   @ApiOperation({
