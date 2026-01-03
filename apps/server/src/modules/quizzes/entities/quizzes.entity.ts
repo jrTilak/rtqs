@@ -1,6 +1,6 @@
 import { Entity, EntityRepositoryType, Property } from '@mikro-orm/core';
 import { QuizzesRepository } from '../quizzes.repository';
-import { BaseEntity } from '@/common/entities/base-entity';
+import { BaseEntity } from '@/common/db/entities/base-entity';
 
 @Entity({ repository: () => QuizzesRepository })
 export class QuizEntity extends BaseEntity {

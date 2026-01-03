@@ -8,6 +8,7 @@ import { MikroOrmModule } from '@mikro-orm/nestjs';
 import { AuthModule } from '@thallesp/nestjs-better-auth';
 import { MikroORM } from '@mikro-orm/core';
 import { createAuth } from './lib/auth';
+import { QuizModulesModule } from './modules/quiz-modules/quiz-modules.module';
 
 @Module({
   imports: [
@@ -35,6 +36,8 @@ import { createAuth } from './lib/auth';
     LoggerModuleGlobal,
 
     QuizzesModule,
+
+    QuizModulesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

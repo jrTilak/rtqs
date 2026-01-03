@@ -37,18 +37,18 @@ export class QuizzesService {
     return this._quizzesRepo.findAll();
   }
 
-  findById(id: string) {
-    return this._quizzesRepo.findOne({
+  async findById(id: string): Promise<QuizEntityType> {
+    const quiz = await this._quizzesRepo.findOne({
       id,
     });
+    if (!quiz) {
+      throw new NotFoundException('Quiz with given id not found');
+    }
+    return quiz;
   }
 
   async update({ id, ...data }: UpdateQuizDto): Promise<QuizEntityType> {
     const quiz = await this.findById(id);
-
-    if (!quiz) {
-      throw new NotFoundException('No quiz found with given id');
-    }
 
     this._quizzesRepo.assign(quiz, data);
     await this._em.flush();

@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Param,
+  ParseUUIDPipe,
   Patch,
   Post,
   Query,
@@ -60,12 +61,12 @@ export class QuizzesController {
   @ApiOperation({
     summary: 'Get quiz by id',
   })
-  @Get('/quiz_id')
+  @Get('/:quiz_id')
   @ApiGetSuccess({
     type: QuizDto,
   })
   async findById(
-    @Param('quiz_id') quizId: string,
+    @Param('quiz_id', new ParseUUIDPipe()) quizId: string,
   ): Promise<ApiResponse<QuizDto>> {
     const res = await this._quizzesService.findById(quizId);
     return new ApiResponse(res);
