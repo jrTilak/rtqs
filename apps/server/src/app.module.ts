@@ -10,6 +10,7 @@ import { MikroORM } from '@mikro-orm/core';
 import { createAuth } from './lib/auth';
 import { QuizModulesModule } from './modules/quiz-modules/quiz-modules.module';
 import { QuizQuestionsModule } from './modules/quiz-questions/quiz-questions.module';
+import { PlayQuizModule } from './modules/play-quiz/play-quiz.module';
 
 @Module({
   imports: [
@@ -41,6 +42,8 @@ import { QuizQuestionsModule } from './modules/quiz-questions/quiz-questions.mod
     QuizModulesModule,
 
     QuizQuestionsModule,
+
+    PlayQuizModule,
   ],
   controllers: [AppController],
   providers: [AppService],
