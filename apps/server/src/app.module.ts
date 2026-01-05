@@ -5,16 +5,18 @@ import { UsersModule } from './modules/users/users.module';
 import { AuthModule } from '@thallesp/nestjs-better-auth';
 import { auth } from './lib/auth';
 import { LoggerModuleGlobal } from './lib/logger/logger.module';
-import { ConfigModule } from "@nestjs/config";
+import { ConfigModule } from '@nestjs/config';
+import { QuizzesModule } from './modules/quizzes/quizzes.module';
+import { QuizModulesModule } from './modules/quiz-modules/quiz-modules.module';
+import { QuizQuestionsModule } from './modules/quiz-questions/quiz-questions.module';
+import { PlayQuizModule } from './modules/play-quiz/play-quiz.module';
 
 @Module({
   imports: [
-
     ConfigModule.forRoot(),
     LoggerModuleGlobal,
 
     UsersModule,
-
 
     AuthModule.forRoot({
       auth,
@@ -23,11 +25,20 @@ import { ConfigModule } from "@nestjs/config";
       // This middleware restores req.url to the full path before the handler runs
       middleware: (req: any, _res: any, next: any) => {
         req.url = req.originalUrl;
-        req.baseUrl = "";
+        req.baseUrl = '';
         next();
       },
-    }),],
+    }),
+
+    QuizzesModule,
+
+    QuizModulesModule,
+
+    QuizQuestionsModule,
+
+    PlayQuizModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule { }
+export class AppModule {}

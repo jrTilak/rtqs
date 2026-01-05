@@ -1,0 +1,3 @@
+---
+summary: 'Delete quiz questions'
+---
