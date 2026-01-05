@@ -1,24 +1,127 @@
-import { Injectable } from '@nestjs/common';
-import { OnCreateLobbyDto } from './dto/requests/play-quiz.dto';
-import { db } from '@/db';
-import { quizLobbyTable } from './entity';
-import { eq } from 'drizzle-orm';
-import { quizTable } from '../quizzes/entity';
-import { WsException } from '@nestjs/websockets';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
+import {
+  CreateLobbyDto,
+  DeleteLobbyDto,
+  ListLobbyDto,
+} from './dto/request/lobby.dto';
+import { InjectRepository } from '@mikro-orm/nestjs';
+import {
+  QuizLobbyEntity,
+  QuizLobbyEntityType,
+  QuizLobbyStatsEnum,
+} from './entities';
+import { QuizLobbyRepository } from './play-quiz.repository';
+import { QuizEntity } from '../quizzes/entities';
+import { QuizzesRepository } from '../quizzes/quizzes.repository';
+import { EntityManager } from '@mikro-orm/core';
 
 @Injectable()
 export class PlayQuizService {
-  async onCreateLobby(payload: OnCreateLobbyDto) {
-    const [quizExists] = await db.select({ id: quizTable.id }).from(quizTable);
+  constructor(
+    @InjectRepository(QuizLobbyEntity)
+    private readonly _quizLobbyRepo: QuizLobbyRepository,
 
-    if (!quizExists?.id) {
-      throw new WsException('Quiz doesnot exists with that id.');
+    @InjectRepository(QuizEntity)
+    private readonly _quizzesRepo: QuizzesRepository,
+
+    private readonly _em: EntityManager,
+  ) {}
+
+  async createLobby({
+    quizId,
+    ...data
+  }: CreateLobbyDto): Promise<QuizLobbyEntityType> {
+    const quiz = await this._quizzesRepo.findOne(
+      {
+        id: quizId,
+      },
+      {
+        fields: ['id'],
+      },
+    );
+
+    if (!quiz?.id) {
+      throw new NotFoundException('Quiz with given id not found');
     }
 
-    await db.insert(quizLobbyTable).values({
-      quizId: payload.quizId,
-      code: payload.code,
-      waitInLobbyUntill: new Date(payload.waitUntill),
+    const lobby = await this._quizLobbyRepo.findOne({
+      code: data.code,
+      status: {
+        $not: QuizLobbyStatsEnum.ENDED,
+      },
     });
+
+    if (lobby) {
+      throw new Error('Lobby with the give code exits');
+    }
+
+    const quizRef = this._em.getReference(QuizEntity, quiz.id);
+
+    const quizLobby = this._quizLobbyRepo.create({
+      ...data,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      quiz: quizRef,
+      status: QuizLobbyStatsEnum.IN_LOBBY,
+      waitInLobbyUntil: new Date(data.waitInLobbyUntil),
+      participantsCount: 0,
+    });
+
+    await this._em.persist(quizLobby).flush();
+
+    return quizLobby;
+  }
+
+  async listLobbies({ quizId }: ListLobbyDto) {
+    return this._quizLobbyRepo.find({
+      quiz: quizId,
+    });
+  }
+
+  async findLobbyByCode(code: string): Promise<QuizLobbyEntityType> {
+    const lobby = await this._quizLobbyRepo.findOne({
+      code: code,
+      status: {
+        $not: QuizLobbyStatsEnum.ENDED,
+      },
+    });
+
+    if (!lobby) {
+      throw new NotFoundException('Lobby with that code not found');
+    }
+
+    return lobby;
+  }
+
+  async findLobbyById(id: string): Promise<QuizLobbyEntityType> {
+    const lobby = await this._quizLobbyRepo.findOne({
+      id: id,
+    });
+
+    if (!lobby) {
+      throw new NotFoundException('Quiz with given id not found');
+    }
+
+    return lobby;
+  }
+
+  async deleteLobby({ ids }: DeleteLobbyDto): Promise<string[]> {
+    const existingIds = await this._quizLobbyRepo.getExistingIds(ids);
+
+    if (existingIds.length === 0) {
+      throw new BadRequestException('No quiz found of given ids');
+    }
+
+    await this._em.nativeDelete(QuizLobbyEntity, {
+      id: {
+        $in: existingIds,
+      },
+    });
+
+    return existingIds;
   }
 }

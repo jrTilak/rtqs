@@ -1,3 +1,5 @@
+import { scan } from "react-scan"; // must be imported before React and React DOM
+
 import ReactDOM from 'react-dom/client'
 import { RouterProvider, createRouter } from '@tanstack/react-router'
 
@@ -9,6 +11,10 @@ import { RootProvider } from './providers/root-provider'
 
 // Create a new router instance
 const router = createRouter({ routeTree })
+
+scan({
+  enabled: import.meta.env.DEV,
+});
 
 // Register the router instance for type safety
 declare module '@tanstack/react-router' {

@@ -1,12 +1,13 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { UsersModule } from './modules/users/users.module';
-import { AuthModule } from '@thallesp/nestjs-better-auth';
-import { auth } from './lib/auth';
 import { LoggerModuleGlobal } from './lib/logger/logger.module';
 import { ConfigModule } from '@nestjs/config';
 import { QuizzesModule } from './modules/quizzes/quizzes.module';
+import { MikroOrmModule } from '@mikro-orm/nestjs';
+import { AuthModule } from '@thallesp/nestjs-better-auth';
+import { MikroORM } from '@mikro-orm/core';
+import { createAuth } from './lib/auth';
 import { QuizModulesModule } from './modules/quiz-modules/quiz-modules.module';
 import { QuizQuestionsModule } from './modules/quiz-questions/quiz-questions.module';
 import { PlayQuizModule } from './modules/play-quiz/play-quiz.module';
@@ -14,21 +15,27 @@ import { PlayQuizModule } from './modules/play-quiz/play-quiz.module';
 @Module({
   imports: [
     ConfigModule.forRoot(),
-    LoggerModuleGlobal,
 
-    UsersModule,
+    MikroOrmModule.forRoot(),
 
-    AuthModule.forRoot({
-      auth,
-      // Fix for Express 5: The /*path pattern sets req.url=/ and req.baseUrl=full_path
-      // better-call concatenates baseUrl+url creating a trailing slash that causes 404
-      // This middleware restores req.url to the full path before the handler runs
-      middleware: (req: any, _res: any, next: any) => {
-        req.url = req.originalUrl;
-        req.baseUrl = '';
-        next();
+    AuthModule.forRootAsync({
+      inject: [MikroORM],
+      useFactory: (orm: MikroORM) => {
+        const auth = createAuth(orm);
+
+        return {
+          auth,
+          middleware: (req: any, _res: any, next: any) => {
+            // fix for Express 5 trailing slash issue
+            req.url = req.originalUrl;
+            req.baseUrl = '';
+            next();
+          },
+        };
       },
     }),
+
+    LoggerModuleGlobal,
 
     QuizzesModule,
 

@@ -16,6 +16,13 @@ export function parseErrorMessage(
     return err.message || defaultMessage;
   }
 
+  if (typeof err === "object" && err !== null && "message" in err) {
+    const maybeMessage = (err as Record<string, unknown>)["message"];
+    if (typeof maybeMessage === "string") {
+      return maybeMessage;
+    }
+  }
+
   // String thrown
   if (typeof err === "string") {
     return err;

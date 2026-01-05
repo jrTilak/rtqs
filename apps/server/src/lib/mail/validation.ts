@@ -9,6 +9,7 @@ import {
 import { getMailCreds } from './utils';
 import { plainToInstance, Type } from 'class-transformer';
 import { logger } from '../logger';
+import { mail } from '.';
 
 class MailCredsDto {
   @IsString()
@@ -36,7 +37,6 @@ export type MailCredsType = InstanceType<typeof MailCredsDto>;
 
 export const validateMailCreds = () => {
   const mailCreds = getMailCreds();
-
   const validatedConfig = plainToInstance(MailCredsArr, { mails: mailCreds });
 
   // validate

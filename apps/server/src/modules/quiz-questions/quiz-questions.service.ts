@@ -1,55 +1,108 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
 import {
-  AddQuizQuestionsDto,
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
+import { EntityManager } from '@mikro-orm/postgresql';
+import { InjectRepository } from '@mikro-orm/nestjs';
+import { QuizEntity } from '../quizzes/entities';
+import { QuizModuleEntity } from '../quiz-modules/entities';
+import { QuizModulesRepository } from '../quiz-modules/quiz-modules.repository';
+import {
+  QuizQuestionEntity,
+  QuizQuestionEntityType,
+} from './entities/quiz-question.entity';
+import { QuizQuestionsRepository } from './quiz-questions.repository';
+import {
+  CreateQuizQuestionDto,
   DeleteQuizQuestionsDto,
   ListQuizQuestionsDto,
   UpdateQuizQuestionDto,
-} from './dto/requests/quiz-questions.dto';
-import { db } from '@/db';
-import { quizQuestionTable } from './entity';
-import { ApiResponse } from '@/common/dto/response/api-response.dto';
-import { eq, inArray } from 'drizzle-orm';
+} from './dto/requests/quiz-question.dto';
 
 @Injectable()
 export class QuizQuestionsService {
-  async addQuizQuestions(data: AddQuizQuestionsDto) {
-    const question = await db
-      .insert(quizQuestionTable)
-      .values(data.questions)
-      .returning();
-    return new ApiResponse(question);
-  }
+  constructor(
+    @InjectRepository(QuizModuleEntity)
+    private readonly _quizModuleRepo: QuizModulesRepository,
 
-  async listQuizQuestions(data: ListQuizQuestionsDto) {
-    const questions = await db
-      .select()
-      .from(quizQuestionTable)
-      .where(eq(quizQuestionTable.moduleId, data.moduleId));
-    return new ApiResponse(questions);
-  }
+    @InjectRepository(QuizQuestionEntity)
+    private readonly _quizQuestionsRepo: QuizQuestionsRepository,
 
-  async updateQuizQuestion({ id, ...data }: UpdateQuizQuestionDto) {
-    const [exists] = await db
-      .select({ id: quizQuestionTable.id })
-      .from(quizQuestionTable)
-      .where(eq(quizQuestionTable.id, id));
+    private readonly _em: EntityManager,
+  ) {}
 
-    if (!exists?.id) {
-      throw new NotFoundException('No Quiz question found with provided id.');
+  async create(data: CreateQuizQuestionDto): Promise<QuizQuestionEntityType> {
+    const module = await this._quizModuleRepo.findOne(
+      {
+        id: data.moduleId,
+      },
+      {
+        fields: ['id'],
+      },
+    );
+
+    if (!module?.id) {
+      throw new NotFoundException('Module with given id not found');
     }
 
-    const [question] = await db
-      .update(quizQuestionTable)
-      .set(data)
-      .where(eq(quizQuestionTable.id, id))
-      .returning();
-    return new ApiResponse(question);
+    const moduleRef = this._em.getReference(QuizModuleEntity, module.id);
+
+    const quizQuestion = this._quizQuestionsRepo.create({
+      ...data,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      module: moduleRef,
+    });
+
+    await this._em.persist(quizQuestion).flush();
+
+    return quizQuestion;
   }
 
-  async deleteQuizQuestions({ ids }: DeleteQuizQuestionsDto) {
-    await db
-      .delete(quizQuestionTable)
-      .where(inArray(quizQuestionTable.id, ids));
-    return new ApiResponse();
+  list(filter: ListQuizQuestionsDto): Promise<QuizQuestionEntityType[]> {
+    return this._quizQuestionsRepo.find({
+      module: filter.moduleId,
+    });
+  }
+
+  async findById(id: string): Promise<QuizQuestionEntityType> {
+    const qn = await this._quizQuestionsRepo.findOne({
+      id: id,
+    });
+
+    if (!qn) {
+      throw new NotFoundException('Quiz question with given id not found');
+    }
+
+    return qn;
+  }
+
+  async update({
+    id,
+    ...data
+  }: UpdateQuizQuestionDto): Promise<QuizQuestionEntityType> {
+    const quizQns = await this.findById(id);
+
+    this._quizQuestionsRepo.assign(quizQns, data);
+    await this._em.flush();
+
+    return quizQns;
+  }
+
+  async deleteMany({ ids }: DeleteQuizQuestionsDto): Promise<string[]> {
+    const existingIds = await this._quizQuestionsRepo.getExistingIds(ids);
+
+    if (existingIds.length === 0) {
+      throw new BadRequestException('No quiz question found of given ids');
+    }
+
+    await this._em.nativeDelete(QuizQuestionEntity, {
+      id: {
+        $in: existingIds,
+      },
+    });
+
+    return existingIds;
   }
 }

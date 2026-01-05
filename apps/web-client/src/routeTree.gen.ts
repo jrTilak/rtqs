@@ -9,15 +9,24 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TempRouteImport } from './routes/temp'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as AdminRouteImport } from './routes/_admin'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as LobbyLobbyIdRouteImport } from './routes/lobby/$lobby-id'
 import { Route as AdminAdminIndexRouteImport } from './routes/_admin/admin/index'
 import { Route as AdminAdminUsersRouteImport } from './routes/_admin/admin/users'
-import { Route as AdminAdminPlayRouteImport } from './routes/_admin/admin/play'
+import { Route as AdminAdminPlayQuizRouteImport } from './routes/_admin/admin/play-quiz'
+import { Route as AdminAdminReviewIndexRouteImport } from './routes/_admin/admin/review/index'
 import { Route as AdminAdminQuizzesIndexRouteImport } from './routes/_admin/admin/quizzes/index'
 import { Route as AdminAdminQuizzesQuizIdRouteImport } from './routes/_admin/admin/quizzes/$quiz-id'
+import { Route as AdminAdminLobbyLobbyIdRouteImport } from './routes/_admin/admin/lobby/$lobby-id'
 
+const TempRoute = TempRouteImport.update({
+  id: '/temp',
+  path: '/temp',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
@@ -32,6 +41,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LobbyLobbyIdRoute = LobbyLobbyIdRouteImport.update({
+  id: '/lobby/$lobby-id',
+  path: '/lobby/$lobby-id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminAdminIndexRoute = AdminAdminIndexRouteImport.update({
   id: '/admin/',
   path: '/admin/',
@@ -42,9 +56,14 @@ const AdminAdminUsersRoute = AdminAdminUsersRouteImport.update({
   path: '/admin/users',
   getParentRoute: () => AdminRoute,
 } as any)
-const AdminAdminPlayRoute = AdminAdminPlayRouteImport.update({
-  id: '/admin/play',
-  path: '/admin/play',
+const AdminAdminPlayQuizRoute = AdminAdminPlayQuizRouteImport.update({
+  id: '/admin/play-quiz',
+  path: '/admin/play-quiz',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminAdminReviewIndexRoute = AdminAdminReviewIndexRouteImport.update({
+  id: '/admin/review/',
+  path: '/admin/review/',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminAdminQuizzesIndexRoute = AdminAdminQuizzesIndexRouteImport.update({
@@ -57,75 +76,113 @@ const AdminAdminQuizzesQuizIdRoute = AdminAdminQuizzesQuizIdRouteImport.update({
   path: '/admin/quizzes/$quiz-id',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminAdminLobbyLobbyIdRoute = AdminAdminLobbyLobbyIdRouteImport.update({
+  id: '/admin/lobby/$lobby-id',
+  path: '/admin/lobby/$lobby-id',
+  getParentRoute: () => AdminRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
-  '/admin/play': typeof AdminAdminPlayRoute
+  '/temp': typeof TempRoute
+  '/lobby/$lobby-id': typeof LobbyLobbyIdRoute
+  '/admin/play-quiz': typeof AdminAdminPlayQuizRoute
   '/admin/users': typeof AdminAdminUsersRoute
   '/admin': typeof AdminAdminIndexRoute
+  '/admin/lobby/$lobby-id': typeof AdminAdminLobbyLobbyIdRoute
   '/admin/quizzes/$quiz-id': typeof AdminAdminQuizzesQuizIdRoute
   '/admin/quizzes': typeof AdminAdminQuizzesIndexRoute
+  '/admin/review': typeof AdminAdminReviewIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
-  '/admin/play': typeof AdminAdminPlayRoute
+  '/temp': typeof TempRoute
+  '/lobby/$lobby-id': typeof LobbyLobbyIdRoute
+  '/admin/play-quiz': typeof AdminAdminPlayQuizRoute
   '/admin/users': typeof AdminAdminUsersRoute
   '/admin': typeof AdminAdminIndexRoute
+  '/admin/lobby/$lobby-id': typeof AdminAdminLobbyLobbyIdRoute
   '/admin/quizzes/$quiz-id': typeof AdminAdminQuizzesQuizIdRoute
   '/admin/quizzes': typeof AdminAdminQuizzesIndexRoute
+  '/admin/review': typeof AdminAdminReviewIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_admin': typeof AdminRouteWithChildren
   '/login': typeof LoginRoute
-  '/_admin/admin/play': typeof AdminAdminPlayRoute
+  '/temp': typeof TempRoute
+  '/lobby/$lobby-id': typeof LobbyLobbyIdRoute
+  '/_admin/admin/play-quiz': typeof AdminAdminPlayQuizRoute
   '/_admin/admin/users': typeof AdminAdminUsersRoute
   '/_admin/admin/': typeof AdminAdminIndexRoute
+  '/_admin/admin/lobby/$lobby-id': typeof AdminAdminLobbyLobbyIdRoute
   '/_admin/admin/quizzes/$quiz-id': typeof AdminAdminQuizzesQuizIdRoute
   '/_admin/admin/quizzes/': typeof AdminAdminQuizzesIndexRoute
+  '/_admin/admin/review/': typeof AdminAdminReviewIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/login'
-    | '/admin/play'
+    | '/temp'
+    | '/lobby/$lobby-id'
+    | '/admin/play-quiz'
     | '/admin/users'
     | '/admin'
+    | '/admin/lobby/$lobby-id'
     | '/admin/quizzes/$quiz-id'
     | '/admin/quizzes'
+    | '/admin/review'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/login'
-    | '/admin/play'
+    | '/temp'
+    | '/lobby/$lobby-id'
+    | '/admin/play-quiz'
     | '/admin/users'
     | '/admin'
+    | '/admin/lobby/$lobby-id'
     | '/admin/quizzes/$quiz-id'
     | '/admin/quizzes'
+    | '/admin/review'
   id:
     | '__root__'
     | '/'
     | '/_admin'
     | '/login'
-    | '/_admin/admin/play'
+    | '/temp'
+    | '/lobby/$lobby-id'
+    | '/_admin/admin/play-quiz'
     | '/_admin/admin/users'
     | '/_admin/admin/'
+    | '/_admin/admin/lobby/$lobby-id'
     | '/_admin/admin/quizzes/$quiz-id'
     | '/_admin/admin/quizzes/'
+    | '/_admin/admin/review/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRouteWithChildren
   LoginRoute: typeof LoginRoute
+  TempRoute: typeof TempRoute
+  LobbyLobbyIdRoute: typeof LobbyLobbyIdRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/temp': {
+      id: '/temp'
+      path: '/temp'
+      fullPath: '/temp'
+      preLoaderRoute: typeof TempRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/login': {
       id: '/login'
       path: '/login'
@@ -147,6 +204,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/lobby/$lobby-id': {
+      id: '/lobby/$lobby-id'
+      path: '/lobby/$lobby-id'
+      fullPath: '/lobby/$lobby-id'
+      preLoaderRoute: typeof LobbyLobbyIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_admin/admin/': {
       id: '/_admin/admin/'
       path: '/admin'
@@ -161,11 +225,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminAdminUsersRouteImport
       parentRoute: typeof AdminRoute
     }
-    '/_admin/admin/play': {
-      id: '/_admin/admin/play'
-      path: '/admin/play'
-      fullPath: '/admin/play'
-      preLoaderRoute: typeof AdminAdminPlayRouteImport
+    '/_admin/admin/play-quiz': {
+      id: '/_admin/admin/play-quiz'
+      path: '/admin/play-quiz'
+      fullPath: '/admin/play-quiz'
+      preLoaderRoute: typeof AdminAdminPlayQuizRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/_admin/admin/review/': {
+      id: '/_admin/admin/review/'
+      path: '/admin/review'
+      fullPath: '/admin/review'
+      preLoaderRoute: typeof AdminAdminReviewIndexRouteImport
       parentRoute: typeof AdminRoute
     }
     '/_admin/admin/quizzes/': {
@@ -182,23 +253,34 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminAdminQuizzesQuizIdRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/_admin/admin/lobby/$lobby-id': {
+      id: '/_admin/admin/lobby/$lobby-id'
+      path: '/admin/lobby/$lobby-id'
+      fullPath: '/admin/lobby/$lobby-id'
+      preLoaderRoute: typeof AdminAdminLobbyLobbyIdRouteImport
+      parentRoute: typeof AdminRoute
+    }
   }
 }
 
 interface AdminRouteChildren {
-  AdminAdminPlayRoute: typeof AdminAdminPlayRoute
+  AdminAdminPlayQuizRoute: typeof AdminAdminPlayQuizRoute
   AdminAdminUsersRoute: typeof AdminAdminUsersRoute
   AdminAdminIndexRoute: typeof AdminAdminIndexRoute
+  AdminAdminLobbyLobbyIdRoute: typeof AdminAdminLobbyLobbyIdRoute
   AdminAdminQuizzesQuizIdRoute: typeof AdminAdminQuizzesQuizIdRoute
   AdminAdminQuizzesIndexRoute: typeof AdminAdminQuizzesIndexRoute
+  AdminAdminReviewIndexRoute: typeof AdminAdminReviewIndexRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
-  AdminAdminPlayRoute: AdminAdminPlayRoute,
+  AdminAdminPlayQuizRoute: AdminAdminPlayQuizRoute,
   AdminAdminUsersRoute: AdminAdminUsersRoute,
   AdminAdminIndexRoute: AdminAdminIndexRoute,
+  AdminAdminLobbyLobbyIdRoute: AdminAdminLobbyLobbyIdRoute,
   AdminAdminQuizzesQuizIdRoute: AdminAdminQuizzesQuizIdRoute,
   AdminAdminQuizzesIndexRoute: AdminAdminQuizzesIndexRoute,
+  AdminAdminReviewIndexRoute: AdminAdminReviewIndexRoute,
 }
 
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
@@ -207,6 +289,8 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRouteWithChildren,
   LoginRoute: LoginRoute,
+  TempRoute: TempRoute,
+  LobbyLobbyIdRoute: LobbyLobbyIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

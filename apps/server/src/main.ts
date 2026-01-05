@@ -12,6 +12,7 @@ import { validateEnv } from './common/validations/env.validation';
 import { AppValidationPipe } from './common/pipe/app-validation.pipe';
 import { Logger } from './lib/logger';
 import { APP_CONFIG } from './config/app.config';
+// import * as socketDto from '@/modules/play-quiz/dto';
 
 const GLOBAL_PREFIX = '/api/';
 
@@ -26,9 +27,10 @@ const PORT = process.env.PORT || 5000;
 async function bootstrap() {
   const app = (
     await NestFactory.create(AppModule, {
-      bodyParser: false,
+      bodyParser: false, // this is required by better auth, and after that better auth will automatically add body parser
     })
   ).setGlobalPrefix(GLOBAL_PREFIX);
+
   logger.info(`Starting server... on port ${PORT} http://localhost:${PORT}`);
 
   // logs incoming requests with method and route
@@ -36,19 +38,6 @@ async function bootstrap() {
     logger.info(`Incoming request: ${req.method} ${req.originalUrl}`);
     next();
   });
-
-  // const rawBodyRoutes = ["/webhooks/clerk/"];
-
-  // rawBodyRoutes.map((route) => {
-  //   app.use(
-  //     GLOBAL_PREFIX + route,
-  //     bodyParser.raw({ type: "application/json" }),
-  //     (req, res, next) => {
-  //       logger.info(`Disabling body parsing for ${req.originalUrl}`);
-  //       next();
-  //     }
-  //   );
-  // });
 
   /**
    * Enable CORS as * in development mode for testing.
@@ -70,14 +59,24 @@ async function bootstrap() {
    */
   if (process.env.ENABLE_SWAGGER == 'true') {
     logger.info('Enabling Swagger');
+
+    const description = fs.readFileSync(
+      path.join('./', 'src', 'docs', 'api-info.md'),
+      'utf-8',
+    );
+
     const config = new DocumentBuilder()
       .setTitle(
         `API Docs | ${APP_CONFIG.NAME} | ${APP_CONFIG.CURRENT_VERSION} | @${APP_CONFIG.STATUS}`,
       )
+      .setDescription(description)
       .setVersion(APP_CONFIG.CURRENT_VERSION)
       .build();
 
-    const document = SwaggerModule.createDocument(app, config);
+    const document = SwaggerModule.createDocument(app, config, {
+      // webscoket is not supported by swagger, so to pass the dto to the swagger, we need extra modules
+      //  extraModels: [...Object.values(socketDto)],
+    });
 
     const swaggerPath = process.env.SWAGGER_PATH ?? '/docs';
 

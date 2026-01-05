@@ -1,3 +1,0 @@
----
-summary: 'Update a question'
----

@@ -10,8 +10,6 @@ import {
   Query,
 } from '@nestjs/common';
 import { QuizzesService } from './quizzes.service';
-import { ApiDocs } from '@/common/decorators/api-docs.decorators';
-import { Roles } from '@thallesp/nestjs-better-auth';
 import {
   ApiDeleteSuccess,
   ApiGetSuccess,
@@ -24,65 +22,77 @@ import {
   DeleteQuizzesDto,
   UpdateQuizDto,
 } from './dto/requests/quiz.dto';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiResponse } from '@/common/dto/response/api-response.dto';
+import { Roles } from '@thallesp/nestjs-better-auth';
+import { ROLES } from '@/lib/auth';
 
+@Roles([ROLES.ADMIN])
 @Controller('quizzes')
-@Roles(['admin'])
 @ApiTags('Quizzes')
 export class QuizzesController {
   constructor(private readonly _quizzesService: QuizzesService) {}
 
-  @ApiDocs({
-    path: '/quizzes/create-quiz.md',
+  @ApiOperation({
+    summary: 'Create Quiz',
   })
   @Post('/')
   @ApiPostSuccess({
     type: QuizDto,
   })
-  createQuiz(@Body() body: CreateQuizDto) {
-    return this._quizzesService.createQuiz(body);
+  async create(@Body() body: CreateQuizDto): Promise<ApiResponse<QuizDto>> {
+    const res = await this._quizzesService.create(body);
+    return new ApiResponse(res);
   }
 
-  @ApiDocs({
-    path: '/quizzes/list-quizzes.md',
+  @ApiOperation({
+    summary: 'List quizzes',
   })
   @Get('/')
   @ApiGetSuccess({
     type: QuizDto,
     isArray: true,
   })
-  listQuizzes() {
-    return this._quizzesService.listQuizzes();
+  async listAll(): Promise<ApiResponse<QuizDto[]>> {
+    const res = await this._quizzesService.listAll();
+    return new ApiResponse(res);
   }
 
-  @ApiDocs({
-    path: '/quizzes/get-a-quiz.md',
+  @ApiOperation({
+    summary: 'Get quiz by id',
   })
   @Get('/:quiz_id')
   @ApiGetSuccess({
     type: QuizDto,
   })
-  getAQuiz(@Param('quiz_id', new ParseUUIDPipe()) quizId: string) {
-    return this._quizzesService.getAQuiz(quizId);
+  async findById(
+    @Param('quiz_id', new ParseUUIDPipe()) quizId: string,
+  ): Promise<ApiResponse<QuizDto>> {
+    const res = await this._quizzesService.findById(quizId);
+    return new ApiResponse(res);
   }
 
-  @ApiDocs({
-    path: '/quizzes/update-quiz.md',
+  @ApiOperation({
+    summary: 'Update quiz by given id',
   })
   @Patch('/')
   @ApiPatchSuccess({
     type: QuizDto,
   })
-  updateQuiz(@Body() body: UpdateQuizDto) {
-    return this._quizzesService.updateQuiz(body);
+  async update(@Body() body: UpdateQuizDto): Promise<ApiResponse<QuizDto>> {
+    const res = await this._quizzesService.update(body);
+    return new ApiResponse(res);
   }
 
-  @ApiDocs({
-    path: '/quizzes/delete-quizzes.md',
+  @ApiOperation({
+    summary: 'Delete quizzes',
   })
   @Delete('/')
   @ApiDeleteSuccess()
-  deleteQuizzes(@Query() query: DeleteQuizzesDto) {
-    return this._quizzesService.deleteQuizzes(query);
+  async deleteMany(
+    @Query() query: DeleteQuizzesDto,
+  ): Promise<ApiResponse<string[]>> {
+    const res = await this._quizzesService.deleteMany(query);
+    return new ApiResponse(res);
   }
 }

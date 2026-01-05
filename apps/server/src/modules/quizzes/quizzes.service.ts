@@ -1,62 +1,74 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { db } from '@/db';
-import { Quiz, quizTable } from './entity';
-import { desc, eq, inArray } from 'drizzle-orm';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import {
   CreateQuizDto,
   DeleteQuizzesDto,
   UpdateQuizDto,
 } from './dto/requests/quiz.dto';
-import { ApiResponse } from '@/common/dto/response/api-response.dto';
+import { QuizzesRepository } from './quizzes.repository';
+import { EntityManager } from '@mikro-orm/postgresql';
+import { QuizEntity, QuizEntityType } from './entities';
+import { InjectRepository } from '@mikro-orm/nestjs';
+
 @Injectable()
 export class QuizzesService {
-  async createQuiz(data: CreateQuizDto): Promise<ApiResponse<Quiz>> {
-    const [quiz] = await db.insert(quizTable).values(data).returning();
+  constructor(
+    @InjectRepository(QuizEntity)
+    private readonly _quizzesRepo: QuizzesRepository,
+    private readonly _em: EntityManager,
+  ) {}
 
-    return new ApiResponse(quiz);
+  async create(data: CreateQuizDto): Promise<QuizEntityType> {
+    const quiz = this._quizzesRepo.create({
+      ...data,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    });
+
+    await this._em.persist(quiz).flush();
+
+    return quiz;
   }
 
-  async listQuizzes(): Promise<ApiResponse<Quiz[]>> {
-    const quizzes = await db
-      .select()
-      .from(quizTable)
-      .orderBy(desc(quizTable.updatedAt));
-
-    return new ApiResponse(quizzes);
+  listAll(): Promise<QuizEntityType[]> {
+    return this._quizzesRepo.findAll();
   }
 
-  async getAQuiz(id: string): Promise<ApiResponse<Quiz>> {
-    const [quiz] = await db
-      .select()
-      .from(quizTable)
-      .where(eq(quizTable.id, id));
+  async findById(id: string): Promise<QuizEntityType> {
+    const quiz = await this._quizzesRepo.findOne({
+      id,
+    });
     if (!quiz) {
-      throw new NotFoundException('No Quiz found with provided id.');
+      throw new NotFoundException('Quiz with given id not found');
     }
-    return new ApiResponse(quiz);
+    return quiz;
   }
 
-  async updateQuiz({ id, ...data }: UpdateQuizDto): Promise<ApiResponse<Quiz>> {
-    const [exists] = await db
-      .select({ id: quizTable.id })
-      .from(quizTable)
-      .where(eq(quizTable.id, id));
+  async update({ id, ...data }: UpdateQuizDto): Promise<QuizEntityType> {
+    const quiz = await this.findById(id);
 
-    if (!exists?.id) {
-      throw new NotFoundException('No Quiz found with provided id.');
-    }
+    this._quizzesRepo.assign(quiz, data);
+    await this._em.flush();
 
-    const [quiz] = await db
-      .update(quizTable)
-      .set(data)
-      .where(eq(quizTable.id, id))
-      .returning();
-
-    return new ApiResponse(quiz);
+    return quiz;
   }
 
-  async deleteQuizzes({ ids }: DeleteQuizzesDto): Promise<ApiResponse> {
-    await db.delete(quizTable).where(inArray(quizTable.id, ids));
-    return new ApiResponse();
+  async deleteMany({ ids }: DeleteQuizzesDto): Promise<string[]> {
+    const existingIds = await this._quizzesRepo.getExistingIds(ids);
+
+    if (existingIds.length === 0) {
+      throw new BadRequestException('No quiz found of given ids');
+    }
+
+    await this._em.nativeDelete(QuizEntity, {
+      id: {
+        $in: existingIds,
+      },
+    });
+
+    return existingIds;
   }
 }

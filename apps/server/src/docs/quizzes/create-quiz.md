@@ -1,3 +1,0 @@
----
-summary: 'Create a quiz'
----

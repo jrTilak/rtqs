@@ -1,51 +1,105 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { quizModuleTable } from './entity';
-import { db } from '@/db';
-import { ApiResponse } from '@/common/dto/response/api-response.dto';
-import { asc, eq, inArray } from 'drizzle-orm';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
+import { EntityManager } from '@mikro-orm/postgresql';
+import { InjectRepository } from '@mikro-orm/nestjs';
+import {
+  QuizModuleEntity,
+  QuizModuleEntityType,
+} from './entities/quiz-module.entity';
+import { QuizModulesRepository } from './quiz-modules.repository';
 import {
   CreateQuizModuleDto,
   DeleteQuizModulesDto,
   ListQuizModulesDto,
   UpdateQuizModuleDto,
 } from './dto/requests/quiz-module.dto';
+import { QuizzesRepository } from '../quizzes/quizzes.repository';
+import { QuizEntity } from '../quizzes/entities';
 
 @Injectable()
 export class QuizModulesService {
-  async createQuizModule(data: CreateQuizModuleDto) {
-    const [module] = await db.insert(quizModuleTable).values(data).returning();
-    return new ApiResponse(module);
-  }
+  constructor(
+    @InjectRepository(QuizModuleEntity)
+    private readonly _quizModuleRepo: QuizModulesRepository,
 
-  async listQuizModules(query: ListQuizModulesDto) {
-    const modules = await db
-      .select()
-      .from(quizModuleTable)
-      .where(eq(quizModuleTable.quizId, query.id))
-      .orderBy(asc(quizModuleTable.index));
-    return new ApiResponse(modules);
-  }
+    @InjectRepository(QuizEntity)
+    private readonly _quizzesRepo: QuizzesRepository,
 
-  async updateQuizModule({ id, ...data }: UpdateQuizModuleDto) {
-    const [exists] = await db
-      .select({ id: quizModuleTable.id })
-      .from(quizModuleTable)
-      .where(eq(quizModuleTable.id, id));
+    private readonly _em: EntityManager,
+  ) {}
 
-    if (!exists?.id) {
-      throw new NotFoundException('No Quiz module found with provided id.');
+  async create(data: CreateQuizModuleDto): Promise<QuizModuleEntityType> {
+    const quiz = await this._quizzesRepo.findOne(
+      {
+        id: data.quizId,
+      },
+      {
+        fields: ['id'],
+      },
+    );
+
+    if (!quiz?.id) {
+      throw new NotFoundException('Quiz with given id not found');
     }
 
-    const [module] = await db
-      .update(quizModuleTable)
-      .set(data)
-      .where(eq(quizModuleTable.id, id))
-      .returning();
-    return new ApiResponse(module);
+    const quizRef = this._em.getReference(QuizEntity, quiz.id);
+
+    const quizModule = this._quizModuleRepo.create({
+      ...data,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      quiz: quizRef,
+    });
+
+    await this._em.persist(quizModule).flush();
+
+    return quizModule;
   }
 
-  async deleteQuizModules({ ids }: DeleteQuizModulesDto) {
-    await db.delete(quizModuleTable).where(inArray(quizModuleTable.id, ids));
-    return new ApiResponse();
+  list(filter: ListQuizModulesDto): Promise<QuizModuleEntityType[]> {
+    return this._quizModuleRepo.find({
+      quiz: filter.quizId,
+    });
+  }
+
+  async findById(id: string): Promise<QuizModuleEntityType> {
+    const module = await this._quizModuleRepo.findOne({
+      id: id,
+    });
+    if (!module) {
+      throw new NotFoundException('Quiz module with given id not found');
+    }
+    return module;
+  }
+
+  async update({
+    id,
+    ...data
+  }: UpdateQuizModuleDto): Promise<QuizModuleEntityType> {
+    const quizModule = await this.findById(id);
+
+    this._quizModuleRepo.assign(quizModule, data);
+    await this._em.flush();
+
+    return quizModule;
+  }
+
+  async deleteMany({ ids }: DeleteQuizModulesDto): Promise<string[]> {
+    const existingIds = await this._quizModuleRepo.getExistingIds(ids);
+
+    if (existingIds.length === 0) {
+      throw new BadRequestException('No quiz found of given ids');
+    }
+
+    await this._em.nativeDelete(QuizEntity, {
+      id: {
+        $in: existingIds,
+      },
+    });
+
+    return existingIds;
   }
 }

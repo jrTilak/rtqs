@@ -10,7 +10,7 @@ import {
   type GetAQuizParams,
   type UpdateQuizParams,
 } from ".";
-import { KEYS } from "../keys";
+import { KEYS } from "../../keys";
 
 export const useCreateQuiz = () => {
   const queryClient = useQueryClient();

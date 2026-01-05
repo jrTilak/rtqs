@@ -1,3 +1,0 @@
----
-summary: 'Delete quiz modules'
----
