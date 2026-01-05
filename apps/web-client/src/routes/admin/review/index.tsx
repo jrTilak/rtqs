@@ -3,7 +3,7 @@ import { useState } from "react";
 import { QuestionContent } from "@/components/others/admin/review/question-content";
 import { UserAnswersSidebar } from "@/components/others/admin/review/user-answer-sidebar";
 
-export const Route = createFileRoute("/_admin/admin/review/")({
+export const Route = createFileRoute("/admin/review/")({
   component: RouteComponent,
 });
 

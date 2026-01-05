@@ -1,9 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { H2, P } from "@/components/ui/typography";
-import { QuizzesList } from "@/screens/quizzes/list/quizzes-list";
-import { AddQuizDialog } from "@/screens/quizzes/list/add-quiz-dialog";
+import { PlayQuizzesList } from "@/screens/play-quizzes/play-quiz-list";
 
-export const Route = createFileRoute("/_admin/admin/quizzes/")({
+export const Route = createFileRoute("/admin/play-quiz")({
   component: RouteComponent,
 });
 
@@ -12,12 +11,11 @@ function RouteComponent() {
     <div className="max-w-3xl w-full mx-auto">
       <div className="flex justify-between items-center mb-6">
         <div>
-          <H2>Quizzes</H2>
-          <P>Manage your quizzes here.</P>
+          <H2>Play Quizzes</H2>
+          <P>Select a quiz below to create a lobby.</P>
         </div>
-        <AddQuizDialog />
       </div>
-      <QuizzesList />
+      <PlayQuizzesList />
     </div>
   );
 }

@@ -8,7 +8,7 @@ import { ModulesList } from "@/screens/quizzes/quiz-modules/modules-list";
 import { server } from "@/server/apis";
 import { QueryState } from "@/components/ui/query-state";
 
-export const Route = createFileRoute("/_admin/admin/quizzes/$quiz-id")({
+export const Route = createFileRoute("/admin/quizzes/$quiz-id")({
   component: RouteComponent,
 });
 

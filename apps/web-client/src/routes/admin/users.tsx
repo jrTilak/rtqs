@@ -150,7 +150,7 @@ const MOCK_USERS: User[] = [
 	},
 ];
 
-export const Route = createFileRoute('/_admin/admin/users')({
+export const Route = createFileRoute('/admin/users')({
 	component: RouteComponent,
 });
 
@@ -206,7 +206,7 @@ function RouteComponent() {
 								<DropdownMenuItem>Participant</DropdownMenuItem>
 							</DropdownMenuContent>
 						</DropdownMenu>
-					);
+					)
 				},
 			},
 			{
@@ -224,7 +224,7 @@ function RouteComponent() {
 							)}
 							<span>{status}</span>
 						</div>
-					);
+					)
 				},
 			},
 			{
@@ -236,7 +236,7 @@ function RouteComponent() {
 						year: 'numeric',
 						month: 'short',
 						day: 'numeric',
-					});
+					})
 				},
 			},
 			{
@@ -245,7 +245,7 @@ function RouteComponent() {
 			},
 		],
 		[]
-	);
+	)
 
 	const table = useReactTable({
 		data: MOCK_USERS,
@@ -267,7 +267,7 @@ function RouteComponent() {
 				pageSize: 10,
 			},
 		},
-	});
+	})
 
 	return (
 		<div className="w-full space-y-6 p-6">
@@ -336,9 +336,9 @@ function RouteComponent() {
 				<div className="relative flex-1 max-w-md">
 					<IconSearch className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
 					<Input
-						type="search"
+						type='search'
 						placeholder="Search by name or email..."
-						className="pl-10"
+						className='pl-10'
 						value={globalFilter ?? ''}
 						onChange={(e) => setGlobalFilter(e.target.value)}
 					/>
@@ -394,7 +394,7 @@ function RouteComponent() {
 								<TableRow>
 									<TableCell
 										colSpan={columns.length}
-										className="h-24 text-center">
+										className='h-24 text-center'>
 										No users found.
 									</TableCell>
 								</TableRow>
@@ -434,23 +434,23 @@ function RouteComponent() {
 						</span>
 						<div className="flex gap-1">
 							<Button
-								variant="outline"
-								size="icon-sm"
+								variant='outline'
+								size='icon-sm'
 								onClick={() => table.previousPage()}
 								disabled={!table.getCanPreviousPage()}>
-								&lt;
+								&lt
 							</Button>
 							<Button
-								variant="outline"
-								size="icon-sm"
+								variant='outline'
+								size='icon-sm'
 								onClick={() => table.nextPage()}
 								disabled={!table.getCanNextPage()}>
-								&gt;
+								&gt
 							</Button>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-	);
+	)
 }

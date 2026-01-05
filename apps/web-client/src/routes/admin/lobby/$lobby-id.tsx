@@ -3,7 +3,7 @@ import { Timer } from "@/components/ui/timer";
 import { server } from "@/server/apis";
 import { createFileRoute } from "@tanstack/react-router";
 
-export const Route = createFileRoute("/_admin/admin/lobby/$lobby-id")({
+export const Route = createFileRoute("/admin/lobby/$lobby-id")({
   component: RouteComponent,
 });
 
