@@ -51,12 +51,12 @@ export class PlayQuizService {
     const lobby = await this._quizLobbyRepo.findOne({
       code: data.code,
       status: {
-        $not: QuizLobbyStatsEnum.ENDED,
+        $ne: QuizLobbyStatsEnum.ENDED,
       },
     });
 
     if (lobby) {
-      throw new Error('Lobby with the give code exits');
+      throw new BadRequestException('Lobby with the give code exists');
     }
 
     const quizRef = this._em.getReference(QuizEntity, quiz.id);
@@ -86,7 +86,7 @@ export class PlayQuizService {
     const lobby = await this._quizLobbyRepo.findOne({
       code: code,
       status: {
-        $not: QuizLobbyStatsEnum.ENDED,
+        $ne: QuizLobbyStatsEnum.ENDED,
       },
     });
 

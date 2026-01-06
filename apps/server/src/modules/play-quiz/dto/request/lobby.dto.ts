@@ -5,6 +5,7 @@ import { IsArrayOfId } from '@/common/decorators/validations/is-array-of-id';
 
 export class CreateLobbyDto extends PickType(LobbyBaseDto, [
   'code',
+  'name',
   'waitInLobbyUntil',
 ]) {
   @IsId('Quiz id')

@@ -13,7 +13,23 @@ export class LobbyBaseDto {
     required: true,
     description: 'A unique code for this lobby',
   })
+  @ApiProperty({
+    type: 'string',
+    example: 'ACES',
+    required: true,
+    description: 'A unique code for this lobby',
+  })
   code: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty({
+    type: 'string',
+    example: 'My Lobby',
+    required: true,
+    description: 'Name of the lobby',
+  })
+  name: string;
 
   @ApiProperty({
     type: 'number',

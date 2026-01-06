@@ -17,12 +17,15 @@ import {
   FormMessage,
 } from "@/components/ui/form/form";
 import { Input } from "@/components/ui/form/input";
-import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/form/input-otp";
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSlot,
+} from "@/components/ui/form/input-otp";
 import { parseErrorMessage } from "@/lib/parse-error-message";
-import { ws } from "@/server/ws";
-import { createLobby } from "@/server/ws/play-quiz/commands";
+import { server } from "@/server/apis";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useNavigate, useRouter } from "@tanstack/react-router";
+import { useNavigate } from "@tanstack/react-router";
 import { REGEXP_ONLY_DIGITS_AND_CHARS } from "input-otp";
 import { Play } from "lucide-react";
 import { useState } from "react";
@@ -43,8 +46,8 @@ type Props = {
 
 export const StartLobbyDialog = ({ quizId }: Props) => {
   const [open, setOpen] = useState(false);
-  const navigate = useNavigate()
-  const createLobby = ws.playQuiz.useCreateLobby();
+  const navigate = useNavigate();
+  const createLobby = server.playQuiz.useCreateLobby();
   const form = useForm<StartLobbyFormValues>({
     resolver: zodResolver(startLobbySchema),
     defaultValues: {
@@ -56,29 +59,30 @@ export const StartLobbyDialog = ({ quizId }: Props) => {
 
   const onSubmit = async (data: StartLobbyFormValues) => {
     try {
-      const lobby = await createLobby.mutateAsync({
+      const res = await createLobby.mutateAsync({
         code: data.code,
         name: data.name,
-        waitUntil: new Date(Date.now() + data.waitUntil * 60 * 1000).toDateString(),
-        quizId
-      });
+        waitInLobbyUntil: new Date(
+          Date.now() + data.waitUntil * 60 * 1000
+        ).toISOString(),
+        quizId,
+      } as any);
       navigate({
         to: "/admin/lobby/$lobby-id",
-        params: { "lobby-id": lobby.id },
-      })
+        params: { "lobby-id": (res as any).data.id },
+      });
       setOpen(false);
     } catch (error) {
       await alert({
         title: "Error",
         description: parseErrorMessage(error),
-        variant: "destructive"
-      })
+        variant: "destructive",
+      });
     }
-
-  }
+  };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen} >
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button className="gap-2">
           <Play className="w-4 h-4" />
@@ -89,11 +93,15 @@ export const StartLobbyDialog = ({ quizId }: Props) => {
         <DialogHeader>
           <DialogTitle className="text-xl">Start Lobby</DialogTitle>
           <DialogDescription>
-            After starting the lobby, all the participants can join using the lobby code.
+            After starting the lobby, all the participants can join using the
+            lobby code.
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-4">
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="flex flex-col gap-4"
+          >
             <FormField
               control={form.control}
               name="name"
@@ -128,16 +136,14 @@ export const StartLobbyDialog = ({ quizId }: Props) => {
                   <FormLabel>Lobby Code*</FormLabel>
                   <FormControl>
                     <InputOTP
-                      maxLength={6}
+                      maxLength={4}
                       pattern={REGEXP_ONLY_DIGITS_AND_CHARS}
                       {...field}
                     >
                       <InputOTPGroup className="gap-1">
-                        {
-                          Array.from({ length: 4 }).map((_, i) => (
-                            <InputOTPSlot key={i} index={i} />
-                          ))
-                        }
+                        {Array.from({ length: 4 }).map((_, i) => (
+                          <InputOTPSlot key={i} index={i} />
+                        ))}
                       </InputOTPGroup>
                     </InputOTP>
                   </FormControl>
@@ -145,7 +151,11 @@ export const StartLobbyDialog = ({ quizId }: Props) => {
                 </FormItem>
               )}
             />
-            <Button isLoading={createLobby.isPending} type="submit" className="w-full">
+            <Button
+              isLoading={createLobby.isPending}
+              type="submit"
+              className="w-full"
+            >
               Start Lobby
             </Button>
           </form>

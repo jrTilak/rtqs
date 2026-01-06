@@ -4,7 +4,7 @@ import { server } from "@/server/apis";
 import { QuizCard } from "./quiz-card";
 
 export const PlayQuizzesList = () => {
-  const quizzes = server.quizzes.useListQuizzes();
+  const quizzes = server.quizzes.useList();
 
   return (
     <QueryState {...quizzes} isEmpty={quizzes.data?.length === 0}>
@@ -14,11 +14,9 @@ export const PlayQuizzesList = () => {
       </QueryState.Loading>
       <QueryState.Error />
       <QueryState.Data>
-        {
-          quizzes.data?.map((quiz) => (
-            <QuizCard key={quiz.id} quiz={quiz} />
-          ))
-        }
+        {quizzes.data?.map((quiz) => (
+          <QuizCard key={quiz.id} quiz={quiz} />
+        ))}
       </QueryState.Data>
     </QueryState>
   );

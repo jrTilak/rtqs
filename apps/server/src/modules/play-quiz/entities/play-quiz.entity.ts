@@ -1,17 +1,32 @@
 import { BaseEntity } from '@/common/db/entities/base-entity';
 import { QuizEntity } from '@/modules/quizzes/entities';
-import { Entity, Enum, Index, ManyToOne, Property } from '@mikro-orm/core';
+import {
+  Entity,
+  EntityRepositoryType,
+  Enum,
+  Index,
+  ManyToOne,
+  Property,
+} from '@mikro-orm/core';
+import { QuizLobbyRepository } from '../play-quiz.repository';
 
 export enum QuizLobbyStatsEnum {
   IN_LOBBY = 'IN_LOBBY',
   ENDED = 'ENDED',
 }
 
-@Entity()
+@Entity({
+  repository: () => QuizLobbyRepository,
+})
 export class QuizLobbyEntity extends BaseEntity {
+  [EntityRepositoryType]?: QuizLobbyRepository;
+
   @Property()
   @Index()
   code: string;
+
+  @Property()
+  name: string;
 
   @Property({ default: 0 })
   participantsCount: number = 0;

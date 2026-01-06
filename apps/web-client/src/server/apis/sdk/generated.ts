@@ -254,10 +254,88 @@ export interface SuccessResponseTypeDtoString15 {
 export interface CreateLobbyDto {
   /** A unique code for this lobby */
   code: string;
+  /** Name of the lobby */
+  name: string;
   /** Till when, we will wait for other player in lobby */
   waitInLobbyUntil: string;
   /** Quiz id */
   quizId: string;
+}
+
+/**
+ * Status of Lobby
+ */
+export type QuizLobbyDtoStatus = typeof QuizLobbyDtoStatus[keyof typeof QuizLobbyDtoStatus];
+
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const QuizLobbyDtoStatus = {
+  IN_LOBBY: 'IN_LOBBY',
+  ENDED: 'ENDED',
+} as const;
+
+export interface QuizLobbyDto {
+  id: string;
+  createdAt: string;
+  updatedAt: string;
+  /** A unique code for this lobby */
+  code: string;
+  /** Name of the lobby */
+  name: string;
+  /**
+   * Total participants
+   * @minimum 0
+   */
+  participantsCount: number;
+  /** Till when, we will wait for other player in lobby */
+  waitInLobbyUntil: string;
+  /** Status of Lobby */
+  status: QuizLobbyDtoStatus;
+}
+
+export interface SuccessResponseTypeDtoQuizLobbyDto16 {
+  /** HTTP status code */
+  statusCode: number;
+  /** Response message */
+  message: string;
+  /** Retrieved successfully */
+  data: QuizLobbyDto;
+}
+
+export interface SuccessResponseTypeDtoQuizLobbyDto17 {
+  /** HTTP status code */
+  statusCode: number;
+  /** Response message */
+  message: string;
+  /** Retrieved successfully */
+  data: QuizLobbyDto[];
+}
+
+export interface SuccessResponseTypeDtoQuizLobbyDto18 {
+  /** HTTP status code */
+  statusCode: number;
+  /** Response message */
+  message: string;
+  /** Retrieved successfully */
+  data: QuizLobbyDto;
+}
+
+export interface SuccessResponseTypeDtoQuizLobbyDto19 {
+  /** HTTP status code */
+  statusCode: number;
+  /** Response message */
+  message: string;
+  /** Retrieved successfully */
+  data: QuizLobbyDto;
+}
+
+export interface SuccessResponseTypeDtoString20 {
+  /** HTTP status code */
+  statusCode: number;
+  /** Response message */
+  message: string;
+  /** Deleted successfully */
+  data: string[];
 }
 
 export interface QuizParticipantBaseDto {
@@ -279,7 +357,7 @@ export interface QuizParticipantDto {
   email: string;
 }
 
-export interface SuccessResponseTypeDtoQuizParticipantDto16 {
+export interface SuccessResponseTypeDtoQuizParticipantDto21 {
   /** HTTP status code */
   statusCode: number;
   /** Response message */
@@ -288,7 +366,7 @@ export interface SuccessResponseTypeDtoQuizParticipantDto16 {
   data: QuizParticipantDto[];
 }
 
-export interface SuccessResponseTypeDtoQuizParticipantDto17 {
+export interface SuccessResponseTypeDtoQuizParticipantDto22 {
   /** HTTP status code */
   statusCode: number;
   /** Response message */
@@ -297,7 +375,7 @@ export interface SuccessResponseTypeDtoQuizParticipantDto17 {
   data: QuizParticipantDto[];
 }
 
-export interface SuccessResponseTypeDtoString18 {
+export interface SuccessResponseTypeDtoString23 {
   /** HTTP status code */
   statusCode: number;
   /** Response message */
@@ -346,6 +424,13 @@ export type PlayQuizControllerListLobbiesParams = {
  * Quiz id
  */
 quizId: string;
+};
+
+export type PlayQuizControllerDeleteLobbiesParams = {
+/**
+ * Id of lobby to delete
+ */
+ids: string[];
 };
 
 export type QuizParticipantsControllerListParams = {
@@ -583,8 +668,8 @@ const quizQuestionsControllerFindById = (
  */
 const playQuizControllerCreateLobby = (
     createLobbyDto: CreateLobbyDto,
- options?: SecondParameter<typeof apiClient<void>>,) => {
-      return apiClient<void>(
+ options?: SecondParameter<typeof apiClient<SuccessResponseTypeDtoQuizLobbyDto16>>,) => {
+      return apiClient<SuccessResponseTypeDtoQuizLobbyDto16>(
       {url: `/api/quiz/play/lobby`, method: 'POST',
       headers: {'Content-Type': 'application/json', },
       data: createLobbyDto
@@ -597,9 +682,22 @@ const playQuizControllerCreateLobby = (
  */
 const playQuizControllerListLobbies = (
     params: PlayQuizControllerListLobbiesParams,
- options?: SecondParameter<typeof apiClient<void>>,) => {
-      return apiClient<void>(
+ options?: SecondParameter<typeof apiClient<SuccessResponseTypeDtoQuizLobbyDto17>>,) => {
+      return apiClient<SuccessResponseTypeDtoQuizLobbyDto17>(
       {url: `/api/quiz/play/lobby`, method: 'GET',
+        params
+    },
+      options);
+    }
+  
+/**
+ * @summary Delete lobbies by ids
+ */
+const playQuizControllerDeleteLobbies = (
+    params: PlayQuizControllerDeleteLobbiesParams,
+ options?: SecondParameter<typeof apiClient<SuccessResponseTypeDtoString20>>,) => {
+      return apiClient<SuccessResponseTypeDtoString20>(
+      {url: `/api/quiz/play/lobby`, method: 'DELETE',
         params
     },
       options);
@@ -610,8 +708,8 @@ const playQuizControllerListLobbies = (
  */
 const playQuizControllerFindLobbyByCode = (
     code: string,
- options?: SecondParameter<typeof apiClient<void>>,) => {
-      return apiClient<void>(
+ options?: SecondParameter<typeof apiClient<SuccessResponseTypeDtoQuizLobbyDto18>>,) => {
+      return apiClient<SuccessResponseTypeDtoQuizLobbyDto18>(
       {url: `/api/quiz/play/lobby/code/${code}`, method: 'GET'
     },
       options);
@@ -622,8 +720,8 @@ const playQuizControllerFindLobbyByCode = (
  */
 const playQuizControllerFindLobbyById = (
     lobbyId: string,
- options?: SecondParameter<typeof apiClient<void>>,) => {
-      return apiClient<void>(
+ options?: SecondParameter<typeof apiClient<SuccessResponseTypeDtoQuizLobbyDto19>>,) => {
+      return apiClient<SuccessResponseTypeDtoQuizLobbyDto19>(
       {url: `/api/quiz/play/lobby/${lobbyId}`, method: 'GET'
     },
       options);
@@ -634,8 +732,8 @@ const playQuizControllerFindLobbyById = (
  */
 const quizParticipantsControllerCreate = (
     createQuizParticipantsDto: CreateQuizParticipantsDto,
- options?: SecondParameter<typeof apiClient<SuccessResponseTypeDtoQuizParticipantDto16>>,) => {
-      return apiClient<SuccessResponseTypeDtoQuizParticipantDto16>(
+ options?: SecondParameter<typeof apiClient<SuccessResponseTypeDtoQuizParticipantDto21>>,) => {
+      return apiClient<SuccessResponseTypeDtoQuizParticipantDto21>(
       {url: `/api/quiz/participants`, method: 'POST',
       headers: {'Content-Type': 'application/json', },
       data: createQuizParticipantsDto
@@ -648,8 +746,8 @@ const quizParticipantsControllerCreate = (
  */
 const quizParticipantsControllerList = (
     params: QuizParticipantsControllerListParams,
- options?: SecondParameter<typeof apiClient<SuccessResponseTypeDtoQuizParticipantDto17>>,) => {
-      return apiClient<SuccessResponseTypeDtoQuizParticipantDto17>(
+ options?: SecondParameter<typeof apiClient<SuccessResponseTypeDtoQuizParticipantDto22>>,) => {
+      return apiClient<SuccessResponseTypeDtoQuizParticipantDto22>(
       {url: `/api/quiz/participants`, method: 'GET',
         params
     },
@@ -661,15 +759,15 @@ const quizParticipantsControllerList = (
  */
 const quizParticipantsControllerDeleteMany = (
     params: QuizParticipantsControllerDeleteManyParams,
- options?: SecondParameter<typeof apiClient<SuccessResponseTypeDtoString18>>,) => {
-      return apiClient<SuccessResponseTypeDtoString18>(
+ options?: SecondParameter<typeof apiClient<SuccessResponseTypeDtoString23>>,) => {
+      return apiClient<SuccessResponseTypeDtoString23>(
       {url: `/api/quiz/participants`, method: 'DELETE',
         params
     },
       options);
     }
   
-return {appControllerGetHello,quizzesControllerCreate,quizzesControllerListAll,quizzesControllerUpdate,quizzesControllerDeleteMany,quizzesControllerFindById,quizModulesControllerCreate,quizModulesControllerList,quizModulesControllerUpdate,quizModulesControllerDeleteMany,quizModulesControllerFindById,quizQuestionsControllerCreate,quizQuestionsControllerList,quizQuestionsControllerUpdate,quizQuestionsControllerDeleteMany,quizQuestionsControllerFindById,playQuizControllerCreateLobby,playQuizControllerListLobbies,playQuizControllerFindLobbyByCode,playQuizControllerFindLobbyById,quizParticipantsControllerCreate,quizParticipantsControllerList,quizParticipantsControllerDeleteMany}};
+return {appControllerGetHello,quizzesControllerCreate,quizzesControllerListAll,quizzesControllerUpdate,quizzesControllerDeleteMany,quizzesControllerFindById,quizModulesControllerCreate,quizModulesControllerList,quizModulesControllerUpdate,quizModulesControllerDeleteMany,quizModulesControllerFindById,quizQuestionsControllerCreate,quizQuestionsControllerList,quizQuestionsControllerUpdate,quizQuestionsControllerDeleteMany,quizQuestionsControllerFindById,playQuizControllerCreateLobby,playQuizControllerListLobbies,playQuizControllerDeleteLobbies,playQuizControllerFindLobbyByCode,playQuizControllerFindLobbyById,quizParticipantsControllerCreate,quizParticipantsControllerList,quizParticipantsControllerDeleteMany}};
 export type AppControllerGetHelloResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getAPIDocsGoogleMaestro001Alpha>['appControllerGetHello']>>>
 export type QuizzesControllerCreateResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getAPIDocsGoogleMaestro001Alpha>['quizzesControllerCreate']>>>
 export type QuizzesControllerListAllResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getAPIDocsGoogleMaestro001Alpha>['quizzesControllerListAll']>>>
@@ -688,6 +786,7 @@ export type QuizQuestionsControllerDeleteManyResult = NonNullable<Awaited<Return
 export type QuizQuestionsControllerFindByIdResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getAPIDocsGoogleMaestro001Alpha>['quizQuestionsControllerFindById']>>>
 export type PlayQuizControllerCreateLobbyResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getAPIDocsGoogleMaestro001Alpha>['playQuizControllerCreateLobby']>>>
 export type PlayQuizControllerListLobbiesResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getAPIDocsGoogleMaestro001Alpha>['playQuizControllerListLobbies']>>>
+export type PlayQuizControllerDeleteLobbiesResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getAPIDocsGoogleMaestro001Alpha>['playQuizControllerDeleteLobbies']>>>
 export type PlayQuizControllerFindLobbyByCodeResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getAPIDocsGoogleMaestro001Alpha>['playQuizControllerFindLobbyByCode']>>>
 export type PlayQuizControllerFindLobbyByIdResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getAPIDocsGoogleMaestro001Alpha>['playQuizControllerFindLobbyById']>>>
 export type QuizParticipantsControllerCreateResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getAPIDocsGoogleMaestro001Alpha>['quizParticipantsControllerCreate']>>>
