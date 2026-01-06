@@ -44,7 +44,7 @@ export const AddQuizDialog = () => {
     resolver: zodResolver(formSchema),
     defaultValues,
   });
-  const addQuiz = server.quizzes.useCreateQuiz();
+  const addQuiz = server.quizzes.useCreate();
 
   const onSubmit = async (data: FormSchema) => {
     try {

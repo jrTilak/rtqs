@@ -4,7 +4,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { server } from "@/server/apis";
 
 export const QuizzesList = () => {
-  const quizzes = server.quizzes.useListQuizzes();
+  const quizzes = server.quizzes.useList();
 
   return (
     <QueryState {...quizzes} isEmpty={quizzes.data?.length === 0}>

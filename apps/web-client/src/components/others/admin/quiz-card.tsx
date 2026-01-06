@@ -10,7 +10,7 @@ import { formatDistanceToNow } from "date-fns";
 import { Calendar, Trash } from "lucide-react";
 
 export const QuizCard = ({ quiz }: { quiz: Quiz }) => {
-  const deleteQuiz = server.quizzes.useDeleteQuizzes();
+  const deleteQuiz = server.quizzes.useDeleteMany();
   const onDelete = async () => {
     const should = await confirm({
       title: "Are you sure you want to delete this quiz?",
