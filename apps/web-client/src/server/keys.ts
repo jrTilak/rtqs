@@ -26,4 +26,7 @@ export const KEYS = {
     listLobbies: (params: ListLobbiesParams) => ["quiz", "lobbies", params],
     getLobby: (params: GetLobbyParams) => ["lobby", params],
   },
+  users: {
+    list: () => ["users"],
+  },
 };
