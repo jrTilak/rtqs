@@ -399,6 +399,7 @@
             "id"
           ],
           "referencedTableName": "public.quiz_entity",
+          "deleteRule": "cascade",
           "updateRule": "cascade"
         }
       },
@@ -491,6 +492,7 @@
             "id"
           ],
           "referencedTableName": "public.quiz_entity",
+          "deleteRule": "cascade",
           "updateRule": "cascade"
         }
       },
@@ -593,6 +595,7 @@
             "id"
           ],
           "referencedTableName": "public.quiz_module_entity",
+          "deleteRule": "cascade",
           "updateRule": "cascade"
         }
       },

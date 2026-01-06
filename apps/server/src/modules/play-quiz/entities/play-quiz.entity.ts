@@ -22,7 +22,7 @@ export class QuizLobbyEntity extends BaseEntity {
   @Enum({ default: QuizLobbyStatsEnum.IN_LOBBY })
   status: QuizLobbyStatsEnum = QuizLobbyStatsEnum.IN_LOBBY;
 
-  @ManyToOne()
+  @ManyToOne({ deleteRule: 'cascade' })
   quiz: QuizEntity;
 }
 
