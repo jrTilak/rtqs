@@ -94,7 +94,7 @@ export class QuizModulesService {
       throw new BadRequestException('No quiz found of given ids');
     }
 
-    await this._em.nativeDelete(QuizEntity, {
+    await this._em.nativeDelete(QuizModuleEntity, {
       id: {
         $in: existingIds,
       },

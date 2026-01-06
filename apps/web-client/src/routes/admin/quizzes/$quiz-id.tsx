@@ -1,12 +1,16 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { H2, P } from "@/components/ui/typography";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, ListIcon, UsersRound } from "lucide-react";
 import { useNavigate } from "@tanstack/react-router";
 import { AddModuleDialog } from "@/screens/quizzes/quiz-modules/add-module-dialog";
 import { ModulesList } from "@/screens/quizzes/quiz-modules/modules-list";
 import { server } from "@/server/apis";
 import { QueryState } from "@/components/ui/query-state";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ParticipantsList } from "@/screens/quizzes/quiz-participants/participants-list";
+import { useState } from "react";
+import { AddParticipantDialog } from "@/screens/quizzes/quiz-participants/add-participant-dialog";
 
 export const Route = createFileRoute("/admin/quizzes/$quiz-id")({
   component: RouteComponent,
@@ -15,7 +19,9 @@ export const Route = createFileRoute("/admin/quizzes/$quiz-id")({
 function RouteComponent() {
   const { "quiz-id": quizId } = Route.useParams();
   const navigate = useNavigate();
-  const quiz = server.quizzes.useGetAQuiz(quizId);
+  const quiz = server.quizzes.useFindById(quizId);
+
+  const [tabValue, setTabValue] = useState("quiz");
 
   return (
     <div className="max-w-5xl w-full mx-auto">
@@ -38,10 +44,31 @@ function RouteComponent() {
               <H2>{quiz.data?.name}</H2>
               {quiz.data?.description && <P>{quiz.data?.description}</P>}
             </div>
-            <AddModuleDialog quizId={quizId} />
+            {tabValue === "quiz" ? (
+              <AddModuleDialog quizId={quizId} />
+            ) : (
+              <AddParticipantDialog quizId={quizId} />
+            )}
           </div>
 
-          <ModulesList quizId={quizId} />
+          <Tabs value={tabValue} onValueChange={setTabValue}>
+            <TabsList variant={"underline"}>
+              <TabsTrigger value="quiz" className="px-3">
+                <ListIcon />
+                Quiz
+              </TabsTrigger>
+              <TabsTrigger value="participants">
+                <UsersRound />
+                Participants
+              </TabsTrigger>
+            </TabsList>
+            <TabsContent value="quiz">
+              <ModulesList quizId={quizId} />
+            </TabsContent>
+            <TabsContent value="participants">
+              <ParticipantsList quizId={quizId} />
+            </TabsContent>
+          </Tabs>
         </QueryState.Data>
       </QueryState>
     </div>

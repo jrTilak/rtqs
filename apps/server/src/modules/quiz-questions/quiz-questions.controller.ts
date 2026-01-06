@@ -40,10 +40,11 @@ export class QuizQuestionsController {
   @Post('/')
   @ApiPostSuccess({
     type: QuizQuestionDto,
+    isArray: true,
   })
   async create(
     @Body() body: CreateQuizQuestionDto,
-  ): Promise<ApiResponse<QuizQuestionDto>> {
+  ): Promise<ApiResponse<QuizQuestionDto[]>> {
     const res = await this._quizQuestionsService.create(body);
     return new ApiResponse(res);
   }

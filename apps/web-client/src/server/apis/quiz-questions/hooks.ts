@@ -1,27 +1,25 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
-  addQuizQuestions,
-  deleteQuizQuestions,
-  listQuizQuestions,
-  updateQuizQuestion,
-  type AddQuizQuestionsParams,
-  type DeleteQuizQuestionsParams,
-  type ListQuizQuestionsParams,
-  type UpdateQuizQuestionParams,
+  create,
+  deleteMany,
+  list,
+  update,
+  type CreateParams,
+  type DeleteManyParams,
+  type ListParams,
+  type UpdateParams,
 } from ".";
 import { KEYS } from "../../keys";
 
-export const useAddQuizQuestions = () => {
+export const useCreate = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (params: AddQuizQuestionsParams) => addQuizQuestions(params),
+    mutationFn: (params: CreateParams) => create(params),
     onSuccess: (_, params) => {
-      const moduleIds = Array.from(
-        new Set(params.questions.map((q) => q.moduleId))
-      );
+      const moduleIds = Array.from(new Set([params.moduleId]));
       moduleIds.forEach((moduleId) => {
         queryClient.invalidateQueries({
-          queryKey: KEYS.quizQuestions.listQuizQuestions({
+          queryKey: KEYS.quizQuestions.list({
             moduleId,
           }),
         });
@@ -30,15 +28,14 @@ export const useAddQuizQuestions = () => {
   });
 };
 
-export const useUpdateQuizQuestion = () => {
+export const useUpdate = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (params: UpdateQuizQuestionParams) =>
-      updateQuizQuestion(params),
+    mutationFn: (params: UpdateParams) => update(params),
     onSuccess: (_, params) => {
       queryClient.invalidateQueries({
-        queryKey: KEYS.quizQuestions.listQuizQuestions({
+        queryKey: KEYS.quizQuestions.list({
           moduleId: params.moduleId!,
         }),
       });
@@ -46,18 +43,18 @@ export const useUpdateQuizQuestion = () => {
   });
 };
 
-export const useDeleteQuizQuestions = () => {
+export const useDeleteMany = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: (
-      params: DeleteQuizQuestionsParams & {
+      params: DeleteManyParams & {
         moduleId: string;
       }
-    ) => deleteQuizQuestions(params),
+    ) => deleteMany(params),
     onSuccess: (_, params) => {
       queryClient.invalidateQueries({
-        queryKey: KEYS.quizQuestions.listQuizQuestions({
+        queryKey: KEYS.quizQuestions.list({
           moduleId: params.moduleId,
         }),
       });
@@ -65,9 +62,9 @@ export const useDeleteQuizQuestions = () => {
   });
 };
 
-export const useListQuizQuestions = (params: ListQuizQuestionsParams) => {
+export const useList = (params: ListParams) => {
   return useQuery({
-    queryKey: KEYS.quizQuestions.listQuizQuestions(params),
-    queryFn: () => listQuizQuestions(params).then((res) => res.data),
+    queryKey: KEYS.quizQuestions.list(params),
+    queryFn: () => list(params).then((res) => res.data),
   });
 };

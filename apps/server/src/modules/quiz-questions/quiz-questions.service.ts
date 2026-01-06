@@ -32,7 +32,7 @@ export class QuizQuestionsService {
     private readonly _em: EntityManager,
   ) {}
 
-  async create(data: CreateQuizQuestionDto): Promise<QuizQuestionEntityType> {
+  async create(data: CreateQuizQuestionDto): Promise<QuizQuestionEntityType[]> {
     const module = await this._quizModuleRepo.findOne(
       {
         id: data.moduleId,
@@ -48,16 +48,18 @@ export class QuizQuestionsService {
 
     const moduleRef = this._em.getReference(QuizModuleEntity, module.id);
 
-    const quizQuestion = this._quizQuestionsRepo.create({
-      ...data,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      module: moduleRef,
-    });
+    const quizQuestions = data.data.map((qn) =>
+      this._quizQuestionsRepo.create({
+        ...qn,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        module: moduleRef,
+      }),
+    );
 
-    await this._em.persist(quizQuestion).flush();
+    await this._em.persist(quizQuestions).flush();
 
-    return quizQuestion;
+    return quizQuestions;
   }
 
   list(filter: ListQuizQuestionsDto): Promise<QuizQuestionEntityType[]> {

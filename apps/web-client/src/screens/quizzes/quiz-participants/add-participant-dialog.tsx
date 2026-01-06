@@ -22,6 +22,9 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form/form";
+import { server } from "@/server/apis";
+import { alert } from "@/components/ui/alert-dialog/utils";
+import { parseErrorMessage } from "@/lib/parse-error-message";
 
 const formSchema = z.object({
   email: z.string().email("Please enter a valid email address"),
@@ -33,25 +36,38 @@ const defaultValues: FormSchema = {
   email: "",
 };
 
-export const AddParticipantDialog = () => {
+interface AddParticipantDialogProps {
+  quizId: string;
+}
+
+export const AddParticipantDialog = ({ quizId }: AddParticipantDialogProps) => {
   const [open, setOpen] = useState(false);
   const form = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
     defaultValues,
   });
 
+  const { mutateAsync, isPending } = server.quizParticipants.useCreate();
+
   const onSubmit = async (data: FormSchema) => {
     try {
-      // Mock implementation
-      console.log("Adding participant:", data);
-
-      // Simulate API delay
-      await new Promise((resolve) => setTimeout(resolve, 500));
+      await mutateAsync({
+        data: [
+          {
+            email: data.email,
+          },
+        ],
+        quizId,
+      });
 
       setOpen(false);
       form.reset(defaultValues);
     } catch (error) {
-      console.error(error);
+      await alert({
+        title: "Error",
+        description: parseErrorMessage(error),
+        variant: "destructive",
+      });
     }
   };
 
@@ -104,11 +120,7 @@ export const AddParticipantDialog = () => {
               >
                 Cancel
               </Button>
-              <Button
-                type="submit"
-                className="px-4"
-                isLoading={form.formState.isSubmitting}
-              >
+              <Button type="submit" className="px-4" isLoading={isPending}>
                 Add <Plus />
               </Button>
             </DialogFooter>

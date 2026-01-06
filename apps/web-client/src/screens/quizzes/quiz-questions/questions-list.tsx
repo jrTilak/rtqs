@@ -7,7 +7,7 @@ interface QuestionsListProps {
 }
 
 export const QuestionsList = ({ moduleId }: QuestionsListProps) => {
-  const questions = server.quizQuestions.useListQuizQuestions({ moduleId });
+  const questions = server.quizQuestions.useList({ moduleId });
 
   return (
     <QueryState {...questions} isEmpty={questions.data?.length === 0}>
@@ -19,7 +19,11 @@ export const QuestionsList = ({ moduleId }: QuestionsListProps) => {
       <QueryState.Data>
         <div className="space-y-2">
           {questions.data?.map((question) => (
-            <QuestionCard key={question.question} question={question} />
+            <QuestionCard
+              moduleId={moduleId}
+              key={question.question}
+              question={question}
+            />
           ))}
         </div>
       </QueryState.Data>

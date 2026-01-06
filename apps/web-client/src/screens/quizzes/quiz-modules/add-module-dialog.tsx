@@ -9,7 +9,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Input } from "@/components/ui/form/input";
 import { useEffect, useState } from "react";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -48,8 +48,8 @@ export const AddModuleDialog = ({ quizId }: AddModuleDialogProps) => {
     resolver: zodResolver(formSchema),
     defaultValues,
   });
-  const quizModules = server.quizModules.useListQuizModules({ id: quizId });
-  const addModule = server.quizModules.useCreateQuizModule();
+  const quizModules = server.quizModules.useList({ quizId });
+  const addModule = server.quizModules.useCreate();
 
   const onSubmit = async (data: FormSchema) => {
     try {

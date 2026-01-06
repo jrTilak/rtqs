@@ -1,14 +1,20 @@
 import { IsArrayOfId } from '@/common/decorators/validations/is-array-of-id';
 import { IsId } from '@/common/decorators/validations/is-id';
-import { PartialType } from '@nestjs/swagger';
+import { ApiProperty, PartialType } from '@nestjs/swagger';
 import { QuizQuestionBaseDto } from '../quiz-question.dto';
 import { ValidateNested } from 'class-validator';
 import { Type } from 'class-transformer';
 
-export class CreateQuizQuestionDto extends QuizQuestionBaseDto {
+export class CreateQuizQuestionDto {
   @IsId('Module id of this question')
   moduleId: string;
 
+  @ApiProperty({
+    type: QuizQuestionBaseDto,
+    required: true,
+    description: 'Array of quiz questions',
+    isArray: true,
+  })
   @ValidateNested({ each: true })
   @Type(() => QuizQuestionBaseDto)
   data: QuizQuestionBaseDto[];

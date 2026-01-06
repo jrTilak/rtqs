@@ -9,7 +9,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Input } from "@/components/ui/form/input";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -47,21 +47,21 @@ interface AddQuestionDialogProps {
 
 export const AddQuestionDialog = ({ module }: AddQuestionDialogProps) => {
   const [isOpen, setIsOpen] = useState(false);
-  const addQuestions = server.quizQuestions.useAddQuizQuestions();
+  const addQuestions = server.quizQuestions.useCreate();
   const form = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
     defaultValues,
   });
-  const questions = server.quizQuestions.useListQuizQuestions({
+  const questions = server.quizQuestions.useList({
     moduleId: module.id,
   });
 
   const onSubmit = async (data: FormSchema) => {
     try {
       await addQuestions.mutateAsync({
-        questions: [
+        moduleId: module.id,
+        data: [
           {
-            moduleId: module.id,
             question: data.question,
             answer: data.answer,
             index: data.order,

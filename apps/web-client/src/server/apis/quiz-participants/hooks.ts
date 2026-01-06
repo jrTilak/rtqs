@@ -5,11 +5,9 @@ import {
   create,
   deleteMany,
   list,
-  update,
   type CreateParams,
   type DeleteManyParams,
   type ListParams,
-  type UpdateParams,
 } from ".";
 
 export const useCreate = () => {
@@ -18,7 +16,7 @@ export const useCreate = () => {
     mutationFn: (params: CreateParams) => create(params),
     onSuccess: (_, params) => {
       queryClient.invalidateQueries({
-        queryKey: KEYS.quizModules.list({ quizId: params.quizId }),
+        queryKey: KEYS.quizParticipants.list({ quizId: params.quizId }),
       });
     },
   });
@@ -26,7 +24,7 @@ export const useCreate = () => {
 
 export const useList = (params: ListParams) => {
   return useQuery({
-    queryKey: KEYS.quizModules.list(params),
+    queryKey: KEYS.quizParticipants.list(params),
     queryFn: () => list(params).then((res) => res.data),
   });
 };
@@ -41,19 +39,7 @@ export const useDeleteMany = () => {
     ) => deleteMany({ ids: params.ids }),
     onSuccess: (_, params) => {
       queryClient.invalidateQueries({
-        queryKey: KEYS.quizModules.list({ quizId: params.quizId }),
-      });
-    },
-  });
-};
-
-export const useUpdate = () => {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: (params: UpdateParams) => update(params),
-    onSuccess: (_, params) => {
-      queryClient.invalidateQueries({
-        queryKey: KEYS.quizModules.list({ quizId: params.quizId! }),
+        queryKey: KEYS.quizParticipants.list({ quizId: params.quizId }),
       });
     },
   });

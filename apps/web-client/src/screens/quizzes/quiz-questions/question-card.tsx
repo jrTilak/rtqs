@@ -8,10 +8,11 @@ import { Trash } from "lucide-react";
 
 interface QuestionCardProps {
   question: QuizQuestion;
+  moduleId: string;
 }
 
-export const QuestionCard = ({ question }: QuestionCardProps) => {
-  const deleteQuestion = server.quizQuestions.useDeleteQuizQuestions();
+export const QuestionCard = ({ question, moduleId }: QuestionCardProps) => {
+  const deleteQuestion = server.quizQuestions.useDeleteMany();
 
   const onDeleteQuestion = async () => {
     const should = await confirm({
@@ -22,12 +23,12 @@ export const QuestionCard = ({ question }: QuestionCardProps) => {
       waitUntillAction: 5,
     });
     if (!should) return;
-    deleteQuestion.mutate({ ids: [question.id], moduleId: question.moduleId });
+    deleteQuestion.mutate({ ids: [question.id], moduleId });
   };
 
   return (
-    <Card className="flex items-start justify-between gap-0 border shadow-none w-full">
-      <CardHeader className="w-full flex items-center justify-between gap-4 flex-row">
+    <Card className="flex items-start justify-between gap-0 border shadow-none w-full py-2">
+      <CardHeader className="w-full flex items-center justify-between flex-row px-4">
         <CardTitle className="flex-1">{question.question}</CardTitle>
         <div className="flex gap-1 opacity-0 transition-all group-hover/card:opacity-100 items-end justify-end">
           {/* <Button variant="ghost" size="icon">
@@ -44,7 +45,7 @@ export const QuestionCard = ({ question }: QuestionCardProps) => {
           </Button>
         </div>
       </CardHeader>
-      <CardContent className="w-full">
+      <CardContent className="w-full px-4">
         <P>{question.answer}</P>
       </CardContent>
     </Card>

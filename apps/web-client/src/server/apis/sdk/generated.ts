@@ -168,14 +168,19 @@ export interface SuccessResponseTypeDtoString10 {
   data: string[];
 }
 
-export interface CreateQuizQuestionDto {
+export interface QuizQuestionBaseDto {
   /** Question */
   question: string;
   /** Correct Answer */
   answer: string;
   index: number;
+}
+
+export interface CreateQuizQuestionDto {
   /** Module id of this question */
   moduleId: string;
+  /** Array of quiz questions */
+  data: QuizQuestionBaseDto[];
 }
 
 export interface QuizQuestionDto {
@@ -195,7 +200,7 @@ export interface SuccessResponseTypeDtoQuizQuestionDto11 {
   /** Response message */
   message: string;
   /** Created successfully */
-  data: QuizQuestionDto;
+  data: QuizQuestionDto[];
 }
 
 export interface SuccessResponseTypeDtoQuizQuestionDto12 {
@@ -255,9 +260,15 @@ export interface CreateLobbyDto {
   quizId: string;
 }
 
+export interface QuizParticipantBaseDto {
+  /** Email of the participant */
+  email: string;
+}
+
 export interface CreateQuizParticipantsDto {
   /** Quiz id for participants */
   quizId: string;
+  data: QuizParticipantBaseDto[];
 }
 
 export interface QuizParticipantDto {
