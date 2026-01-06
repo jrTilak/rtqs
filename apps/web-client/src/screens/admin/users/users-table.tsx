@@ -38,6 +38,7 @@ export const UsersTable = ({ data }: UsersTableProps) => {
                 <TableCell>{user.email}</TableCell>
                 <TableCell>
                   <Badge
+                    className="font-normal"
                     variant={
                       user.role === ROLE.ADMIN ? "destructive" : "outline"
                     }
