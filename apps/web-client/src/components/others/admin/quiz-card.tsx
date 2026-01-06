@@ -60,8 +60,7 @@ export const QuizCard = ({ quiz }: { quiz: Quiz }) => {
           <div className="flex items-center gap-2 text-xs ml-auto">
             <Calendar className="w-3 h-3" />
             <Text>
-              Last Updated{" "}
-              {formatDistanceToNow(quiz.updatedAt, { addSuffix: true })}
+              Updated {formatDistanceToNow(quiz.updatedAt, { addSuffix: true })}
             </Text>
           </div>
         </CardContent>

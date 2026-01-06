@@ -10,7 +10,6 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/form/input";
-import { Textarea } from "@/components/ui/textarea";
 import { useState } from "react";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -23,40 +22,36 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form/form";
-import { server } from "@/server/apis";
-import { parseErrorMessage } from "@/lib/parse-error-message";
 
 const formSchema = z.object({
-  name: z.string({ message: "Title is required" }).min(1, "Title is required"),
-  description: z.string().optional(),
+  email: z.string().email("Please enter a valid email address"),
 });
 
 type FormSchema = z.infer<typeof formSchema>;
 
 const defaultValues: FormSchema = {
-  name: "",
-  description: "",
+  email: "",
 };
 
-export const AddQuizDialog = () => {
+export const AddParticipantDialog = () => {
   const [open, setOpen] = useState(false);
   const form = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
     defaultValues,
   });
-  const addQuiz = server.quizzes.useCreateQuiz();
 
   const onSubmit = async (data: FormSchema) => {
     try {
-      await addQuiz.mutateAsync(data);
+      // Mock implementation
+      console.log("Adding participant:", data);
+
+      // Simulate API delay
+      await new Promise((resolve) => setTimeout(resolve, 500));
+
       setOpen(false);
       form.reset(defaultValues);
     } catch (error) {
-      alert({
-        title: "Error",
-        description: parseErrorMessage(error),
-        variant: "destructive",
-      });
+      console.error(error);
     }
   };
 
@@ -64,47 +59,34 @@ export const AddQuizDialog = () => {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button>
-          Add Quiz
+          Add Participant
           <Plus />
         </Button>
       </DialogTrigger>
 
       <DialogContent onInteractOutside={(e) => e.preventDefault()}>
         <DialogHeader>
-          <DialogTitle className="text-xl">Add Quiz</DialogTitle>
+          <DialogTitle className="text-xl">Add Participant</DialogTitle>
           <DialogDescription>
-            Fill in the details below to add a new quiz.
+            Enter the email address of the participant to invite.
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-4">
             <FormField
               control={form.control}
-              name="name"
+              name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Title*</FormLabel>
+                  <FormLabel>Email*</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="Google Maestro...."
+                      placeholder="user@example.com"
                       {...field}
                       autoComplete="off"
-                      autoCapitalize="on"
+                      autoCapitalize="none"
+                      type="email"
                     />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="description"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Description</FormLabel>
-                  <FormControl>
-                    <Textarea {...field} rows={4} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -125,7 +107,7 @@ export const AddQuizDialog = () => {
               <Button
                 type="submit"
                 className="px-4"
-                isLoading={addQuiz.isPending}
+                isLoading={form.formState.isSubmitting}
               >
                 Add <Plus />
               </Button>
