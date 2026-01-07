@@ -1,4 +1,8 @@
-import type { GetLobbyParams, ListLobbiesParams } from "./apis/play-quiz";
+import type {
+  FindJoinedLobbyParams,
+  GetLobbyParams,
+  ListLobbiesParams,
+} from "./apis/play-quiz";
 import type { ListParams as ListQuizModulesParams } from "./apis/quiz-modules";
 import type { ListParams as ListQuizQuestionsParams } from "./apis/quiz-questions";
 import type { FindByIdParams as FindByIdQuizParams } from "./apis/quizzes";
@@ -29,6 +33,11 @@ export const KEYS = {
   playQuiz: {
     listLobbies: (params: ListLobbiesParams) => ["quiz", "lobbies", params],
     getLobby: (params: GetLobbyParams) => ["lobby", params],
+    findJoinedLobby: (params: FindJoinedLobbyParams) => [
+      "lobby",
+      "findJoinedLobby",
+      params,
+    ],
   },
   users: {
     list: () => ["users"],

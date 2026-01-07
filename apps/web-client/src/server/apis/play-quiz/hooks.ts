@@ -3,11 +3,13 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   createLobby,
   deleteLobbies,
+  findJoinedLobby,
   getLobby,
   joinLobby,
   listLobbies,
   type CreateLobbyParams,
   type DeleteLobbiesParams,
+  type FindJoinedLobbyParams,
   type GetLobbyParams,
   type JoinLobbyParams,
   type ListLobbiesParams,
@@ -59,10 +61,17 @@ export const useJoinLobby = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (params: JoinLobbyParams) => joinLobby(params),
-    onSuccess: (_, params) => {
+    onSuccess: (res) => {
       queryClient.invalidateQueries({
-        // queryKey: KEYS.playQuiz.getLobby({ lobbyId: params.lobbyId }),
+        queryKey: KEYS.playQuiz.findJoinedLobby(res.data.id),
       });
     },
+  });
+};
+
+export const useFindJoinedLobby = (params: FindJoinedLobbyParams) => {
+  return useQuery({
+    queryFn: () => findJoinedLobby(params).then((r) => r.data),
+    queryKey: KEYS.playQuiz.findJoinedLobby(params),
   });
 };

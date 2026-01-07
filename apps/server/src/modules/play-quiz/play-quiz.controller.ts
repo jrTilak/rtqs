@@ -57,7 +57,7 @@ export class PlayQuizController {
   }
 
   @Roles([ROLES.USER])
-  @Get('/lobby/code/:code')
+  @Post('/lobby/code/:code')
   @ApiOperation({
     summary: 'Join a lobby by lobby code',
   })
@@ -69,6 +69,25 @@ export class PlayQuizController {
     @Session() session: { user: User },
   ) {
     const res = await this._playQuizService.joinLobby(code, session.user);
+    return new ApiResponse(res);
+  }
+
+  @Roles([ROLES.USER])
+  @Get('/lobby/id/:lobby_id')
+  @ApiOperation({
+    summary: 'Get joined lobby by id',
+  })
+  @ApiGetSuccess({
+    type: QuizLobbyDto,
+  })
+  async findJoinedLobby(
+    @Param('lobby_id', new ParseUUIDPipe()) lobby_id: string,
+    @Session() session: { user: User },
+  ) {
+    const res = await this._playQuizService.findJoinedLobby(
+      lobby_id,
+      session.user,
+    );
     return new ApiResponse(res);
   }
 

@@ -136,6 +136,30 @@ export class PlayQuizService {
     return lobby;
   }
 
+  async findJoinedLobby(
+    lobbyId: string,
+    user: User,
+  ): Promise<QuizLobbyEntityType> {
+    const lobby = await this._quizLobbyRepo.findOne({
+      id: lobbyId,
+    });
+
+    if (!lobby) {
+      throw new NotFoundException('Lobby with given id not found');
+    }
+
+    const lobbyPlayer = await this._lobbyPlayerRepo.findOne({
+      lobby,
+      player: user,
+    });
+
+    if (!lobbyPlayer) {
+      throw new NotFoundException('You are not a part of this lobby');
+    }
+
+    return lobby;
+  }
+
   async findLobbyById(id: string): Promise<QuizLobbyEntityType> {
     const lobby = await this._quizLobbyRepo.findOne({
       id: id,
