@@ -1,5 +1,3 @@
-"use client";
-
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { z } from "zod";
@@ -48,7 +46,7 @@ export function LoginForm({
       await login.mutateAsync(data);
       alert({
         description:
-          "A mail with login link has been sent to your mail, Please check your mailbox.",
+          "A login link has been sent to your email address. Please check your inbox.",
         title: "Check Mail",
       });
       form.reset(DEFAULT_FORM_VALUES);
