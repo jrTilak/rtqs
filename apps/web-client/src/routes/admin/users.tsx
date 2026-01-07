@@ -30,7 +30,7 @@ function RouteComponent() {
   });
 
   return (
-    <div className="w-full space-y-6 p-6">
+    <div className="w-full space-y-6">
       <UserStats
         totalUsers={totalUsers}
         adminUsers={adminCount}

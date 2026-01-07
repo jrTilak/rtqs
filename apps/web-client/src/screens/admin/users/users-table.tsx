@@ -23,7 +23,7 @@ export const UsersTable = ({ data }: UsersTableProps) => {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>SN</TableHead>
+              <TableHead className="pl-4">SN</TableHead>
               <TableHead>Name</TableHead>
               <TableHead>Email</TableHead>
               <TableHead>Role</TableHead>
@@ -33,7 +33,7 @@ export const UsersTable = ({ data }: UsersTableProps) => {
           <TableBody>
             {data.map((user, index) => (
               <TableRow key={user.id}>
-                <TableCell>{index + 1}</TableCell>
+                <TableCell className="pl-4">#{index + 1}</TableCell>
                 <TableCell>{user.name}</TableCell>
                 <TableCell>{user.email}</TableCell>
                 <TableCell>

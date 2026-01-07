@@ -8,7 +8,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { EnterLobbyForm } from "@/screens/users/join-lobby/enter-lobby-form";
-import { APP_CONFIG } from "@/config/app.config";
 
 export const Route = createFileRoute("/_users/")({
   component: RouteComponent,
@@ -20,7 +19,7 @@ function RouteComponent() {
       <Card className="w-full max-w-md">
         <CardHeader className="text-center space-y-2 flex items-center justify-center flex-col">
           <img
-            src={APP_CONFIG.logo}
+            src={import.meta.env.VITE_PUBLIC_APP_LOGO_URL}
             className="size-24 object-contain object-center"
           />
           <CardTitle className="text-2xl font-bold">Join Lobby</CardTitle>

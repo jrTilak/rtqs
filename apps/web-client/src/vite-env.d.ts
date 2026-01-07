@@ -9,7 +9,6 @@ interface ImportMetaEnv {
   readonly VITE_PUBLIC_APP_NAME: string;
   readonly VITE_PUBLIC_APP_DESC: string;
   readonly VITE_PUBLIC_APP_LOGO_URL: string;
-  readonly VITE_PUBLIC_APP_BANNER_URL: string;
 }
 
 interface ImportMeta {

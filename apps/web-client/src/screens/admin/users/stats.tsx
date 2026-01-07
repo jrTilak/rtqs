@@ -16,7 +16,7 @@ type Props = {
 export const UserStats = ({ totalUsers, adminUsers, participants }: Props) => {
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-      <Card size="sm" className="rounded-2xl">
+      <Card size="sm">
         <CardHeader>
           <CardDescription className="text-xs flex items-center gap-2">
             <IconUsers className="size-4" />
@@ -33,7 +33,7 @@ export const UserStats = ({ totalUsers, adminUsers, participants }: Props) => {
         </CardContent>
       </Card>
 
-      <Card size="sm" className="rounded-2xl">
+      <Card size="sm">
         <CardHeader>
           <CardDescription className="text-xs flex items-center gap-2">
             <IconUserShield className="size-4" />
@@ -56,7 +56,7 @@ export const UserStats = ({ totalUsers, adminUsers, participants }: Props) => {
         </CardContent>
       </Card>
 
-      <Card size="sm" className="rounded-2xl">
+      <Card size="sm">
         <CardHeader>
           <CardDescription className="text-xs flex items-center gap-2">
             <IconUserCircle className="size-4" />
