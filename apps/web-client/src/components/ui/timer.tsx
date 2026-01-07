@@ -2,11 +2,20 @@
 
 import { useEffect, useState } from "react";
 
-type Props = {
+import type { ComponentProps } from "react";
+import { cn } from "@/lib/utils";
+
+type Props = ComponentProps<"div"> & {
   futureTime: number; // timestamp in ms
+  showHH?: boolean;
 };
 
-export function Timer({ futureTime }: Props) {
+export function Timer({
+  futureTime,
+  showHH = true,
+  className,
+  ...props
+}: Props) {
   const [time, setTime] = useState({
     hh: "00",
     mm: "00",
@@ -39,8 +48,11 @@ export function Timer({ futureTime }: Props) {
   }, [futureTime]);
 
   return (
-    <div>
-      {time.hh}:{time.mm}:{time.ss}
+    <div
+      className={cn("font-medium tabular-nums font-mono", className)}
+      {...props}
+    >
+      {showHH ? `${time.hh}:${time.mm}:${time.ss}` : `${time.mm}:${time.ss}`}
     </div>
   );
 }

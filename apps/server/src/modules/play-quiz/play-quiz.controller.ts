@@ -22,7 +22,10 @@ import {
   ApiDeleteSuccess,
   ApiGetSuccess,
 } from '@/common/decorators/response/api-response-success.decorator';
-import { QuizLobbyDto } from './dto/response/lobby.dto';
+import {
+  FindJoinedLobbyResponseDto,
+  QuizLobbyDto,
+} from './dto/response/lobby.dto';
 import { User } from '@/common/db/entities/auth.entity';
 
 @Controller('quiz/play')
@@ -78,7 +81,7 @@ export class PlayQuizController {
     summary: 'Get joined lobby by id',
   })
   @ApiGetSuccess({
-    type: QuizLobbyDto,
+    type: FindJoinedLobbyResponseDto,
   })
   async findJoinedLobby(
     @Param('lobby_id', new ParseUUIDPipe()) lobby_id: string,

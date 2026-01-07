@@ -17,3 +17,6 @@ export type JoinLobbyParams = Parameters<typeof joinLobby>[0];
 
 export const findJoinedLobby = sdk.playQuizControllerFindJoinedLobby;
 export type FindJoinedLobbyParams = Parameters<typeof findJoinedLobby>[0];
+export type FindJoinedLobbyResponse = Awaited<
+  ReturnType<typeof findJoinedLobby>
+>;

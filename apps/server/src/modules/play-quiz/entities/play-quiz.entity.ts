@@ -18,6 +18,11 @@ import { QuizQuestionEntity } from '@/modules/quiz-questions/entities/quiz-quest
 
 export enum QuizLobbyStatsEnum {
   IN_LOBBY = 'IN_LOBBY',
+  WAITING_FOR_NEXT_QUESTION = 'WAITING_FOR_NEXT_QUESTION',
+  MODULE_BREAK = 'MODULE_BREAK',
+  IN_QUIZ = 'IN_QUIZ',
+  QUESTION_RESPONSE_SUMMARY = 'QUESTION_RESPONSE_SUMMARY',
+  QUIZ_SUMMARY = 'QUIZ_SUMMARY',
   ENDED = 'ENDED',
 }
 

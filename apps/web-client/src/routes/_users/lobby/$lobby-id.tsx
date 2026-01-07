@@ -1,27 +1,31 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { server } from "@/server/apis";
 import { QueryState } from "@/components/ui/query-state";
+import { QuizLobby } from "@/screens/users/lobby";
+import { usePreventNavigation } from "@/hooks/use-prevent-navigation";
+import { useWakeLock } from "@/hooks/use-wake-lock";
 
 export const Route = createFileRoute("/_users/lobby/$lobby-id")({
   component: Lobby,
 });
 
 function Lobby() {
+  usePreventNavigation({
+    enabled: true,
+  });
+  useWakeLock(true);
+
   const { "lobby-id": lobbyId } = Route.useParams();
   const lobby = server.playQuiz.useFindJoinedLobby(lobbyId);
 
   return (
-    <div className="flex min-h-screen p-4">
-      <QueryState {...lobby} isEmpty={!lobby.data}>
-        <QueryState.Error />
-        <QueryState.Loading />
-        <QueryState.Empty />
-        <QueryState.Data>
-          <div>
-            <h1>{lobby.data?.name}</h1>
-          </div>
-        </QueryState.Data>
-      </QueryState>
-    </div>
+    <QueryState {...lobby} isEmpty={!lobby.data}>
+      <QueryState.Error />
+      <QueryState.Loading />
+      <QueryState.Empty />
+      <QueryState.Data>
+        <QuizLobby lobby={lobby.data!} />
+      </QueryState.Data>
+    </QueryState>
   );
 }

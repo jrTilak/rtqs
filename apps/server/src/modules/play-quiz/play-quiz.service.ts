@@ -111,7 +111,7 @@ export class PlayQuizService {
       throw new BadRequestException('Lobby is ended');
     }
 
-    const participant = await this._quizParticipantsRepo.find({
+    const participant = await this._quizParticipantsRepo.findOne({
       email: user.email,
       quiz: lobby.quiz,
     });
@@ -121,8 +121,16 @@ export class PlayQuizService {
         'You have not registered for this quiz. Please contact the adminstration if you think this is a mistake.',
       );
     }
-
     const userRef = this._em.getReference(User, user.id);
+
+    const existingPlayer = await this._lobbyPlayerRepo.findOne({
+      lobby,
+      player: userRef,
+    });
+
+    if (existingPlayer) {
+      return lobby;
+    }
 
     const lobbyPlayer = this._lobbyPlayerRepo.create({
       lobby,
@@ -140,9 +148,14 @@ export class PlayQuizService {
     lobbyId: string,
     user: User,
   ): Promise<QuizLobbyEntityType> {
-    const lobby = await this._quizLobbyRepo.findOne({
-      id: lobbyId,
-    });
+    const lobby = await this._quizLobbyRepo.findOne(
+      {
+        id: lobbyId,
+      },
+      {
+        populate: ['quiz'],
+      },
+    );
 
     if (!lobby) {
       throw new NotFoundException('Lobby with given id not found');
@@ -161,9 +174,14 @@ export class PlayQuizService {
   }
 
   async findLobbyById(id: string): Promise<QuizLobbyEntityType> {
-    const lobby = await this._quizLobbyRepo.findOne({
-      id: id,
-    });
+    const lobby = await this._quizLobbyRepo.findOne(
+      {
+        id: id,
+      },
+      {
+        populate: ['quiz'],
+      },
+    );
 
     if (!lobby) {
       throw new NotFoundException('Quiz with given id not found');
