@@ -3,14 +3,14 @@ import { H2, P } from "@/components/ui/typography";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, ListIcon, UsersRound } from "lucide-react";
 import { useNavigate } from "@tanstack/react-router";
-import { AddModuleDialog } from "@/screens/quizzes/quiz-modules/add-module-dialog";
-import { ModulesList } from "@/screens/quizzes/quiz-modules/modules-list";
+import { AddModuleDialog } from "@/screens/admin/quizzes/quiz-modules/add-module-dialog";
+import { ModulesList } from "@/screens/admin/quizzes/quiz-modules/modules-list";
 import { server } from "@/server/apis";
 import { QueryState } from "@/components/ui/query-state";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ParticipantsList } from "@/screens/quizzes/quiz-participants/participants-list";
+import { ParticipantsList } from "@/screens/admin/quizzes/quiz-participants/participants-list";
 import { useState } from "react";
-import { AddParticipantDialog } from "@/screens/quizzes/quiz-participants/add-participant-dialog";
+import { AddParticipantDialog } from "@/screens/admin/quizzes/quiz-participants/add-participant-dialog";
 
 export const Route = createFileRoute("/admin/quizzes/$quiz-id")({
   component: RouteComponent,

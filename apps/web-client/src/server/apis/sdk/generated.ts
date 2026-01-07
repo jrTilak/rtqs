@@ -704,9 +704,9 @@ const playQuizControllerDeleteLobbies = (
     }
   
 /**
- * @summary Get lobby by lobby code
+ * @summary Join a lobby by lobby code
  */
-const playQuizControllerFindLobbyByCode = (
+const playQuizControllerJoinLobby = (
     code: string,
  options?: SecondParameter<typeof apiClient<SuccessResponseTypeDtoQuizLobbyDto18>>,) => {
       return apiClient<SuccessResponseTypeDtoQuizLobbyDto18>(
@@ -767,7 +767,7 @@ const quizParticipantsControllerDeleteMany = (
       options);
     }
   
-return {appControllerGetHello,quizzesControllerCreate,quizzesControllerListAll,quizzesControllerUpdate,quizzesControllerDeleteMany,quizzesControllerFindById,quizModulesControllerCreate,quizModulesControllerList,quizModulesControllerUpdate,quizModulesControllerDeleteMany,quizModulesControllerFindById,quizQuestionsControllerCreate,quizQuestionsControllerList,quizQuestionsControllerUpdate,quizQuestionsControllerDeleteMany,quizQuestionsControllerFindById,playQuizControllerCreateLobby,playQuizControllerListLobbies,playQuizControllerDeleteLobbies,playQuizControllerFindLobbyByCode,playQuizControllerFindLobbyById,quizParticipantsControllerCreate,quizParticipantsControllerList,quizParticipantsControllerDeleteMany}};
+return {appControllerGetHello,quizzesControllerCreate,quizzesControllerListAll,quizzesControllerUpdate,quizzesControllerDeleteMany,quizzesControllerFindById,quizModulesControllerCreate,quizModulesControllerList,quizModulesControllerUpdate,quizModulesControllerDeleteMany,quizModulesControllerFindById,quizQuestionsControllerCreate,quizQuestionsControllerList,quizQuestionsControllerUpdate,quizQuestionsControllerDeleteMany,quizQuestionsControllerFindById,playQuizControllerCreateLobby,playQuizControllerListLobbies,playQuizControllerDeleteLobbies,playQuizControllerJoinLobby,playQuizControllerFindLobbyById,quizParticipantsControllerCreate,quizParticipantsControllerList,quizParticipantsControllerDeleteMany}};
 export type AppControllerGetHelloResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getAPIDocsGoogleMaestro001Alpha>['appControllerGetHello']>>>
 export type QuizzesControllerCreateResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getAPIDocsGoogleMaestro001Alpha>['quizzesControllerCreate']>>>
 export type QuizzesControllerListAllResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getAPIDocsGoogleMaestro001Alpha>['quizzesControllerListAll']>>>
@@ -787,7 +787,7 @@ export type QuizQuestionsControllerFindByIdResult = NonNullable<Awaited<ReturnTy
 export type PlayQuizControllerCreateLobbyResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getAPIDocsGoogleMaestro001Alpha>['playQuizControllerCreateLobby']>>>
 export type PlayQuizControllerListLobbiesResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getAPIDocsGoogleMaestro001Alpha>['playQuizControllerListLobbies']>>>
 export type PlayQuizControllerDeleteLobbiesResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getAPIDocsGoogleMaestro001Alpha>['playQuizControllerDeleteLobbies']>>>
-export type PlayQuizControllerFindLobbyByCodeResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getAPIDocsGoogleMaestro001Alpha>['playQuizControllerFindLobbyByCode']>>>
+export type PlayQuizControllerJoinLobbyResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getAPIDocsGoogleMaestro001Alpha>['playQuizControllerJoinLobby']>>>
 export type PlayQuizControllerFindLobbyByIdResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getAPIDocsGoogleMaestro001Alpha>['playQuizControllerFindLobbyById']>>>
 export type QuizParticipantsControllerCreateResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getAPIDocsGoogleMaestro001Alpha>['quizParticipantsControllerCreate']>>>
 export type QuizParticipantsControllerListResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getAPIDocsGoogleMaestro001Alpha>['quizParticipantsControllerList']>>>

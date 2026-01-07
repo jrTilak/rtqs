@@ -2,12 +2,14 @@ import { KEYS } from "@/server/keys";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   createLobby,
-  deleteMany,
+  deleteLobbies,
   getLobby,
+  joinLobby,
   listLobbies,
   type CreateLobbyParams,
-  type DeleteManyParams,
+  type DeleteLobbiesParams,
   type GetLobbyParams,
+  type JoinLobbyParams,
   type ListLobbiesParams,
 } from ".";
 
@@ -37,17 +39,29 @@ export const useCreateLobby = () => {
   });
 };
 
-export const useDeleteMany = () => {
+export const useDeleteLobbies = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (
-      params: DeleteManyParams & {
+      params: DeleteLobbiesParams & {
         quizId: string;
       }
-    ) => deleteMany({ ids: params.ids }),
+    ) => deleteLobbies({ ids: params.ids }),
     onSuccess: (_, params) => {
       queryClient.invalidateQueries({
         queryKey: KEYS.playQuiz.listLobbies({ quizId: params.quizId }),
+      });
+    },
+  });
+};
+
+export const useJoinLobby = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (params: JoinLobbyParams) => joinLobby(params),
+    onSuccess: (_, params) => {
+      queryClient.invalidateQueries({
+        // queryKey: KEYS.playQuiz.getLobby({ lobbyId: params.lobbyId }),
       });
     },
   });

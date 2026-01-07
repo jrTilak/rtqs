@@ -10,7 +10,7 @@ import { Button, buttonVariants } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "@tanstack/react-router";
-import { ChevronRight, Trash2, TrashIcon } from "lucide-react";
+import { ChevronRight, Trash2 } from "lucide-react";
 import { alert, confirm } from "@/components/ui/alert-dialog/utils";
 import { parseErrorMessage } from "@/lib/parse-error-message";
 type Props = {
@@ -19,7 +19,7 @@ type Props = {
 
 const Lobbies = ({ quizId }: Props) => {
   const lobbies = server.playQuiz.useListLobbies({ quizId });
-  const deleteLobby = server.playQuiz.useDeleteMany();
+  const deleteLobby = server.playQuiz.useDeleteLobbies();
 
   const onDelete = async (e: React.MouseEvent, id: string) => {
     e.preventDefault();

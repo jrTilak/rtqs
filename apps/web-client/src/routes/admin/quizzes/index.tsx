@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { H2, P } from "@/components/ui/typography";
-import { QuizzesList } from "@/screens/quizzes/list/quizzes-list";
-import { AddQuizDialog } from "@/screens/quizzes/list/add-quiz-dialog";
+import { QuizzesList } from "@/screens/admin/quizzes/list/quizzes-list";
+import { AddQuizDialog } from "@/screens/admin/quizzes/list/add-quiz-dialog";
 
 export const Route = createFileRoute("/admin/quizzes/")({
   component: RouteComponent,

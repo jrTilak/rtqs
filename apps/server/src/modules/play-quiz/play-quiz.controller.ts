@@ -10,7 +10,7 @@ import {
 } from '@nestjs/common';
 import { PlayQuizService } from './play-quiz.service';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import { Roles } from '@thallesp/nestjs-better-auth';
+import { Roles, Session } from '@thallesp/nestjs-better-auth';
 import { ROLES } from '@/lib/auth';
 import {
   CreateLobbyDto,
@@ -23,6 +23,7 @@ import {
   ApiGetSuccess,
 } from '@/common/decorators/response/api-response-success.decorator';
 import { QuizLobbyDto } from './dto/response/lobby.dto';
+import { User } from '@/common/db/entities/auth.entity';
 
 @Controller('quiz/play')
 @ApiTags('Play Quiz')
@@ -55,15 +56,19 @@ export class PlayQuizController {
     return new ApiResponse(res);
   }
 
+  @Roles([ROLES.USER])
   @Get('/lobby/code/:code')
   @ApiOperation({
-    summary: 'Get lobby by lobby code',
+    summary: 'Join a lobby by lobby code',
   })
   @ApiGetSuccess({
     type: QuizLobbyDto,
   })
-  async findLobbyByCode(@Param('code') code: string) {
-    const res = await this._playQuizService.findLobbyByCode(code);
+  async joinLobby(
+    @Param('code') code: string,
+    @Session() session: { user: User },
+  ) {
+    const res = await this._playQuizService.joinLobby(code, session.user);
     return new ApiResponse(res);
   }
 

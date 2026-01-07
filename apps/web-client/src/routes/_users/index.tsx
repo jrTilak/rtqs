@@ -7,6 +7,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { EnterLobbyForm } from "@/screens/users/join-lobby/enter-lobby-form";
+import { APP_CONFIG } from "@/config/app.config";
 
 export const Route = createFileRoute("/_users/")({
   component: RouteComponent,
@@ -15,19 +17,21 @@ export const Route = createFileRoute("/_users/")({
 function RouteComponent() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-muted/40 px-4">
-      <Card className="w-full max-w-md shadow-lg">
-        <CardHeader className="text-center space-y-2">
-          <CardTitle className="text-2xl font-bold">
-            Enter the Lobby Code
-          </CardTitle>
+      <Card className="w-full max-w-md">
+        <CardHeader className="text-center space-y-2 flex items-center justify-center flex-col">
+          <img
+            src={APP_CONFIG.logo}
+            className="size-24 object-contain object-center"
+          />
+          <CardTitle className="text-2xl font-bold">Join Lobby</CardTitle>
           <CardDescription className="text-sm text-muted-foreground">
-            Please enter the lobby code to join the game
+            Please enter the lobby code to join the game.
           </CardDescription>
         </CardHeader>
 
-        {/* <CardContent className="flex justify-center">
-          <StartLobbyDialog />
-        </CardContent> */}
+        <CardContent className="flex justify-center">
+          <EnterLobbyForm />
+        </CardContent>
 
         <CardFooter className="justify-center text-xs text-muted-foreground">
           Make sure you have the correct lobby code

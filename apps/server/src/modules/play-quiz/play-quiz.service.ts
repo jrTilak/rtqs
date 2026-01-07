@@ -10,14 +10,21 @@ import {
 } from './dto/request/lobby.dto';
 import { InjectRepository } from '@mikro-orm/nestjs';
 import {
+  LobbyPlayerEntity,
   QuizLobbyEntity,
   QuizLobbyEntityType,
   QuizLobbyStatsEnum,
 } from './entities';
-import { QuizLobbyRepository } from './play-quiz.repository';
+import {
+  LobbyPlayerRepository,
+  QuizLobbyRepository,
+} from './play-quiz.repository';
 import { QuizEntity } from '../quizzes/entities';
 import { QuizzesRepository } from '../quizzes/quizzes.repository';
 import { EntityManager } from '@mikro-orm/core';
+import { QuizParticipantEntity } from '../quiz-participants/entities/quiz-participant.entity';
+import { QuizParticipantsRepository } from '../quiz-participants/quiz-participants.repository';
+import { User } from '@/common/db/entities/auth.entity';
 
 @Injectable()
 export class PlayQuizService {
@@ -27,6 +34,12 @@ export class PlayQuizService {
 
     @InjectRepository(QuizEntity)
     private readonly _quizzesRepo: QuizzesRepository,
+
+    @InjectRepository(QuizParticipantEntity)
+    private readonly _quizParticipantsRepo: QuizParticipantsRepository,
+
+    @InjectRepository(LobbyPlayerEntity)
+    private readonly _lobbyPlayerRepo: LobbyPlayerRepository,
 
     private readonly _em: EntityManager,
   ) {}
@@ -82,7 +95,7 @@ export class PlayQuizService {
     });
   }
 
-  async findLobbyByCode(code: string): Promise<QuizLobbyEntityType> {
+  async joinLobby(code: string, user: User): Promise<QuizLobbyEntityType> {
     const lobby = await this._quizLobbyRepo.findOne({
       code: code,
       status: {
@@ -93,6 +106,32 @@ export class PlayQuizService {
     if (!lobby) {
       throw new NotFoundException('Lobby with that code not found');
     }
+
+    if (lobby.status === QuizLobbyStatsEnum.ENDED) {
+      throw new BadRequestException('Lobby is ended');
+    }
+
+    const participant = await this._quizParticipantsRepo.find({
+      email: user.email,
+      quiz: lobby.quiz,
+    });
+
+    if (!participant) {
+      throw new BadRequestException(
+        'You have not registered for this quiz. Please contact the adminstration if you think this is a mistake.',
+      );
+    }
+
+    const userRef = this._em.getReference(User, user.id);
+
+    const lobbyPlayer = this._lobbyPlayerRepo.create({
+      lobby,
+      player: userRef,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    });
+
+    await this._em.persist(lobbyPlayer).flush();
 
     return lobby;
   }

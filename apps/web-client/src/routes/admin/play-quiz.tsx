@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { H2, P } from "@/components/ui/typography";
-import { PlayQuizzesList } from "@/screens/play-quizzes/play-quiz-list";
+import { PlayQuizzesList } from "@/screens/admin/play-quizzes/play-quiz-list";
 
 export const Route = createFileRoute("/admin/play-quiz")({
   component: RouteComponent,

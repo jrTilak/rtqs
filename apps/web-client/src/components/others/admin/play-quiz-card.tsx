@@ -3,7 +3,7 @@ import { Text } from "@/components/ui/typography";
 import type { Quiz } from "@/server/apis/quizzes/types";
 import { formatDistanceToNow } from "date-fns";
 import { Calendar } from "lucide-react";
-import { StartLobbyDialog } from "@/screens/play-quizzes/start-lobby-dialog";
+import { StartLobbyDialog } from "@/screens/admin/play-quizzes/start-lobby-dialog";
 
 export const PlayQuizCard = ({ quiz }: { quiz: Quiz }) => {
   return (

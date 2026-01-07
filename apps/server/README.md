@@ -1,1 +1,1 @@
-npx mikro-orm migration:create && npx mikro-orm migration:up
+pnpm mikro-orm migration:create && pnpm mikro-orm migration:up
