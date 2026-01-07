@@ -1,4 +1,4 @@
-import { QuizCard } from "@/components/others/admin/quiz-card";
+import { QuizCard } from "@/screens/admin/quizzes/list/quiz-card";
 import { QueryState } from "@/components/ui/query-state";
 import { Skeleton } from "@/components/ui/skeleton";
 import { server } from "@/server/apis";

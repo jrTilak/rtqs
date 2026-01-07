@@ -1,4 +1,4 @@
-import { Plus } from "lucide-react";
+import { Plus, UserRoundPlus } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -76,7 +76,7 @@ export const AddParticipantDialog = ({ quizId }: AddParticipantDialogProps) => {
       <DialogTrigger asChild>
         <Button>
           Add Participant
-          <Plus />
+          <UserRoundPlus />
         </Button>
       </DialogTrigger>
 

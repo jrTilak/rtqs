@@ -91,7 +91,7 @@ export const AddQuestionDialog = ({ module }: AddQuestionDialogProps) => {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline" size={"icon"}>
+        <Button variant="outline" size={"icon-sm"}>
           <Plus />
         </Button>
       </DialogTrigger>

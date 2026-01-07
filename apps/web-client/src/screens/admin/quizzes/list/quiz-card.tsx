@@ -13,9 +13,9 @@ export const QuizCard = ({ quiz }: { quiz: Quiz }) => {
   const deleteQuiz = server.quizzes.useDeleteMany();
   const onDelete = async () => {
     const should = await confirm({
-      title: "Are you sure you want to delete this quiz?",
+      title: `Delete "${quiz.name}" quiz?`,
       description:
-        "After deleting this quiz, it along with its modules and questions will be deleted permanently.",
+        "Deleting this quiz will permanently remove it along with all associated modules and questions.",
       waitUntillAction: 5,
       variant: "destructive",
       action: "Sure, Delete it!",
@@ -38,7 +38,7 @@ export const QuizCard = ({ quiz }: { quiz: Quiz }) => {
       asChild
     >
       <Link to="/admin/quizzes/$quiz-id" params={{ "quiz-id": quiz.id }}>
-        <div className="flex gap-2 items-center justify-center absolute top-1 right-1 opacity-0 pointer-events-none group-hover/card:opacity-100 group-hover/card:pointer-events-auto transition-all w-fit">
+        <div className="flex tems-center justify-center absolute top-1 right-1 opacity-0 pointer-events-none group-hover/card:opacity-100 group-hover/card:pointer-events-auto transition-all w-fit">
           <Button
             isLoading={deleteQuiz.isPending}
             onClick={(e) => {

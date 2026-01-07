@@ -1,4 +1,4 @@
-import { Plus } from "lucide-react";
+import { ListPlus, Plus } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -85,7 +85,7 @@ export const AddModuleDialog = ({ quizId }: AddModuleDialogProps) => {
       <DialogTrigger asChild>
         <Button>
           Add Module
-          <Plus />
+          <ListPlus />
         </Button>
       </DialogTrigger>
 

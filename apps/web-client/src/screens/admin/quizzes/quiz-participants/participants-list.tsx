@@ -24,10 +24,14 @@ export const ParticipantsList = ({ quizId }: ParticipantsListProps) => {
   const onDelete = async (participant: QuizParticipant) => {
     const should = await confirm({
       title: "Delete Participant",
-      description:
-        "Are you sure you want to delete this participant with email " +
-        participant.email +
-        "?",
+      description: (
+        <span>
+          Are you sure you want to remove this participant (
+          <span className="font-semibold">{participant.email}</span>
+          )? This user will no longer be able to participate in this quiz unless
+          added again.
+        </span>
+      ),
       variant: "destructive",
       waitUntillAction: 5,
     });
