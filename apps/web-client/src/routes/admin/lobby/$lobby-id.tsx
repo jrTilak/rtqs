@@ -15,7 +15,7 @@ function RouteComponent() {
   const lobby = server.playQuiz.useGetLobby(lobbyId);
 
   usePreventNavigation({
-    enabled: true,
+    enabled: import.meta.env.DEV,
   });
   useWakeLock(true);
 

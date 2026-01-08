@@ -52,7 +52,6 @@ export const socketHandlers: Record<string, (e: SocketHandlersProps) => void> =
               return {
                 ...prev,
                 ...data,
-                quiz: prev.quiz,
               };
             }
           );

@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { KEYS } from "@/server/keys";
-import { joinLobbyRoom, updateLobby } from "./commands";
+import { joinLobbyRoom, nextQuestion, updateLobby } from "./commands";
 import type { JoinLobbyRoomPayload } from "./types";
 import type { GetLobbyResponse } from "@/server/apis/play-quiz";
 
@@ -36,5 +36,11 @@ export const useJoinLobbyRoom = (
   return useMutation({
     mutationFn: () => joinLobbyRoom(payload),
     ...(options || {}),
+  });
+};
+
+export const useNextQuestion = () => {
+  return useMutation({
+    mutationFn: nextQuestion,
   });
 };

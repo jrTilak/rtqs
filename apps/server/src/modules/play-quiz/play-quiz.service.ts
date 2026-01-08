@@ -8,6 +8,7 @@ import {
   DeleteLobbyDto,
   JoinLobbyRoomDto,
   ListLobbyDto,
+  NextQuestionDto,
   UpdateLobbyDto,
 } from './dto/request/lobby.dto';
 import { InjectRepository } from '@mikro-orm/nestjs';
@@ -32,6 +33,10 @@ import { Socket } from 'socket.io';
 import { ROLES } from '@/lib/auth';
 import { getWsRoomId } from '@/lib/get-ws-room-id';
 import { UserSession } from '@thallesp/nestjs-better-auth';
+import { QuizQuestionEntity } from '../quiz-questions/entities/quiz-question.entity';
+import { QuizQuestionsRepository } from '../quiz-questions/quiz-questions.repository';
+import { QuizModuleEntity } from '../quiz-modules/entities';
+import { QuizModulesRepository } from '../quiz-modules/quiz-modules.repository';
 
 @Injectable()
 export class PlayQuizService {
@@ -47,6 +52,12 @@ export class PlayQuizService {
 
     @InjectRepository(LobbyPlayerEntity)
     private readonly _lobbyPlayerRepo: LobbyPlayerRepository,
+
+    @InjectRepository(QuizQuestionEntity)
+    private readonly _quizQuestionRepo: QuizQuestionsRepository,
+
+    @InjectRepository(QuizModuleEntity)
+    private readonly _quizModuleRepo: QuizModulesRepository,
 
     private readonly _em: EntityManager,
   ) {}
@@ -107,7 +118,7 @@ export class PlayQuizService {
     this._em.assign(lobby, data);
     await this._em.flush();
 
-    return lobby;
+    return this.findLobbyById(id);
   }
 
   async listLobbies({ quizId }: ListLobbyDto) {
@@ -174,7 +185,7 @@ export class PlayQuizService {
         id: lobbyId,
       },
       {
-        populate: ['quiz'],
+        populate: ['quiz', 'currentModule', 'currentQuestion'],
       },
     );
 
@@ -206,15 +217,13 @@ export class PlayQuizService {
     }
 
     if (user.role === ROLES.ADMIN) {
-      const res = await socket.join(
+      await socket.join(
         getWsRoomId({
           role: ROLES.ADMIN,
           scope: 'lobby',
           scopeId: payload.lobbyId,
         }),
       );
-
-      console.log('res', res, user.email);
     } else {
       const lobbyPlayer = await this._lobbyPlayerRepo.findOne({
         lobby: payload.lobbyId,
@@ -225,18 +234,15 @@ export class PlayQuizService {
         throw new NotFoundException('You are not a part of this quiz');
       }
 
-      const res = await socket.join(
+      await socket.join(
         getWsRoomId({
           role: ROLES.USER,
           scope: 'lobby',
           scopeId: payload.lobbyId,
         }),
       );
-
-      console.log('res', res, user.email);
     }
 
-    console.log(socket.rooms);
     return { ok: true };
   }
 
@@ -246,7 +252,7 @@ export class PlayQuizService {
         id: id,
       },
       {
-        populate: ['quiz'],
+        populate: ['quiz', 'currentModule', 'currentQuestion'],
       },
     );
 
@@ -283,5 +289,101 @@ export class PlayQuizService {
     });
 
     return existingIds;
+  }
+
+  async nextQuestion({ lobbyId }: NextQuestionDto) {
+    const lobby = await this._quizLobbyRepo.findOne(
+      {
+        id: lobbyId,
+      },
+      {
+        populate: ['currentModule', 'currentQuestion'],
+      },
+    );
+
+    if (!lobby) {
+      throw new NotFoundException('Lobby with given id not found');
+    }
+
+    if (lobby.status == QuizLobbyStatsEnum.ENDED) {
+      throw new BadRequestException('Lobby is ended');
+    }
+
+    this._em.assign(lobby, {
+      status: QuizLobbyStatsEnum.WAITING_FOR_NEXT_QUESTION,
+      waitUntil: new Date(Date.now() + 6 * 1000),
+    });
+
+    await this._em.flush();
+
+    const newLobby = lobby;
+
+    // first time
+    if (!lobby.currentQuestion) {
+      const firstModule = await this._quizModuleRepo.findOne(
+        {
+          quiz: lobby.quiz,
+        },
+        {
+          orderBy: { index: 'asc' },
+        },
+      );
+      if (!firstModule) {
+        throw new BadRequestException('No module found');
+      }
+      const firstQuestion = await this._quizQuestionRepo.findOne({
+        module: firstModule,
+        index: 0,
+      });
+      if (!firstQuestion) {
+        throw new BadRequestException('No question found in this module');
+      }
+      newLobby.currentModule = firstModule;
+      newLobby.currentQuestion = firstQuestion;
+    } else {
+      // not first time
+      if (lobby.currentModule && lobby.currentQuestion) {
+        const nextQuestion = await this._quizQuestionRepo.findOne({
+          module: lobby.currentModule,
+          index: {
+            $gt: lobby.currentQuestion.index,
+          },
+        });
+        if (nextQuestion) {
+          newLobby.currentQuestion = nextQuestion;
+        } else {
+          const newModule = await this._quizModuleRepo.findOne({
+            quiz: lobby.quiz,
+            index: {
+              $gt: lobby.currentModule.index,
+            },
+          });
+          if (newModule) {
+            newLobby.currentModule = newModule;
+            const newQuestion = await this._quizQuestionRepo.findOne({
+              module: newModule,
+              index: 0,
+            });
+
+            if (!newQuestion) {
+              throw new BadRequestException('No more questions');
+            }
+
+            newLobby.currentQuestion = newQuestion;
+          } else {
+            throw new BadRequestException('No more questions');
+          }
+        }
+      } else {
+        throw new BadRequestException('No module or question found');
+      }
+    }
+
+    const lobbyFromDb = await this.findLobbyById(lobbyId);
+
+    return {
+      lobby: lobbyFromDb,
+      newLobby,
+    };
   }
 }

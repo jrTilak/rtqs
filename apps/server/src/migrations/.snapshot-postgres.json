@@ -309,139 +309,6 @@
           "length": 6,
           "mappedType": "datetime"
         },
-        "code": {
-          "name": "code",
-          "type": "varchar(255)",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "length": 255,
-          "mappedType": "string"
-        },
-        "name": {
-          "name": "name",
-          "type": "varchar(255)",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "length": 255,
-          "mappedType": "string"
-        },
-        "wait_until": {
-          "name": "wait_until",
-          "type": "timestamptz",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "length": 6,
-          "mappedType": "datetime"
-        },
-        "status": {
-          "name": "status",
-          "type": "text",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "default": "'IN_LOBBY'",
-          "enumItems": [
-            "IN_LOBBY",
-            "WAITING_FOR_NEXT_QUESTION",
-            "MODULE_BREAK",
-            "IN_QUIZ",
-            "QUESTION_RESPONSE_SUMMARY",
-            "QUIZ_SUMMARY",
-            "ENDED"
-          ],
-          "mappedType": "enum"
-        },
-        "quiz_id": {
-          "name": "quiz_id",
-          "type": "uuid",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "mappedType": "uuid"
-        }
-      },
-      "name": "quiz_lobby_entity",
-      "schema": "public",
-      "indexes": [
-        {
-          "columnNames": [
-            "code"
-          ],
-          "composite": false,
-          "keyName": "quiz_lobby_entity_code_index",
-          "constraint": false,
-          "primary": false,
-          "unique": false
-        },
-        {
-          "keyName": "quiz_lobby_entity_pkey",
-          "columnNames": [
-            "id"
-          ],
-          "composite": false,
-          "constraint": true,
-          "primary": true,
-          "unique": true
-        }
-      ],
-      "checks": [],
-      "foreignKeys": {
-        "quiz_lobby_entity_quiz_id_foreign": {
-          "constraintName": "quiz_lobby_entity_quiz_id_foreign",
-          "columnNames": [
-            "quiz_id"
-          ],
-          "localTableName": "public.quiz_lobby_entity",
-          "referencedColumnNames": [
-            "id"
-          ],
-          "referencedTableName": "public.quiz_entity",
-          "deleteRule": "cascade",
-          "updateRule": "cascade"
-        }
-      },
-      "nativeEnums": {}
-    },
-    {
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "uuid",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "default": "gen_random_uuid()",
-          "mappedType": "uuid"
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamptz",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "length": 6,
-          "mappedType": "datetime"
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "timestamptz",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "length": 6,
-          "mappedType": "datetime"
-        },
         "name": {
           "name": "name",
           "type": "varchar(255)",
@@ -684,6 +551,203 @@
             "id"
           ],
           "referencedTableName": "public.quiz_module_entity",
+          "deleteRule": "cascade",
+          "updateRule": "cascade"
+        }
+      },
+      "nativeEnums": {}
+    },
+    {
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "default": "gen_random_uuid()",
+          "mappedType": "uuid"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamptz",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 6,
+          "mappedType": "datetime"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamptz",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 6,
+          "mappedType": "datetime"
+        },
+        "code": {
+          "name": "code",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 255,
+          "mappedType": "string"
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 255,
+          "mappedType": "string"
+        },
+        "wait_until": {
+          "name": "wait_until",
+          "type": "timestamptz",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 6,
+          "mappedType": "datetime"
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "default": "'IN_LOBBY'",
+          "enumItems": [
+            "IN_LOBBY",
+            "WAITING_FOR_NEXT_QUESTION",
+            "MODULE_BREAK",
+            "IN_QUIZ",
+            "QUESTION_RESPONSE_SUMMARY",
+            "QUIZ_SUMMARY",
+            "ENDED"
+          ],
+          "mappedType": "enum"
+        },
+        "quiz_id": {
+          "name": "quiz_id",
+          "type": "uuid",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "uuid"
+        },
+        "current_module_id": {
+          "name": "current_module_id",
+          "type": "uuid",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "uuid"
+        },
+        "current_question_id": {
+          "name": "current_question_id",
+          "type": "uuid",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "uuid"
+        }
+      },
+      "name": "quiz_lobby_entity",
+      "schema": "public",
+      "indexes": [
+        {
+          "columnNames": [
+            "code"
+          ],
+          "composite": false,
+          "keyName": "quiz_lobby_entity_code_index",
+          "constraint": false,
+          "primary": false,
+          "unique": false
+        },
+        {
+          "columnNames": [
+            "current_module_id"
+          ],
+          "composite": false,
+          "keyName": "quiz_lobby_entity_current_module_id_unique",
+          "constraint": true,
+          "primary": false,
+          "unique": true
+        },
+        {
+          "columnNames": [
+            "current_question_id"
+          ],
+          "composite": false,
+          "keyName": "quiz_lobby_entity_current_question_id_unique",
+          "constraint": true,
+          "primary": false,
+          "unique": true
+        },
+        {
+          "keyName": "quiz_lobby_entity_pkey",
+          "columnNames": [
+            "id"
+          ],
+          "composite": false,
+          "constraint": true,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {
+        "quiz_lobby_entity_quiz_id_foreign": {
+          "constraintName": "quiz_lobby_entity_quiz_id_foreign",
+          "columnNames": [
+            "quiz_id"
+          ],
+          "localTableName": "public.quiz_lobby_entity",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.quiz_entity",
+          "deleteRule": "cascade",
+          "updateRule": "cascade"
+        },
+        "quiz_lobby_entity_current_module_id_foreign": {
+          "constraintName": "quiz_lobby_entity_current_module_id_foreign",
+          "columnNames": [
+            "current_module_id"
+          ],
+          "localTableName": "public.quiz_lobby_entity",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.quiz_module_entity",
+          "deleteRule": "cascade",
+          "updateRule": "cascade"
+        },
+        "quiz_lobby_entity_current_question_id_foreign": {
+          "constraintName": "quiz_lobby_entity_current_question_id_foreign",
+          "columnNames": [
+            "current_question_id"
+          ],
+          "localTableName": "public.quiz_lobby_entity",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.quiz_question_entity",
           "deleteRule": "cascade",
           "updateRule": "cascade"
         }

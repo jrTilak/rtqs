@@ -1,12 +1,12 @@
 import { LOBBY_STATUS } from "@/server/constants";
 import { InLobby } from "./in-lobby";
 import type { LobbyProps } from "..";
+import { ManageLobbyQuestions } from "./manage-lobby-questions";
 
 export const LobbyStatus = ({ lobby }: LobbyProps) => {
-  switch (lobby.status) {
-    case LOBBY_STATUS.IN_LOBBY:
-      return <InLobby lobby={lobby} />;
-    default:
-      return null;
+  if (lobby.status === LOBBY_STATUS.IN_LOBBY) {
+    return <InLobby lobby={lobby} />;
   }
+
+  return <ManageLobbyQuestions lobby={lobby} />;
 };

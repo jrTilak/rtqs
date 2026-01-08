@@ -14,6 +14,7 @@ import { Logger } from './lib/logger';
 import { APP_CONFIG } from './config/app.config';
 import {
   JoinLobbyRoomDto,
+  NextQuestionDto,
   UpdateLobbyDto,
 } from './modules/play-quiz/dto/request/lobby.dto';
 
@@ -78,7 +79,7 @@ async function bootstrap() {
 
     const document = SwaggerModule.createDocument(app, config, {
       // webscoket is not supported by swagger, so to pass the dto to the swagger, we need extra modules
-      extraModels: [UpdateLobbyDto, JoinLobbyRoomDto],
+      extraModels: [UpdateLobbyDto, JoinLobbyRoomDto, NextQuestionDto],
     });
 
     const swaggerPath = process.env.SWAGGER_PATH ?? '/docs';

@@ -16,9 +16,15 @@ import {
 import { GATEWAY_MESSAGES } from './constants/gateway-messages';
 import { Server, Socket } from 'socket.io';
 import { ROLES } from '@/lib/auth';
-import { JoinLobbyRoomDto, UpdateLobbyDto } from './dto/request/lobby.dto';
+import {
+  JoinLobbyRoomDto,
+  NextQuestionDto,
+  UpdateLobbyDto,
+} from './dto/request/lobby.dto';
 import { getWsRoomId } from '@/lib/get-ws-room-id';
 import { WsResponse } from '@/common/dto/response/ws-response-dto';
+import { QuizLobbyStatsEnum } from './entities';
+import { omitObj } from '@/lib/omit-obj';
 
 @WebSocketGateway({
   cors: {
@@ -54,17 +60,20 @@ export class PlayQuizGateway {
       scopeId: payload.lobbyId,
     });
 
-    this._server.to(adminRoom).emit(
-      GATEWAY_MESSAGES.LOBBY_ROOM_JOINED,
-      new WsResponse({
-        lobby: payload.lobbyId,
-        user: session.user,
-      }),
-    );
+    if (session.user.role === ROLES.USER) {
+      this._server.to(adminRoom).emit(
+        GATEWAY_MESSAGES.LOBBY_ROOM_JOINED,
+        new WsResponse({
+          lobby: payload.lobbyId,
+          user: session.user,
+        }),
+      );
+      console.log('emit admin room', adminRoom);
+    }
 
-    const res = new WsResponse();
+    console.log(client.rooms, session.user.email);
 
-    return res;
+    return new WsResponse();
   }
 
   @SubscribeMessage(GATEWAY_MESSAGES.UPDATE_LOBBY)
@@ -74,13 +83,6 @@ export class PlayQuizGateway {
   ) {
     const lobby = await this._playQuizService.updateLobby(payload);
 
-    const res = new WsResponse(lobby);
-
-    const userRoom = getWsRoomId({
-      role: ROLES.USER,
-      scope: 'lobby',
-      scopeId: payload.id,
-    });
     const adminRoom = getWsRoomId({
       role: ROLES.ADMIN,
       scope: 'lobby',
@@ -88,9 +90,68 @@ export class PlayQuizGateway {
     });
 
     this._server
+      .to(adminRoom)
+      .emit(GATEWAY_MESSAGES.LOBBY_UPDATED, new WsResponse(lobby));
+
+    const userRoom = getWsRoomId({
+      role: ROLES.USER,
+      scope: 'lobby',
+      scopeId: payload.id,
+    });
+
+    this._server
+      .to(userRoom)
+      .emit(
+        GATEWAY_MESSAGES.LOBBY_UPDATED,
+        new WsResponse(omitObj(lobby, ['participants'])),
+      );
+
+    return new WsResponse(lobby);
+  }
+
+  @SubscribeMessage(GATEWAY_MESSAGES.NEXT_QUESTION)
+  async onNextQuestion(
+    @MessageBody() payload: NextQuestionDto,
+    @ConnectedSocket() _client: Socket,
+  ) {
+    const { lobby, newLobby } =
+      await this._playQuizService.nextQuestion(payload);
+
+    const res = new WsResponse(lobby);
+
+    const userRoom = getWsRoomId({
+      role: ROLES.USER,
+      scope: 'lobby',
+      scopeId: payload.lobbyId,
+    });
+    const adminRoom = getWsRoomId({
+      role: ROLES.ADMIN,
+      scope: 'lobby',
+      scopeId: payload.lobbyId,
+    });
+
+    this._server
       .to(userRoom)
       .to(adminRoom)
       .emit(GATEWAY_MESSAGES.LOBBY_UPDATED, res);
+
+    await new Promise((resolve) => setTimeout(resolve, 5000));
+
+    const startedLobby = await this._playQuizService.updateLobby({
+      ...newLobby,
+      status: QuizLobbyStatsEnum.IN_QUIZ,
+      waitUntil: new Date().toISOString(),
+    });
+
+    if (startedLobby) {
+      const startedRes = new WsResponse(startedLobby);
+      this._server
+        .to(userRoom)
+        .to(adminRoom)
+        .emit(GATEWAY_MESSAGES.LOBBY_UPDATED, startedRes);
+
+      return startedRes;
+    }
 
     return res;
   }

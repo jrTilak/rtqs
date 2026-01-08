@@ -6,6 +6,7 @@ import {
   Enum,
   Index,
   ManyToOne,
+  OneToOne,
   Property,
 } from '@mikro-orm/core';
 import {
@@ -15,6 +16,7 @@ import {
 } from '../play-quiz.repository';
 import { User } from '@/common/db/entities/auth.entity';
 import { QuizQuestionEntity } from '@/modules/quiz-questions/entities/quiz-question.entity';
+import { QuizModuleEntity } from '@/modules/quiz-modules/entities';
 
 export enum QuizLobbyStatsEnum {
   IN_LOBBY = 'IN_LOBBY',
@@ -47,6 +49,12 @@ export class QuizLobbyEntity extends BaseEntity {
 
   @ManyToOne({ deleteRule: 'cascade' })
   quiz: QuizEntity;
+
+  @OneToOne({ deleteRule: 'cascade', nullable: true })
+  currentModule?: QuizModuleEntity;
+
+  @OneToOne({ deleteRule: 'cascade', nullable: true })
+  currentQuestion?: QuizQuestionEntity;
 }
 
 export type QuizLobbyEntityType = InstanceType<typeof QuizLobbyEntity>;

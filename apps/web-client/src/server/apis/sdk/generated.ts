@@ -292,11 +292,6 @@ export interface QuizLobbyDto {
   code: string;
   /** Name of the lobby */
   name: string;
-  /**
-   * Total participants
-   * @minimum 0
-   */
-  participantsCount: number;
   /** Till when, we will wait for other player in lobby */
   waitUntil: string;
   /** Status of Lobby */
@@ -355,16 +350,13 @@ export interface FindJoinedLobbyResponseDto {
   code: string;
   /** Name of the lobby */
   name: string;
-  /**
-   * Total participants
-   * @minimum 0
-   */
-  participantsCount: number;
   /** Till when, we will wait for other player in lobby */
   waitUntil: string;
   /** Status of Lobby */
   status: FindJoinedLobbyResponseDtoStatus;
   quiz: QuizDto;
+  currentModule: QuizModuleDto;
+  currentQuestion: QuizQuestionDto;
 }
 
 export interface SuccessResponseTypeDtoFindJoinedLobbyResponseDto19 {
@@ -403,17 +395,14 @@ export interface GetLobbyByIdResponseDto {
   code: string;
   /** Name of the lobby */
   name: string;
-  /**
-   * Total participants
-   * @minimum 0
-   */
-  participantsCount: number;
   /** Till when, we will wait for other player in lobby */
   waitUntil: string;
   /** Status of Lobby */
   status: GetLobbyByIdResponseDtoStatus;
   quiz: QuizDto;
   participants: User[];
+  currentModule: QuizModuleDto;
+  currentQuestion: QuizQuestionDto;
 }
 
 export interface SuccessResponseTypeDtoGetLobbyByIdResponseDto20 {
@@ -498,10 +487,6 @@ export const UpdateLobbyDtoStatus = {
 } as const;
 
 export interface UpdateLobbyDto {
-  /** A unique code for this lobby */
-  code?: string;
-  /** Name of the lobby */
-  name?: string;
   /** Till when, we will wait for other player in lobby */
   waitUntil?: string;
   /** Status of Lobby */
@@ -511,6 +496,11 @@ export interface UpdateLobbyDto {
 }
 
 export interface JoinLobbyRoomDto {
+  /** Lobby id */
+  lobbyId: string;
+}
+
+export interface NextQuestionDto {
   /** Lobby id */
   lobbyId: string;
 }

@@ -20,9 +20,12 @@ import { ws } from "@/server/ws";
 import { alert } from "@/components/ui/alert-dialog/utils";
 import { parseErrorMessage } from "@/lib/parse-error-message";
 import type { LobbyProps } from "..";
+import { LOBBY_STATUS } from "@/server/constants";
+import { Badge } from "@/components/ui/badge";
 
 export const InLobby = ({ lobby }: LobbyProps) => {
   const updateLobby = ws.playQuiz.useUpdateLobby();
+  const nextQuestion = ws.playQuiz.useNextQuestion();
   const [action, setAction] = useState("");
   const [isTimerCompleted, setIsTimerCompleted] = useState(false);
 
@@ -67,14 +70,38 @@ export const InLobby = ({ lobby }: LobbyProps) => {
     }
   };
 
+  const startQuiz = async () => {
+    try {
+      setAction("start-quiz");
+
+      await nextQuestion.mutateAsync({
+        lobbyId: lobby.id,
+      });
+    } catch (error) {
+      alert({
+        title: "Error",
+        description: parseErrorMessage(error),
+        variant: "destructive",
+      });
+    } finally {
+      setAction("");
+    }
+  };
+
   return (
     <div className="flex flex-col gap-6 max-w-7xl mx-auto w-full">
       <div className="grid gap-6 md:grid-cols-2">
         <Card>
           <CardContent className="space-y-4">
-            <H3>
-              {lobby.quiz.name} / {lobby.name}
-            </H3>
+            <div className="flex items-center justify-between">
+              <H3>
+                {lobby.quiz.name} / {lobby.name}
+              </H3>
+
+              <Badge variant={"secondary"} className="font-medium" size={"sm"}>
+                {lobby.status}
+              </Badge>
+            </div>
             <div>
               <P className="text-muted-foreground text-sm">Lobby Code</P>
               <H3>{lobby.code}</H3>
@@ -119,7 +146,11 @@ export const InLobby = ({ lobby }: LobbyProps) => {
                   Skip Timer
                 </Button>
               </div>
-              <Button disabled={!isTimerCompleted}>
+              <Button
+                isLoading={action === "start-quiz" && updateLobby.isPending}
+                onClick={startQuiz}
+                disabled={!isTimerCompleted}
+              >
                 <Play />
                 Start Quiz
               </Button>

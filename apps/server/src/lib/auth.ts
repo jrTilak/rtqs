@@ -30,8 +30,8 @@ export const createAuth = (orm: MikroORM) =>
       }),
       admin(),
     ],
-    trustedOrigins: ['http://localhost:5000', 'http://localhost:5173'],
-    baseURL: 'http://localhost:5000',
+    trustedOrigins: [process.env.BETTER_AUTH_URL!, process.env.CORS_ORIGINS!],
+    baseURL: process.env.BETTER_AUTH_URL,
     logger: {
       level: 'debug',
       disabled: false,
@@ -41,5 +41,4 @@ export const createAuth = (orm: MikroORM) =>
 export const ROLES = {
   ADMIN: 'admin',
   USER: 'user',
-  
 } as const;

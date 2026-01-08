@@ -1,9 +1,4 @@
-import {
-  IntersectionType,
-  OmitType,
-  PartialType,
-  PickType,
-} from '@nestjs/swagger';
+import { IntersectionType, PartialType, PickType } from '@nestjs/swagger';
 import { LobbyBaseDto } from '../lobby.dto';
 import { IsId } from '@/common/decorators/validations/is-id';
 import { IsArrayOfId } from '@/common/decorators/validations/is-array-of-id';
@@ -18,7 +13,7 @@ export class CreateLobbyDto extends PickType(LobbyBaseDto, [
 }
 
 export class UpdateLobbyDto extends IntersectionType(
-  PartialType(OmitType(CreateLobbyDto, ['quizId'])),
+  PartialType(PickType(LobbyBaseDto, ['waitUntil'])),
   PartialType(PickType(LobbyBaseDto, ['status'])),
 ) {
   @IsId('Lobby id')
@@ -36,6 +31,11 @@ export class ListLobbyDto {
 }
 
 export class JoinLobbyRoomDto {
+  @IsId('Lobby id')
+  lobbyId: string;
+}
+
+export class NextQuestionDto {
   @IsId('Lobby id')
   lobbyId: string;
 }

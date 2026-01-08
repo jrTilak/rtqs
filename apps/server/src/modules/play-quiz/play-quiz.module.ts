@@ -10,6 +10,8 @@ import {
 import { QuizEntity } from '../quizzes/entities';
 import { QuizParticipantEntity } from '../quiz-participants/entities/quiz-participant.entity';
 import { PlayQuizGateway } from './play-quiz.gateway';
+import { QuizQuestionEntity } from '../quiz-questions/entities/quiz-question.entity';
+import { QuizModuleEntity } from '../quiz-modules/entities';
 
 @Module({
   controllers: [PlayQuizController],
@@ -22,6 +24,8 @@ import { PlayQuizGateway } from './play-quiz.gateway';
         QuizParticipantEntity,
         LobbyPlayerEntity,
         LobbyPlayerResponseEntity,
+        QuizQuestionEntity,
+        QuizModuleEntity,
       ],
     }),
   ],

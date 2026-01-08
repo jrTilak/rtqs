@@ -15,11 +15,9 @@ import {
   FormControl,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from "../../../components/ui/form/form";
 import * as z from "zod";
-import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "@tanstack/react-router";
 import {
@@ -77,6 +75,7 @@ export function EnterLobbyForm() {
             <FormItem className="flex flex-col items-center justify-center">
               <FormControl>
                 <InputOTP
+                  inputMode="text"
                   maxLength={4}
                   pattern={REGEXP_ONLY_DIGITS_AND_CHARS}
                   {...field}
