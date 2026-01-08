@@ -32,14 +32,6 @@ export class LobbyBaseDto {
   name: string;
 
   @ApiProperty({
-    type: 'number',
-    minimum: 0,
-    description: 'Total participants',
-    required: true,
-  })
-  participantsCount: number;
-
-  @ApiProperty({
     description: 'Till when, we will wait for other player in lobby',
     required: true,
     format: 'date-time',

@@ -39,9 +39,6 @@ export class QuizLobbyEntity extends BaseEntity {
   @Property()
   name: string;
 
-  @Property({ default: 0 })
-  participantsCount: number = 0;
-
   @Property()
   waitUntil: Date;
 

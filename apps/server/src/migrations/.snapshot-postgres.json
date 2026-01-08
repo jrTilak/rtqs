@@ -329,16 +329,6 @@
           "length": 255,
           "mappedType": "string"
         },
-        "participants_count": {
-          "name": "participants_count",
-          "type": "int",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "default": "0",
-          "mappedType": "integer"
-        },
         "wait_until": {
           "name": "wait_until",
           "type": "timestamptz",

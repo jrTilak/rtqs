@@ -88,7 +88,6 @@ export class PlayQuizService {
       quiz: quizRef,
       status: QuizLobbyStatsEnum.IN_LOBBY,
       waitUntil: new Date(data.waitUntil),
-      participantsCount: 0,
     });
 
     await this._em.persist(quizLobby).flush();

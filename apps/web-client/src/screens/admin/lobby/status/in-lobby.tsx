@@ -81,7 +81,7 @@ export const InLobby = ({ lobby }: LobbyProps) => {
             </div>
             <div>
               <P className="text-muted-foreground text-sm">Participants</P>
-              <P className="font-medium">{lobby.participantsCount} joined</P>
+              <P className="font-medium">{lobby.participants.length} joined</P>
             </div>
           </CardContent>
         </Card>
