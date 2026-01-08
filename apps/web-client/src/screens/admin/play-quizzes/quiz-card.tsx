@@ -2,16 +2,13 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Text } from "@/components/ui/typography";
 import type { Quiz } from "@/server/apis/quizzes/types";
 import { formatDistanceToNow } from "date-fns";
-import { Calendar, } from "lucide-react";
+import { Calendar } from "lucide-react";
 import { StartLobbyDialog } from "./start-lobby-dialog";
 import { Lobbies } from "./lobbies";
 
 export const QuizCard = ({ quiz }: { quiz: Quiz }) => {
-
   return (
-    <Card
-      className="gap-2 hover:border-primary border-transparent border relative"
-    >
+    <Card className="gap-2 hover:border-primary border-transparent border relative">
       <CardHeader>
         <CardTitle className="text-lg">{quiz.name}</CardTitle>
       </CardHeader>

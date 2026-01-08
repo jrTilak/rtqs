@@ -9,10 +9,11 @@ import {
 } from './entities';
 import { QuizEntity } from '../quizzes/entities';
 import { QuizParticipantEntity } from '../quiz-participants/entities/quiz-participant.entity';
+import { PlayQuizGateway } from './play-quiz.gateway';
 
 @Module({
   controllers: [PlayQuizController],
-  providers: [PlayQuizService],
+  providers: [PlayQuizService, PlayQuizGateway],
   imports: [
     MikroOrmModule.forFeature({
       entities: [

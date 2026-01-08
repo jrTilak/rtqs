@@ -11,6 +11,7 @@ export type DeleteLobbiesParams = Parameters<typeof deleteLobbies>[0];
 
 export const getLobby = sdk.playQuizControllerFindLobbyById;
 export type GetLobbyParams = Parameters<typeof getLobby>[0];
+export type GetLobbyResponse = Awaited<ReturnType<typeof getLobby>>;
 
 export const joinLobby = sdk.playQuizControllerJoinLobby;
 export type JoinLobbyParams = Parameters<typeof joinLobby>[0];

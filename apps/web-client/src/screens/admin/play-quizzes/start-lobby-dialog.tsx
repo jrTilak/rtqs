@@ -62,7 +62,7 @@ export const StartLobbyDialog = ({ quizId }: Props) => {
       const res = await createLobby.mutateAsync({
         code: data.code,
         name: data.name,
-        waitInLobbyUntil: new Date(
+        waitUntil: new Date(
           Date.now() + data.waitUntil * 60 * 1000
         ).toISOString(),
         quizId,

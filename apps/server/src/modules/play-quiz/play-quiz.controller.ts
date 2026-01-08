@@ -24,6 +24,7 @@ import {
 } from '@/common/decorators/response/api-response-success.decorator';
 import {
   FindJoinedLobbyResponseDto,
+  GetLobbyByIdResponseDto,
   QuizLobbyDto,
 } from './dto/response/lobby.dto';
 import { User } from '@/common/db/entities/auth.entity';
@@ -99,9 +100,11 @@ export class PlayQuizController {
     summary: 'Get lobby by id',
   })
   @ApiGetSuccess({
-    type: QuizLobbyDto,
+    type: GetLobbyByIdResponseDto,
   })
-  async findLobbyById(@Param('lobby_id', new ParseUUIDPipe()) id: string) {
+  async findLobbyById(
+    @Param('lobby_id', new ParseUUIDPipe()) id: string,
+  ): Promise<ApiResponse<GetLobbyByIdResponseDto>> {
     const res = await this._playQuizService.findLobbyById(id);
     return new ApiResponse(res);
   }

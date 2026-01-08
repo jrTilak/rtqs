@@ -43,7 +43,7 @@ export class QuizLobbyEntity extends BaseEntity {
   participantsCount: number = 0;
 
   @Property()
-  waitInLobbyUntil: Date;
+  waitUntil: Date;
 
   @Enum({ default: QuizLobbyStatsEnum.IN_LOBBY })
   status: QuizLobbyStatsEnum = QuizLobbyStatsEnum.IN_LOBBY;

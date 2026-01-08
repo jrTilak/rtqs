@@ -41,4 +41,5 @@ export const createAuth = (orm: MikroORM) =>
 export const ROLES = {
   ADMIN: 'admin',
   USER: 'user',
+  
 } as const;

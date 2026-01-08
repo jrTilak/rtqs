@@ -10,13 +10,13 @@ export const Route = createFileRoute("/_users/lobby/$lobby-id")({
 });
 
 function Lobby() {
+  const { "lobby-id": lobbyId } = Route.useParams();
+  const lobby = server.playQuiz.useFindJoinedLobby(lobbyId);
+
   usePreventNavigation({
     enabled: true,
   });
   useWakeLock(true);
-
-  const { "lobby-id": lobbyId } = Route.useParams();
-  const lobby = server.playQuiz.useFindJoinedLobby(lobbyId);
 
   return (
     <QueryState {...lobby} isEmpty={!lobby.data}>

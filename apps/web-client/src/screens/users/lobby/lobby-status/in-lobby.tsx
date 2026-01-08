@@ -11,7 +11,7 @@ export const InLobby = ({ lobby }: LobbyProps) => {
           Quiz Starts In
         </span>
         <Timer
-          futureTime={new Date(lobby.waitInLobbyUntil).getTime()}
+          futureTime={new Date(lobby.waitUntil).getTime()}
           className="text-7xl sm:text-8xl font-bold tracking-tight text-foreground"
         />
       </div>

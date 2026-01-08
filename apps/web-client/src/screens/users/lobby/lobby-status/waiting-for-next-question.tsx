@@ -11,7 +11,7 @@ export const WaitingForNextQuestion = ({ lobby }: LobbyProps) => {
       </div>
 
       <Timer
-        futureTime={new Date(lobby.waitInLobbyUntil).getTime()}
+        futureTime={new Date(lobby.waitUntil).getTime()}
         showHH={false}
         className="text-8xl md:text-9xl font-bold text-destructive"
       />

@@ -339,8 +339,8 @@
           "default": "0",
           "mappedType": "integer"
         },
-        "wait_in_lobby_until": {
-          "name": "wait_in_lobby_until",
+        "wait_until": {
+          "name": "wait_until",
           "type": "timestamptz",
           "unsigned": false,
           "autoincrement": false,
@@ -359,6 +359,11 @@
           "default": "'IN_LOBBY'",
           "enumItems": [
             "IN_LOBBY",
+            "WAITING_FOR_NEXT_QUESTION",
+            "MODULE_BREAK",
+            "IN_QUIZ",
+            "QUESTION_RESPONSE_SUMMARY",
+            "QUIZ_SUMMARY",
             "ENDED"
           ],
           "mappedType": "enum"

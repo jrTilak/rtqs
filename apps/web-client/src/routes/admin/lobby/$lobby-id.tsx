@@ -1,7 +1,10 @@
-import { QueryState } from "@/components/ui/query-state";
-import { Timer } from "@/components/ui/timer";
-import { server } from "@/server/apis";
 import { createFileRoute } from "@tanstack/react-router";
+import { BreadcrumbTitle } from "@/components/layout/admin/breadcrumb";
+import { QueryState } from "@/components/ui/query-state";
+import { usePreventNavigation } from "@/hooks/use-prevent-navigation";
+import { useWakeLock } from "@/hooks/use-wake-lock";
+import { server } from "@/server/apis";
+import { LobbyPage } from "@/screens/admin/lobby";
 
 export const Route = createFileRoute("/admin/lobby/$lobby-id")({
   component: RouteComponent,
@@ -9,16 +12,24 @@ export const Route = createFileRoute("/admin/lobby/$lobby-id")({
 
 function RouteComponent() {
   const { "lobby-id": lobbyId } = Route.useParams();
-  const lobby = server.playQuiz.useGetLobby({ lobbyId });
+  const lobby = server.playQuiz.useGetLobby(lobbyId);
+
+  usePreventNavigation({
+    enabled: true,
+  });
+  useWakeLock(true);
 
   return (
-    <QueryState {...lobby} isEmpty={!lobby.data}>
-      <QueryState.Error />
-      <QueryState.Empty />
-      <QueryState.Loading />
-      <QueryState.Data>
-        <Timer futureTime={new Date(lobby.data?.waitInLobbyUntil!).getTime()} />
-      </QueryState.Data>
-    </QueryState>
+    <>
+      <BreadcrumbTitle items={["Lobbies", lobby.data?.name || "---"]} />
+      <QueryState {...lobby} isEmpty={!lobby.data}>
+        <QueryState.Error />
+        <QueryState.Empty />
+        <QueryState.Loading />
+        <QueryState.Data>
+          <LobbyPage lobby={lobby.data!} />
+        </QueryState.Data>
+      </QueryState>
+    </>
   );
 }

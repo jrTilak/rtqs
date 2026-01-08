@@ -16,20 +16,10 @@ export function usePreventNavigation({ enabled = true }: Options = {}) {
       return true;
     };
 
-    // 🔒 Prevent back/forward navigation
-    const handlePopState = () => {
-      window.history.pushState(null, "", window.location.href);
-    };
-
     window.addEventListener("beforeunload", handleBeforeUnload);
-    window.addEventListener("popstate", handlePopState);
-
-    // Push initial state so back button gets trapped
-    window.history.pushState(null, "", window.location.href);
 
     return () => {
       window.removeEventListener("beforeunload", handleBeforeUnload);
-      window.removeEventListener("popstate", handlePopState);
     };
   }, [enabled]);
 }

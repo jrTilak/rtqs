@@ -1,4 +1,9 @@
-import { PickType } from '@nestjs/swagger';
+import {
+  IntersectionType,
+  OmitType,
+  PartialType,
+  PickType,
+} from '@nestjs/swagger';
 import { LobbyBaseDto } from '../lobby.dto';
 import { IsId } from '@/common/decorators/validations/is-id';
 import { IsArrayOfId } from '@/common/decorators/validations/is-array-of-id';
@@ -6,10 +11,18 @@ import { IsArrayOfId } from '@/common/decorators/validations/is-array-of-id';
 export class CreateLobbyDto extends PickType(LobbyBaseDto, [
   'code',
   'name',
-  'waitInLobbyUntil',
+  'waitUntil',
 ]) {
   @IsId('Quiz id')
   quizId: string;
+}
+
+export class UpdateLobbyDto extends IntersectionType(
+  PartialType(OmitType(CreateLobbyDto, ['quizId'])),
+  PartialType(PickType(LobbyBaseDto, ['status'])),
+) {
+  @IsId('Lobby id')
+  id: string;
 }
 
 export class DeleteLobbyDto {
@@ -20,4 +33,9 @@ export class DeleteLobbyDto {
 export class ListLobbyDto {
   @IsId('Quiz id')
   quizId: string;
+}
+
+export class JoinLobbyRoomDto {
+  @IsId('Lobby id')
+  lobbyId: string;
 }

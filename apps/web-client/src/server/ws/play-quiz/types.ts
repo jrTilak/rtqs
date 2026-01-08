@@ -1,4 +1,7 @@
-import type { LobbyDto, OnCreateLobbyDto } from "@/server/apis/sdk/generated";
+import type {
+  JoinLobbyRoomDto,
+  UpdateLobbyDto,
+} from "@/server/apis/sdk/generated";
 
-export type CreateLobbyPayload = OnCreateLobbyDto;
-export type Lobby = LobbyDto;
+export type UpdateLobbyPayload = UpdateLobbyDto;
+export type JoinLobbyRoomPayload = JoinLobbyRoomDto;

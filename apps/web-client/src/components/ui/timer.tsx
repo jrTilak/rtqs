@@ -8,12 +8,14 @@ import { cn } from "@/lib/utils";
 type Props = ComponentProps<"div"> & {
   futureTime: number; // timestamp in ms
   showHH?: boolean;
+  onComplete?: () => void;
 };
 
 export function Timer({
   futureTime,
   showHH = true,
   className,
+  onComplete,
   ...props
 }: Props) {
   const [time, setTime] = useState({
@@ -23,13 +25,13 @@ export function Timer({
   });
 
   useEffect(() => {
-    const interval = setInterval(() => {
+    const updateTime = () => {
       const diff = futureTime - Date.now();
 
       if (diff <= 0) {
         setTime({ hh: "00", mm: "00", ss: "00" });
-        clearInterval(interval);
-        return;
+        onComplete?.();
+        return true; // completed
       }
 
       const totalSeconds = Math.floor(diff / 1000);
@@ -42,10 +44,17 @@ export function Timer({
         mm: String(mm).padStart(2, "0"),
         ss: String(ss).padStart(2, "0"),
       });
+      return false;
+    };
+
+    if (updateTime()) return;
+
+    const interval = setInterval(() => {
+      if (updateTime()) clearInterval(interval);
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [futureTime]);
+  }, [futureTime, onComplete]);
 
   return (
     <div

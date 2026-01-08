@@ -49,7 +49,7 @@ export class LobbyBaseDto {
   @IsString()
   @IsNotEmpty()
   @IsISO8601({ strict: true })
-  waitInLobbyUntil: string;
+  waitUntil: string;
 
   @ApiProperty({
     description: 'Status of Lobby',

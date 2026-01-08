@@ -19,7 +19,7 @@ export const ModuleBreak = ({ lobby }: LobbyProps) => {
       </div>
 
       <Timer
-        futureTime={new Date(lobby.waitInLobbyUntil).getTime()}
+        futureTime={new Date(lobby.waitUntil).getTime()}
         showHH={false}
         className="text-6xl md:text-8xl font-bold text-primary font-mono tracking-tight"
       />

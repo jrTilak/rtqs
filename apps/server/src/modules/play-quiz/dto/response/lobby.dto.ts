@@ -2,6 +2,7 @@ import { BaseTableDto } from '@/common/dto/response/base-table.dto';
 import { ApiProperty, IntersectionType } from '@nestjs/swagger';
 import { LobbyBaseDto } from '../lobby.dto';
 import { QuizDto } from '@/modules/quizzes/dto/response/quiz.dto';
+import { User } from '@/common/db/entities/auth.entity';
 
 export class QuizLobbyDto extends IntersectionType(
   BaseTableDto,
@@ -14,4 +15,19 @@ export class FindJoinedLobbyResponseDto extends QuizLobbyDto {
     required: true,
   })
   quiz: QuizDto;
+}
+
+export class GetLobbyByIdResponseDto extends QuizLobbyDto {
+  @ApiProperty({
+    type: QuizDto,
+    required: true,
+  })
+  quiz: QuizDto;
+
+  @ApiProperty({
+    type: User,
+    required: true,
+    isArray: true,
+  })
+  participants: User[];
 }

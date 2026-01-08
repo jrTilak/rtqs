@@ -6,7 +6,9 @@ import {
 import {
   CreateLobbyDto,
   DeleteLobbyDto,
+  JoinLobbyRoomDto,
   ListLobbyDto,
+  UpdateLobbyDto,
 } from './dto/request/lobby.dto';
 import { InjectRepository } from '@mikro-orm/nestjs';
 import {
@@ -25,6 +27,11 @@ import { EntityManager } from '@mikro-orm/core';
 import { QuizParticipantEntity } from '../quiz-participants/entities/quiz-participant.entity';
 import { QuizParticipantsRepository } from '../quiz-participants/quiz-participants.repository';
 import { User } from '@/common/db/entities/auth.entity';
+import { GetLobbyByIdResponseDto } from './dto/response/lobby.dto';
+import { Socket } from 'socket.io';
+import { ROLES } from '@/lib/auth';
+import { getWsRoomId } from '@/lib/get-ws-room-id';
+import { UserSession } from '@thallesp/nestjs-better-auth';
 
 @Injectable()
 export class PlayQuizService {
@@ -80,13 +87,28 @@ export class PlayQuizService {
       updatedAt: new Date(),
       quiz: quizRef,
       status: QuizLobbyStatsEnum.IN_LOBBY,
-      waitInLobbyUntil: new Date(data.waitInLobbyUntil),
+      waitUntil: new Date(data.waitUntil),
       participantsCount: 0,
     });
 
     await this._em.persist(quizLobby).flush();
 
     return quizLobby;
+  }
+
+  async updateLobby({ id, ...data }: UpdateLobbyDto) {
+    const lobby = await this._quizLobbyRepo.findOne({
+      id,
+    });
+
+    if (!lobby) {
+      throw new NotFoundException('Lobby with given id not found');
+    }
+
+    this._em.assign(lobby, data);
+    await this._em.flush();
+
+    return lobby;
   }
 
   async listLobbies({ quizId }: ListLobbyDto) {
@@ -173,7 +195,53 @@ export class PlayQuizService {
     return lobby;
   }
 
-  async findLobbyById(id: string): Promise<QuizLobbyEntityType> {
+  async joinLobbyRoom(
+    payload: JoinLobbyRoomDto,
+    user: UserSession['user'],
+    socket: Socket,
+  ) {
+    const lobbyExists = await this._quizLobbyRepo.existsOne(payload.lobbyId);
+
+    if (!lobbyExists) {
+      throw new NotFoundException('Lobby with given id not found');
+    }
+
+    if (user.role === ROLES.ADMIN) {
+      const res = await socket.join(
+        getWsRoomId({
+          role: ROLES.ADMIN,
+          scope: 'lobby',
+          scopeId: payload.lobbyId,
+        }),
+      );
+
+      console.log('res', res, user.email);
+    } else {
+      const lobbyPlayer = await this._lobbyPlayerRepo.findOne({
+        lobby: payload.lobbyId,
+        player: user,
+      });
+
+      if (!lobbyPlayer) {
+        throw new NotFoundException('You are not a part of this quiz');
+      }
+
+      const res = await socket.join(
+        getWsRoomId({
+          role: ROLES.USER,
+          scope: 'lobby',
+          scopeId: payload.lobbyId,
+        }),
+      );
+
+      console.log('res', res, user.email);
+    }
+
+    console.log(socket.rooms);
+    return { ok: true };
+  }
+
+  async findLobbyById(id: string): Promise<GetLobbyByIdResponseDto> {
     const lobby = await this._quizLobbyRepo.findOne(
       {
         id: id,
@@ -187,7 +255,14 @@ export class PlayQuizService {
       throw new NotFoundException('Quiz with given id not found');
     }
 
-    return lobby;
+    const participants = await this._lobbyPlayerRepo.find({
+      lobby,
+    });
+
+    return {
+      ...lobby,
+      participants: participants.map((participant) => participant.player) || [],
+    } as unknown as GetLobbyByIdResponseDto;
   }
 
   async deleteLobby({ ids }: DeleteLobbyDto): Promise<string[]> {

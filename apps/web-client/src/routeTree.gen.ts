@@ -16,9 +16,9 @@ import { Route as UsersRouteImport } from './routes/_users'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as UsersIndexRouteImport } from './routes/_users/index'
 import { Route as AdminUsersRouteImport } from './routes/admin/users'
-import { Route as AdminPlayQuizRouteImport } from './routes/admin/play-quiz'
 import { Route as AdminReviewIndexRouteImport } from './routes/admin/review/index'
 import { Route as AdminQuizzesIndexRouteImport } from './routes/admin/quizzes/index'
+import { Route as AdminLobbyIndexRouteImport } from './routes/admin/lobby/index'
 import { Route as AdminQuizzesQuizIdRouteImport } from './routes/admin/quizzes/$quiz-id'
 import { Route as AdminLobbyLobbyIdRouteImport } from './routes/admin/lobby/$lobby-id'
 import { Route as UsersLobbyLobbyIdRouteImport } from './routes/_users/lobby/$lobby-id'
@@ -57,11 +57,6 @@ const AdminUsersRoute = AdminUsersRouteImport.update({
   path: '/users',
   getParentRoute: () => AdminRoute,
 } as any)
-const AdminPlayQuizRoute = AdminPlayQuizRouteImport.update({
-  id: '/play-quiz',
-  path: '/play-quiz',
-  getParentRoute: () => AdminRoute,
-} as any)
 const AdminReviewIndexRoute = AdminReviewIndexRouteImport.update({
   id: '/review/',
   path: '/review/',
@@ -70,6 +65,11 @@ const AdminReviewIndexRoute = AdminReviewIndexRouteImport.update({
 const AdminQuizzesIndexRoute = AdminQuizzesIndexRouteImport.update({
   id: '/quizzes/',
   path: '/quizzes/',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminLobbyIndexRoute = AdminLobbyIndexRouteImport.update({
+  id: '/lobby/',
+  path: '/lobby/',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminQuizzesQuizIdRoute = AdminQuizzesQuizIdRouteImport.update({
@@ -92,26 +92,26 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AdminRouteWithChildren
   '/login': typeof LoginRoute
   '/temp': typeof TempRoute
-  '/admin/play-quiz': typeof AdminPlayQuizRoute
   '/admin/users': typeof AdminUsersRoute
   '/': typeof UsersIndexRoute
   '/admin/': typeof AdminIndexRoute
   '/lobby/$lobby-id': typeof UsersLobbyLobbyIdRoute
   '/admin/lobby/$lobby-id': typeof AdminLobbyLobbyIdRoute
   '/admin/quizzes/$quiz-id': typeof AdminQuizzesQuizIdRoute
+  '/admin/lobby': typeof AdminLobbyIndexRoute
   '/admin/quizzes': typeof AdminQuizzesIndexRoute
   '/admin/review': typeof AdminReviewIndexRoute
 }
 export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/temp': typeof TempRoute
-  '/admin/play-quiz': typeof AdminPlayQuizRoute
   '/admin/users': typeof AdminUsersRoute
   '/': typeof UsersIndexRoute
   '/admin': typeof AdminIndexRoute
   '/lobby/$lobby-id': typeof UsersLobbyLobbyIdRoute
   '/admin/lobby/$lobby-id': typeof AdminLobbyLobbyIdRoute
   '/admin/quizzes/$quiz-id': typeof AdminQuizzesQuizIdRoute
+  '/admin/lobby': typeof AdminLobbyIndexRoute
   '/admin/quizzes': typeof AdminQuizzesIndexRoute
   '/admin/review': typeof AdminReviewIndexRoute
 }
@@ -121,13 +121,13 @@ export interface FileRoutesById {
   '/admin': typeof AdminRouteWithChildren
   '/login': typeof LoginRoute
   '/temp': typeof TempRoute
-  '/admin/play-quiz': typeof AdminPlayQuizRoute
   '/admin/users': typeof AdminUsersRoute
   '/_users/': typeof UsersIndexRoute
   '/admin/': typeof AdminIndexRoute
   '/_users/lobby/$lobby-id': typeof UsersLobbyLobbyIdRoute
   '/admin/lobby/$lobby-id': typeof AdminLobbyLobbyIdRoute
   '/admin/quizzes/$quiz-id': typeof AdminQuizzesQuizIdRoute
+  '/admin/lobby/': typeof AdminLobbyIndexRoute
   '/admin/quizzes/': typeof AdminQuizzesIndexRoute
   '/admin/review/': typeof AdminReviewIndexRoute
 }
@@ -137,26 +137,26 @@ export interface FileRouteTypes {
     | '/admin'
     | '/login'
     | '/temp'
-    | '/admin/play-quiz'
     | '/admin/users'
     | '/'
     | '/admin/'
     | '/lobby/$lobby-id'
     | '/admin/lobby/$lobby-id'
     | '/admin/quizzes/$quiz-id'
+    | '/admin/lobby'
     | '/admin/quizzes'
     | '/admin/review'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/login'
     | '/temp'
-    | '/admin/play-quiz'
     | '/admin/users'
     | '/'
     | '/admin'
     | '/lobby/$lobby-id'
     | '/admin/lobby/$lobby-id'
     | '/admin/quizzes/$quiz-id'
+    | '/admin/lobby'
     | '/admin/quizzes'
     | '/admin/review'
   id:
@@ -165,13 +165,13 @@ export interface FileRouteTypes {
     | '/admin'
     | '/login'
     | '/temp'
-    | '/admin/play-quiz'
     | '/admin/users'
     | '/_users/'
     | '/admin/'
     | '/_users/lobby/$lobby-id'
     | '/admin/lobby/$lobby-id'
     | '/admin/quizzes/$quiz-id'
+    | '/admin/lobby/'
     | '/admin/quizzes/'
     | '/admin/review/'
   fileRoutesById: FileRoutesById
@@ -234,13 +234,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminUsersRouteImport
       parentRoute: typeof AdminRoute
     }
-    '/admin/play-quiz': {
-      id: '/admin/play-quiz'
-      path: '/play-quiz'
-      fullPath: '/admin/play-quiz'
-      preLoaderRoute: typeof AdminPlayQuizRouteImport
-      parentRoute: typeof AdminRoute
-    }
     '/admin/review/': {
       id: '/admin/review/'
       path: '/review'
@@ -253,6 +246,13 @@ declare module '@tanstack/react-router' {
       path: '/quizzes'
       fullPath: '/admin/quizzes'
       preLoaderRoute: typeof AdminQuizzesIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/lobby/': {
+      id: '/admin/lobby/'
+      path: '/lobby'
+      fullPath: '/admin/lobby'
+      preLoaderRoute: typeof AdminLobbyIndexRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/quizzes/$quiz-id': {
@@ -292,21 +292,21 @@ const UsersRouteChildren: UsersRouteChildren = {
 const UsersRouteWithChildren = UsersRoute._addFileChildren(UsersRouteChildren)
 
 interface AdminRouteChildren {
-  AdminPlayQuizRoute: typeof AdminPlayQuizRoute
   AdminUsersRoute: typeof AdminUsersRoute
   AdminIndexRoute: typeof AdminIndexRoute
   AdminLobbyLobbyIdRoute: typeof AdminLobbyLobbyIdRoute
   AdminQuizzesQuizIdRoute: typeof AdminQuizzesQuizIdRoute
+  AdminLobbyIndexRoute: typeof AdminLobbyIndexRoute
   AdminQuizzesIndexRoute: typeof AdminQuizzesIndexRoute
   AdminReviewIndexRoute: typeof AdminReviewIndexRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
-  AdminPlayQuizRoute: AdminPlayQuizRoute,
   AdminUsersRoute: AdminUsersRoute,
   AdminIndexRoute: AdminIndexRoute,
   AdminLobbyLobbyIdRoute: AdminLobbyLobbyIdRoute,
   AdminQuizzesQuizIdRoute: AdminQuizzesQuizIdRoute,
+  AdminLobbyIndexRoute: AdminLobbyIndexRoute,
   AdminQuizzesIndexRoute: AdminQuizzesIndexRoute,
   AdminReviewIndexRoute: AdminReviewIndexRoute,
 }

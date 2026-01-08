@@ -26,9 +26,10 @@ const Lobbies = ({ quizId }: Props) => {
     e.stopPropagation();
     const shouldDelete = await confirm({
       title: "Delete Lobby",
-      description: "Are you sure you want to delete this lobby?",
+      description:
+        "Are you sure you want to delete this lobby? All user submissions and related data will be permanently lost.",
       variant: "destructive",
-      waitUntillAction: 5,
+      waitUntillAction: 10,
     });
     if (!shouldDelete) return;
     try {

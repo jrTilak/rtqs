@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { H2, P } from "@/components/ui/typography";
 import { PlayQuizzesList } from "@/screens/admin/play-quizzes/play-quiz-list";
 
-export const Route = createFileRoute("/admin/play-quiz")({
+export const Route = createFileRoute("/admin/lobby/")({
   component: RouteComponent,
 });
 
