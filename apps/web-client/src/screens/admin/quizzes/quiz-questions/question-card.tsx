@@ -29,7 +29,10 @@ export const QuestionCard = ({ question, moduleId }: QuestionCardProps) => {
   return (
     <Card className="flex items-start justify-between gap-0 border shadow-none w-full py-2">
       <CardHeader className="w-full flex items-center justify-between flex-row px-4">
-        <CardTitle className="flex-1">{question.question}</CardTitle>
+        <CardTitle className="flex-1">
+          <span className="text-muted-foreground">#{question.index}</span>{" "}
+          {question.question}
+        </CardTitle>
         <div className="flex gap-1 opacity-0 transition-all group-hover/card:opacity-100 items-end justify-end">
           {/* <Button variant="ghost" size="icon">
             <Edit />

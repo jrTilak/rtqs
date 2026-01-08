@@ -20,14 +20,14 @@ export const LobbyStatus = ({ lobby }: LobbyProps) => {
     case LOBBY_STATUS.WAITING_FOR_NEXT_QUESTION:
       return <WaitingForNextQuestion lobby={lobby} />;
 
-    case LOBBY_STATUS.MODULE_BREAK:
-      return <ModuleBreak lobby={lobby} />;
-
     case LOBBY_STATUS.IN_QUIZ:
       return <InQuiz lobby={lobby} />;
 
     case LOBBY_STATUS.QUESTION_RESPONSE_SUMMARY:
       return <QuestionResponseSummary lobby={lobby} />;
+
+    case LOBBY_STATUS.MODULE_BREAK:
+      return <ModuleBreak lobby={lobby} />;
 
     case LOBBY_STATUS.QUIZ_SUMMARY:
       return <QuizSummary lobby={lobby} />;

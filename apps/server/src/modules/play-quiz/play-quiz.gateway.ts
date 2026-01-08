@@ -25,6 +25,7 @@ import { getWsRoomId } from '@/lib/get-ws-room-id';
 import { WsResponse } from '@/common/dto/response/ws-response-dto';
 import { QuizLobbyStatsEnum } from './entities';
 import { omitObj } from '@/lib/omit-obj';
+import { sleep } from '@/lib/sleep';
 
 @WebSocketGateway({
   cors: {
@@ -114,45 +115,55 @@ export class PlayQuizGateway {
     @MessageBody() payload: NextQuestionDto,
     @ConnectedSocket() _client: Socket,
   ) {
-    const { lobby, newLobby } =
-      await this._playQuizService.nextQuestion(payload);
+    try {
+      const { lobby, newLobby } =
+        await this._playQuizService.computeNextQuestion(payload);
 
-    const res = new WsResponse(lobby);
+      const adminRoom = getWsRoomId({
+        role: ROLES.ADMIN,
+        scope: 'lobby',
+        scopeId: payload.lobbyId,
+      });
 
-    const userRoom = getWsRoomId({
-      role: ROLES.USER,
-      scope: 'lobby',
-      scopeId: payload.lobbyId,
-    });
-    const adminRoom = getWsRoomId({
-      role: ROLES.ADMIN,
-      scope: 'lobby',
-      scopeId: payload.lobbyId,
-    });
+      this._server
+        .to(adminRoom)
+        .emit(GATEWAY_MESSAGES.LOBBY_UPDATED, new WsResponse(lobby));
 
-    this._server
-      .to(userRoom)
-      .to(adminRoom)
-      .emit(GATEWAY_MESSAGES.LOBBY_UPDATED, res);
+      const userRoom = getWsRoomId({
+        role: ROLES.USER,
+        scope: 'lobby',
+        scopeId: payload.lobbyId,
+      });
 
-    await new Promise((resolve) => setTimeout(resolve, 5000));
-
-    const startedLobby = await this._playQuizService.updateLobby({
-      ...newLobby,
-      status: QuizLobbyStatsEnum.IN_QUIZ,
-      waitUntil: new Date().toISOString(),
-    });
-
-    if (startedLobby) {
-      const startedRes = new WsResponse(startedLobby);
       this._server
         .to(userRoom)
-        .to(adminRoom)
-        .emit(GATEWAY_MESSAGES.LOBBY_UPDATED, startedRes);
+        .emit(
+          GATEWAY_MESSAGES.LOBBY_UPDATED,
+          new WsResponse(omitObj(lobby, ['participants'])),
+        );
 
-      return startedRes;
+      // wait for 5 seconds
+      await sleep(5);
+
+      const startedLobby = await this._playQuizService.saveNextQuestion({
+        id: newLobby.id,
+        currentModuleId: newLobby.currentModuleId!,
+        currentQuestionId: newLobby.currentQuestionId,
+      });
+
+      if (startedLobby) {
+        const startedRes = new WsResponse(startedLobby);
+        this._server
+          .to(userRoom)
+          .to(adminRoom)
+          .emit(GATEWAY_MESSAGES.LOBBY_UPDATED, startedRes);
+
+        return startedRes;
+      }
+
+      return new WsResponse();
+    } catch (error) {
+      console.log(error);
     }
-
-    return res;
   }
 }

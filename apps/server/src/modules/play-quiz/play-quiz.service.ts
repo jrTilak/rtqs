@@ -291,13 +291,13 @@ export class PlayQuizService {
     return existingIds;
   }
 
-  async nextQuestion({ lobbyId }: NextQuestionDto) {
+  async computeNextQuestion({ lobbyId }: NextQuestionDto) {
     const lobby = await this._quizLobbyRepo.findOne(
       {
         id: lobbyId,
       },
       {
-        populate: ['currentModule', 'currentQuestion'],
+        populate: ['currentModule', 'currentQuestion', 'quiz'],
       },
     );
 
@@ -309,14 +309,18 @@ export class PlayQuizService {
       throw new BadRequestException('Lobby is ended');
     }
 
+    const nextQuestionStartsAt = new Date();
+    nextQuestionStartsAt.setSeconds(nextQuestionStartsAt.getSeconds() + 6);
+
     this._em.assign(lobby, {
       status: QuizLobbyStatsEnum.WAITING_FOR_NEXT_QUESTION,
-      waitUntil: new Date(Date.now() + 6 * 1000),
+      waitUntil: nextQuestionStartsAt.toISOString(),
     });
 
     await this._em.flush();
 
-    const newLobby = lobby;
+    let newModuleId = lobby.currentModule?.id;
+    let newQuestionId = lobby.currentQuestion?.id;
 
     // first time
     if (!lobby.currentQuestion) {
@@ -331,45 +335,63 @@ export class PlayQuizService {
       if (!firstModule) {
         throw new BadRequestException('No module found');
       }
-      const firstQuestion = await this._quizQuestionRepo.findOne({
-        module: firstModule,
-        index: 0,
-      });
+      const firstQuestion = await this._quizQuestionRepo.findOne(
+        {
+          module: firstModule,
+        },
+        {
+          orderBy: { index: 'asc' },
+        },
+      );
       if (!firstQuestion) {
         throw new BadRequestException('No question found in this module');
       }
-      newLobby.currentModule = firstModule;
-      newLobby.currentQuestion = firstQuestion;
+      newModuleId = firstModule.id;
+      newQuestionId = firstQuestion.id;
     } else {
       // not first time
       if (lobby.currentModule && lobby.currentQuestion) {
-        const nextQuestion = await this._quizQuestionRepo.findOne({
-          module: lobby.currentModule,
-          index: {
-            $gt: lobby.currentQuestion.index,
-          },
-        });
-        if (nextQuestion) {
-          newLobby.currentQuestion = nextQuestion;
-        } else {
-          const newModule = await this._quizModuleRepo.findOne({
-            quiz: lobby.quiz,
+        const nextQuestion = await this._quizQuestionRepo.findOne(
+          {
+            module: lobby.currentModule,
             index: {
-              $gt: lobby.currentModule.index,
+              $gt: lobby.currentQuestion.index,
             },
-          });
+          },
+          {
+            orderBy: { index: 'asc' },
+          },
+        );
+        if (nextQuestion) {
+          newQuestionId = nextQuestion.id;
+        } else {
+          const newModule = await this._quizModuleRepo.findOne(
+            {
+              quiz: lobby.quiz,
+              index: {
+                $gt: lobby.currentModule.index,
+              },
+            },
+            {
+              orderBy: { index: 'asc' },
+            },
+          );
           if (newModule) {
-            newLobby.currentModule = newModule;
-            const newQuestion = await this._quizQuestionRepo.findOne({
-              module: newModule,
-              index: 0,
-            });
+            newModuleId = newModule.id;
+            const newQuestion = await this._quizQuestionRepo.findOne(
+              {
+                module: newModule,
+              },
+              {
+                orderBy: { index: 'asc' },
+              },
+            );
 
             if (!newQuestion) {
               throw new BadRequestException('No more questions');
             }
 
-            newLobby.currentQuestion = newQuestion;
+            newQuestionId = newQuestion.id;
           } else {
             throw new BadRequestException('No more questions');
           }
@@ -383,7 +405,39 @@ export class PlayQuizService {
 
     return {
       lobby: lobbyFromDb,
-      newLobby,
+      newLobby: {
+        id: lobbyId,
+        currentModuleId: newModuleId,
+        currentQuestionId: newQuestionId,
+      },
     };
+  }
+
+  async saveNextQuestion(data: {
+    id: string;
+    currentModuleId: string;
+    currentQuestionId: string;
+  }) {
+    const lobby = await this._quizLobbyRepo.findOne({
+      id: data.id,
+    });
+    if (!lobby) {
+      throw new NotFoundException('Lobby not found');
+    }
+
+    this._em.assign(lobby, {
+      currentModule: this._em.getReference(
+        QuizModuleEntity,
+        data.currentModuleId,
+      ),
+      currentQuestion: this._em.getReference(
+        QuizQuestionEntity,
+        data.currentQuestionId,
+      ),
+      status: QuizLobbyStatsEnum.IN_QUIZ,
+      waitUntil: new Date().toISOString(),
+    });
+    await this._em.flush();
+    return lobby;
   }
 }

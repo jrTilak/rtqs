@@ -48,7 +48,7 @@ export const QuizLobby = ({ lobby }: LobbyProps) => {
           </BreadcrumbList>
         </Breadcrumb>
       </header>
-      <div className="px-6 flex items-center justify-center flex-1 mb-24">
+      <div className="px-6 flex-1 mb-24">
         <LobbyStatus lobby={lobby} />
       </div>
     </div>

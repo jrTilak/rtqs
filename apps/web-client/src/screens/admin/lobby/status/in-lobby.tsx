@@ -20,7 +20,6 @@ import { ws } from "@/server/ws";
 import { alert } from "@/components/ui/alert-dialog/utils";
 import { parseErrorMessage } from "@/lib/parse-error-message";
 import type { LobbyProps } from "..";
-import { LOBBY_STATUS } from "@/server/constants";
 import { Badge } from "@/components/ui/badge";
 
 export const InLobby = ({ lobby }: LobbyProps) => {

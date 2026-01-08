@@ -45,8 +45,8 @@ export const ModuleCard = ({ module, quizId }: ModuleCardProps) => {
             <div className="flex justify-between items-start">
               <div className="flex-1 items-center flex">
                 <CardTitle className="text-lg">
-                  {module.name}{" "}
-                  <span className="text-muted-foreground">#{module.index}</span>
+                  <span className="text-muted-foreground">#{module.index}</span>{" "}
+                  {module.name}
                   <CollapsibleTrigger asChild>
                     <Button variant="ghost" size="icon-sm" className="ml-4">
                       <ChevronsUpDown />

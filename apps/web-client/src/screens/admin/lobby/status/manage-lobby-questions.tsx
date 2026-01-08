@@ -78,24 +78,17 @@ export const ManageLobbyQuestions = ({ lobby }: LobbyProps) => {
             <CardHeader>
               <div className="flex items-center justify-between">
                 <div>
-                  <CardTitle className="text-xl font-semibold">
-                    Module:
+                  <CardTitle className="font-semibold">
+                    Module:{" "}
                     {lobby.currentModule?.name
-                      ? `${lobby.currentModule?.name} #${lobby.currentModule?.index}`
+                      ? `#${lobby.currentModule?.index} ${lobby.currentModule?.name}`
                       : "---"}
                   </CardTitle>
-                  <CardDescription className="text-sm text-muted-foreground">
-                    Question {currentQuestionIndex + 1} of{" "}
-                    {mockData.questions.length}
-                  </CardDescription>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="text-sm font-medium text-muted-foreground uppercase tracking-wider">
-                    Time Remaining:
-                  </span>
                   <Timer
-                    futureTime={new Date(Date.now() + 60000).getTime()}
-                    className="text-2xl font-bold tracking-tight text-foreground"
+                    futureTime={new Date(lobby.waitUntil).getTime()}
+                    className="text-lg font-bold tracking-tight text-foreground"
                   />
                 </div>
               </div>
@@ -103,42 +96,30 @@ export const ManageLobbyQuestions = ({ lobby }: LobbyProps) => {
             <CardContent>
               <div className="space-y-6">
                 <div className="space-y-2">
-                  <P className="text-lg text-foreground font-medium">
-                    Question
-                  </P>
-                  <div className="bg-muted/80 p-4 rounded-lg">
-                    <P className="text-xl">{currentQuestion.content}</P>
+                  <P>Question</P>
+                  <div className="bg-muted/80 p-4 rounded-md">
+                    <P className="text-lg">
+                      #{lobby.currentQuestion?.index ?? "-"}{" "}
+                      {lobby.currentQuestion?.question ?? "---"}
+                    </P>
                   </div>
                 </div>
 
                 <div className="space-y-2">
-                  <P className="text-lg text-foreground font-medium">
-                    Correct Answer
-                  </P>
-                  <div className="bg-green-50 dark:bg-green-950/20 border-2 border-green-500/50 p-4 rounded-lg">
-                    <P className="text-xl">{currentQuestion.realAnswer}</P>
+                  <P>Correct Answer</P>
+                  <div className="bg-muted/80 p-4 rounded-md border border-green-500">
+                    <P className="text-lg">{currentQuestion.realAnswer}</P>
                   </div>
                 </div>
               </div>
             </CardContent>
-            <CardFooter className="flex justify-end px-6 pt-6 border-t mt-auto">
-              <Button onClick={handleNext} disabled={isLastQuestion}>
-                {isLastQuestion ? "Finish Quiz" : "Next Question"}
-              </Button>
-            </CardFooter>
           </Card>
         </div>
 
-        {/* User Answers Sidebar */}
         <div className="min-w-[400px] shrink-0">
-          <Card className="rounded-2xl hover:shadow-lg border sticky top-2 max-h-[90vh] flex flex-col">
-            <CardHeader className="pb-4">
-              <CardTitle className="text-lg font-semibold">
-                User Answers
-              </CardTitle>
-              <CardDescription className="text-sm">
-                {currentQuestion.answers.length} responses
-              </CardDescription>
+          <Card className="hover:shadow-lg border sticky top-2 max-h-[90vh] flex flex-col">
+            <CardHeader>
+              <CardTitle>Responses (1)</CardTitle>
             </CardHeader>
 
             <ScrollArea className="flex-1 px-4">
@@ -176,13 +157,21 @@ export const ManageLobbyQuestions = ({ lobby }: LobbyProps) => {
               </div>
             </ScrollArea>
 
-            <CardFooter className="p-4 border-t bg-muted/50">
+            <CardFooter className="p-4 border-t bg-muted/50 flex flex-col gap-2">
               <Button
                 className="w-full"
                 disabled={!selectedResponseId}
                 onClick={handleMarkCorrect}
               >
                 Mark as Correct
+              </Button>
+              <Button
+                className="w-full"
+                variant={"outline"}
+                disabled={!selectedResponseId}
+                onClick={handleMarkCorrect}
+              >
+                No Correct Answer
               </Button>
             </CardFooter>
           </Card>
