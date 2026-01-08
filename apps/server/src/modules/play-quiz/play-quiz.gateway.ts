@@ -48,6 +48,20 @@ export class PlayQuizGateway {
   ) {
     await this._playQuizService.joinLobbyRoom(payload, session.user, client);
 
+    const adminRoom = getWsRoomId({
+      role: ROLES.ADMIN,
+      scope: 'lobby',
+      scopeId: payload.lobbyId,
+    });
+
+    this._server.to(adminRoom).emit(
+      GATEWAY_MESSAGES.LOBBY_ROOM_JOINED,
+      new WsResponse({
+        lobby: payload.lobbyId,
+        user: session.user,
+      }),
+    );
+
     const res = new WsResponse();
 
     return res;

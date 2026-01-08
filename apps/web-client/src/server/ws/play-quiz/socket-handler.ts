@@ -9,6 +9,7 @@ import type { WsAckResponse } from "../types";
 import type { Lobby } from "@/server/apis/play-quiz/types";
 import type { authClient } from "@/lib/auth-client";
 import { ROLE } from "@/server/constants";
+import type { User } from "better-auth";
 
 type SocketHandlersProps = {
   queryClient: QueryClient;
@@ -56,6 +57,32 @@ export const socketHandlers: Record<string, (e: SocketHandlersProps) => void> =
             }
           );
         }
+      }
+    },
+    [MESSAGES.LOBBY_ROOM_JOINED]: ({ e, queryClient }) => {
+      console.log("Joined lobby room", e);
+      if (e.success && e.data) {
+        const data = e.data as {
+          lobby: string;
+          user: User;
+        };
+        queryClient.setQueryData(
+          KEYS.playQuiz.getLobby(data.lobby),
+          (prev: GetLobbyResponse["data"] | undefined) => {
+            if (!prev) return data;
+
+            const newParticipants = [
+              data.user,
+              ...(prev.participants || []).filter((p) => p.id !== data.user.id),
+            ];
+
+            return {
+              ...prev,
+              participants: newParticipants,
+              quiz: prev.quiz,
+            };
+          }
+        );
       }
     },
   };

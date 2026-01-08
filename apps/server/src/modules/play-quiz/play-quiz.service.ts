@@ -255,9 +255,14 @@ export class PlayQuizService {
       throw new NotFoundException('Quiz with given id not found');
     }
 
-    const participants = await this._lobbyPlayerRepo.find({
-      lobby,
-    });
+    const participants = await this._lobbyPlayerRepo.find(
+      {
+        lobby: lobby.id,
+      },
+      {
+        populate: ['player'],
+      },
+    );
 
     return {
       ...lobby,
