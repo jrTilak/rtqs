@@ -1,67 +1,55 @@
 # ----------------------------
-# Base image with Node and pnpm
+# Stage 1: Base + Dependencies
 # ----------------------------
 FROM node:24-alpine AS base
 
 # Install pnpm globally
 RUN npm install -g pnpm
 
-# Set working directory
 WORKDIR /app
 
-# ----------------------------
-# Install dependencies
-# ----------------------------
-FROM base AS dependencies
-
-# Copy root package files for workspace dependencies
+# Copy root package files for workspace
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 
-# Copy server and web-client package.json to install only their deps
+# Copy server package.json to get its deps
 COPY apps/server/package.json apps/server/package.json
-COPY apps/web-client/package.json apps/web-client/package.json
 
-# Install all dependencies (frozen lockfile ensures reproducibility)
+# Install dependencies
 RUN pnpm install --frozen-lockfile
 
 # ----------------------------
-# Build the server
+# Stage 2: Build
 # ----------------------------
 FROM base AS builder
 
-# Copy installed node_modules from dependencies stage
-COPY --from=dependencies /app/node_modules ./node_modules
-COPY --from=dependencies /app/apps/server/node_modules ./apps/server/node_modules
+WORKDIR /app
 
 # Copy all source code
 COPY . .
 
-# Set environment to production for build
-ENV NODE_ENV=production
-
-# Build only the server package
+# Build server package only
 RUN pnpm --filter @rtqs/server build
 
 # ----------------------------
-# Runner stage (final image)
+# Stage 3: Runner
 # ----------------------------
-FROM base AS runner
+FROM node:24-alpine AS runner
 
-WORKDIR /app
-
-# Copy node_modules from dependencies stage
-COPY --from=dependencies /app/node_modules ./node_modules
-
-# Copy built server files from builder
-COPY --from=builder /app/apps/server/dist ./apps/server/dist
-COPY --from=builder /app/apps/server/package.json ./apps/server/package.json
-COPY --from=builder /app/apps/server/mikro-orm.config.ts ./apps/server/mikro-orm.config.ts
-COPY --from=builder /app/apps/server/src ./apps/server/src
-COPY --from=builder /app/apps/server/tsconfig.json ./apps/server/tsconfig.json
-COPY --from=builder /app/package.json ./package.json
-
-# Switch to server folder
 WORKDIR /app/apps/server
 
-# Run migrations and start server
-CMD pnpm dlx mikro-orm migration:up && pnpm run star:prod
+# Copy node_modules from dependencies
+COPY --from=base /app/node_modules ./node_modules
+
+# Copy compiled server files
+COPY --from=builder /app/apps/server/dist ./dist
+COPY --from=builder /app/apps/server/package.json ./package.json
+
+# Use compiled JS config for MikroORM
+# (Make sure tsconfig compiled mikro-orm.config.ts -> dist/mikro-orm.config.js)
+COPY --from=builder /app/apps/server/dist/mikro-orm.config.js ./dist/mikro-orm.config.js
+
+# Set production environment
+ENV NODE_ENV=production
+
+# Run migrations then start the server
+CMD pnpm dlx mikro-orm migration:up -c dist/mikro-orm.config.js && pnpm run start:prod

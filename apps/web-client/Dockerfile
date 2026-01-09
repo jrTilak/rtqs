@@ -1,18 +1,12 @@
 # ----------------------------
-# Base image with Node 24 and pnpm
+# Stage 1: Base + Dependencies
 # ----------------------------
 FROM node:24-alpine AS base
 
 # Install pnpm globally
 RUN npm install -g pnpm
 
-# Set working directory
 WORKDIR /app
-
-# ----------------------------
-# Install dependencies
-# ----------------------------
-FROM base AS dependencies
 
 # Copy root workspace files
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
@@ -25,13 +19,11 @@ COPY apps/web-client/package.json apps/web-client/package.json
 RUN pnpm install --frozen-lockfile
 
 # ----------------------------
-# Build web-client
+# Stage 2: Build
 # ----------------------------
 FROM base AS builder
 
-# Copy node_modules from dependencies stage
-COPY --from=dependencies /app/node_modules ./node_modules
-COPY --from=dependencies /app/apps/web-client/node_modules ./apps/web-client/node_modules
+WORKDIR /app
 
 # Copy all source code
 COPY . .
@@ -40,17 +32,17 @@ COPY . .
 RUN pnpm --filter @rtqs/web-client build
 
 # ----------------------------
-# Runner stage (Node 24)
+# Stage 3: Runner
 # ----------------------------
 FROM node:24-alpine AS runner
 
-# Install serve globally to serve static files
+# Install serve globally to serve SPA
 RUN npm install -g serve
 
 WORKDIR /app
 
-# Copy built web-client files
+# Copy only the built static files
 COPY --from=builder /app/apps/web-client/dist ./dist
 
-# Serve SPA with fallback to index.html, using dynamic port
-CMD sh -c "serve -s dist -l ${CLIENT_PORT:-5173}"
+# Serve SPA with fallback to index.html, dynamic port
+CMD ["sh", "-c", "serve -s dist -l ${CLIENT_PORT:-5173}"]
