@@ -664,6 +664,16 @@
           "primary": false,
           "nullable": true,
           "mappedType": "uuid"
+        },
+        "current_question_started_at": {
+          "name": "current_question_started_at",
+          "type": "timestamptz",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "length": 6,
+          "mappedType": "datetime"
         }
       },
       "name": "quiz_lobby_entity",

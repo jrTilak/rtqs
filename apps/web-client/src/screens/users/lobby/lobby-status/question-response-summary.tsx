@@ -52,27 +52,6 @@ export const QuestionResponseSummary = ({ lobby }: LobbyProps) => {
       </div>
 
       <div className="flex flex-col gap-6 flex-1 min-h-0 items-center justify-center">
-        {/* User Status */}
-        {lastResponse ? (
-          <Card
-            className={cn(
-              "border-2 p-8 text-center",
-              lastResponse.isCorrect
-                ? "border-green-500 bg-green-500/10"
-                : "border-red-500 bg-red-500/10"
-            )}
-          >
-            <H3 className="text-2xl font-bold mb-2">
-              {lastResponse.isCorrect ? "Correct!" : "Incorrect"}
-            </H3>
-            <P>Your answer: {lastResponse.answer}</P>
-          </Card>
-        ) : (
-          <Card className="border-2 p-8 text-center border-muted">
-            <H3 className="text-2xl font-bold mb-2">You didn't answer</H3>
-          </Card>
-        )}
-
         {/* Responses List */}
         <div className="w-full max-w-xl">
           <H3 className="text-xl font-bold mb-4">Responses</H3>
@@ -114,7 +93,7 @@ export const QuestionResponseSummary = ({ lobby }: LobbyProps) => {
                     <div className="text-right">
                       {resp.isCorrect && (
                         <span className="text-green-600 font-bold text-xs uppercase px-2">
-                          Correct
+                          WINNER
                         </span>
                       )}
                       {duration !== null && (

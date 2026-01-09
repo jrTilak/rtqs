@@ -45,7 +45,6 @@ export const QuizSummary = ({ lobby }: LobbyProps) => {
                 </Avatar>
                 <div className="pt-2">
                   <H3 className="text-3xl font-bold">{winner.player.name}</H3>
-                  <P className="text-muted-foreground">{winner.player.email}</P>
                 </div>
               </div>
 
