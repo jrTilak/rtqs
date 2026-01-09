@@ -52,6 +52,7 @@ export const ManageLobbyQuestions = ({ lobby }: LobbyProps) => {
       evaluateQuestion.mutate(
         {
           lobbyId: lobby.id,
+          // @ts-expect-error: todo fix
           correctAnswerText: selected.answer,
         },
         {

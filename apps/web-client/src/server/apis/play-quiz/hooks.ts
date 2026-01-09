@@ -4,14 +4,12 @@ import {
   createLobby,
   deleteLobbies,
   findJoinedLobby,
-  evaluateQuestion,
   getLobby,
   getLobbyResponses,
   joinLobby,
   listLobbies,
   type CreateLobbyParams,
   type DeleteLobbiesParams,
-  type EvaluateQuestionParams,
   type FindJoinedLobbyParams,
   type GetLobbyParams,
   type JoinLobbyParams,
@@ -83,22 +81,5 @@ export const useGetLobbyResponses = (lobbyId: string, questionId?: string) => {
   return useQuery({
     queryFn: () => getLobbyResponses(lobbyId).then((r) => r.data),
     queryKey: KEYS.playQuiz.getLobbyResponses(lobbyId, questionId),
-  });
-};
-export const useEvaluateQuestion = () => {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: (params: EvaluateQuestionParams) => evaluateQuestion(params),
-    onSuccess: (res) => {
-      queryClient.invalidateQueries({
-        queryKey: KEYS.playQuiz.findJoinedLobby(res.data.id),
-      });
-      queryClient.invalidateQueries({
-        queryKey: KEYS.playQuiz.getLobby(res.data.id),
-      });
-      queryClient.invalidateQueries({
-        queryKey: KEYS.playQuiz.getLobbyResponses(res.data.id),
-      });
-    },
   });
 };

@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { Timer } from "@/components/ui/timer";
-import type { GetLobbyResponse } from "@/server/apis/play-quiz";
 import { P, H3 } from "@/components/ui/typography";
 import { Button } from "@/components/ui/button";
 import { Play, SkipForward, Clock, Users } from "lucide-react";

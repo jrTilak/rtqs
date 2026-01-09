@@ -2,7 +2,6 @@ import { createFileRoute } from "@tanstack/react-router";
 import { H2, P } from "@/components/ui/typography";
 import { Button } from "@/components/ui/button";
 import { ListIcon, Upload, UsersRound } from "lucide-react";
-import { useNavigate } from "@tanstack/react-router";
 import { AddModuleDialog } from "@/screens/admin/quizzes/quiz-modules/add-module-dialog";
 import { ModulesList } from "@/screens/admin/quizzes/quiz-modules/modules-list";
 import { server } from "@/server/apis";
@@ -24,7 +23,6 @@ export const Route = createFileRoute("/admin/quizzes/$quiz-id")({
 
 function RouteComponent() {
   const { "quiz-id": quizId } = Route.useParams();
-  const navigate = useNavigate();
   const quiz = server.quizzes.useFindById(quizId);
 
   const [tabValue, setTabValue] = useState("quiz");

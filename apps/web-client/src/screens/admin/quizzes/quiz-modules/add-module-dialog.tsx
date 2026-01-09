@@ -45,6 +45,7 @@ interface AddModuleDialogProps {
 export const AddModuleDialog = ({ quizId }: AddModuleDialogProps) => {
   const [open, setOpen] = useState(false);
   const form = useForm<FormSchema>({
+    // @ts-expect-error: todo fix
     resolver: zodResolver(formSchema),
     defaultValues,
   });

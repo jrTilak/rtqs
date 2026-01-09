@@ -1,9 +1,7 @@
 import { useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import type { LobbyProps } from "..";
-import { Card } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Trophy } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { H3, P } from "@/components/ui/typography";
 import { KEYS } from "@/server/keys";
@@ -32,11 +30,11 @@ export const QuestionResponseSummary = ({ lobby }: LobbyProps) => {
 
   // Cast lobby to any to access new properties we will add to backend
   const extendedLobby = lobby as any;
-  const lastResponse = extendedLobby.lastResponse;
-  const stats = extendedLobby.questionStats || {
-    correctCount: 0,
-    winner: null,
-  };
+  // const lastResponse = extendedLobby.lastResponse;
+  // const stats = extendedLobby.questionStats || {
+  //   correctCount: 0,
+  //   winner: null,
+  // };
   const correctAnswer = lobby.currentQuestion?.answer || "---";
 
   return (

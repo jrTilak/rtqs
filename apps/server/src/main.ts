@@ -13,6 +13,7 @@ import { AppValidationPipe } from './common/pipe/app-validation.pipe';
 import { Logger } from './lib/logger';
 import { APP_CONFIG } from './config/app.config';
 import {
+  EvaluateQuestionDto,
   JoinLobbyRoomDto,
   NextQuestionDto,
   UpdateLobbyDto,
@@ -79,7 +80,12 @@ async function bootstrap() {
 
     const document = SwaggerModule.createDocument(app, config, {
       // webscoket is not supported by swagger, so to pass the dto to the swagger, we need extra modules
-      extraModels: [UpdateLobbyDto, JoinLobbyRoomDto, NextQuestionDto],
+      extraModels: [
+        UpdateLobbyDto,
+        JoinLobbyRoomDto,
+        NextQuestionDto,
+        EvaluateQuestionDto,
+      ],
     });
 
     const swaggerPath = process.env.SWAGGER_PATH ?? '/docs';

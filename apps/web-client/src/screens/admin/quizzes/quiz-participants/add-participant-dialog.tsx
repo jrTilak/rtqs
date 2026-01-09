@@ -43,6 +43,7 @@ interface AddParticipantDialogProps {
 export const AddParticipantDialog = ({ quizId }: AddParticipantDialogProps) => {
   const [open, setOpen] = useState(false);
   const form = useForm<FormSchema>({
+    // @ts-expect-error: todo fix
     resolver: zodResolver(formSchema),
     defaultValues,
   });

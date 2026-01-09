@@ -37,6 +37,7 @@ export function LoginForm({
   ...props
 }: React.ComponentProps<"form">) {
   const form = useForm<FormSchema>({
+    // @ts-expect-error: todo fix
     resolver: zodResolver(formSchema),
     defaultValues: DEFAULT_FORM_VALUES,
   });

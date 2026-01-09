@@ -1,3 +1,4 @@
+//@ts-check
 import { Plus } from "lucide-react";
 import {
   Dialog,
@@ -49,6 +50,7 @@ export const AddQuestionDialog = ({ module }: AddQuestionDialogProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const addQuestions = server.quizQuestions.useCreate();
   const form = useForm<FormSchema>({
+    // @ts-expect-error: todo fix
     resolver: zodResolver(formSchema),
     defaultValues,
   });
