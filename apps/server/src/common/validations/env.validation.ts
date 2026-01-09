@@ -11,7 +11,7 @@ import { logger } from '@/lib/logger';
 class Env {
   @IsString()
   @IsOptional()
-  PORT?: string = '5000';
+  SERVER_PORT?: string = '5000';
 
   @IsString()
   @IsNotEmpty()

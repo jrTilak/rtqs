@@ -5,9 +5,9 @@ services:
     image: postgres:17-alpine
     restart: always
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: realtime_quiz
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB:-realtime_quiz}
     ports:
       - "5432:5432"
     volumes:
@@ -19,12 +19,11 @@ services:
       dockerfile: apps/server/Dockerfile
     restart: always
     ports:
-      - "5000:5000"
+      - "${SERVER_EXPOSED_PORT:-5000}:${SERVER_PORT:-5000}"
     env_file:
       - apps/server/.env
     environment:
-      - DATABASE_URL=postgresql://postgres:password@postgres:5432/realtime_quiz
-      - PORT=5000
+      - DATABASE_URL=postgresql://postgres:${POSTGRES_PASSWORD:-password}@postgres:5432/${POSTGRES_DB:-realtime_quiz}
     depends_on:
       - postgres
 
@@ -34,7 +33,7 @@ services:
       dockerfile: apps/web-client/Dockerfile
     restart: always
     ports:
-      - "5173:3000"
+      - "${CLIENT_EXPOSED_PORT:-5173}:${CLIENT_PORT:-5173}"
     env_file:
       - apps/web-client/.env
     depends_on:

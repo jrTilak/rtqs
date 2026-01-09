@@ -27,7 +27,7 @@ const logger = new Logger('Bootstrap');
 
 logger.warn(`Warning: NODE_ENV is set to ${process.env.NODE_ENV}`);
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.SERVER_PORT || 5000;
 
 async function bootstrap() {
   const app = (
