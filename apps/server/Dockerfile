@@ -64,4 +64,4 @@ COPY --from=builder /app/package.json ./package.json
 WORKDIR /app/apps/server
 
 # Run migrations and start server
-CMD pnpm dox mikro-orm migration:up && pnpm run star:prod
+CMD pnpm dlx mikro-orm migration:up && pnpm run star:prod
