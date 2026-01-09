@@ -10,7 +10,6 @@ import { InQuiz } from "./in-quiz";
 import { QuestionResponseSummary } from "./question-response-summary";
 
 import { QuizSummary } from "./quiz-summary";
-import { Ended } from "./ended";
 
 export const LobbyStatus = ({ lobby }: LobbyProps) => {
   switch (lobby.status) {
@@ -33,7 +32,7 @@ export const LobbyStatus = ({ lobby }: LobbyProps) => {
       return <QuizSummary lobby={lobby} />;
 
     case LOBBY_STATUS.ENDED:
-      return <Ended lobby={lobby} />;
+      return <QuizSummary lobby={lobby} />;
     default:
       return null;
   }

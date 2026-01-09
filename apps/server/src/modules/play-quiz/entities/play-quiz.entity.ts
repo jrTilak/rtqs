@@ -55,6 +55,9 @@ export class QuizLobbyEntity extends BaseEntity {
 
   @OneToOne({ deleteRule: 'cascade', nullable: true })
   currentQuestion?: QuizQuestionEntity;
+
+  @Property({ nullable: true })
+  currentQuestionStartedAt?: Date;
 }
 
 export type QuizLobbyEntityType = InstanceType<typeof QuizLobbyEntity>;

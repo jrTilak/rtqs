@@ -221,6 +221,7 @@ export class PlayQuizService {
       winner: undefined,
     };
     let quizSummary: QuizSummaryItemDto[] | undefined;
+    let allResponses: LobbyPlayerResponseDto[] | undefined;
 
     if (lobby.status === QuizLobbyStatsEnum.ENDED) {
       quizSummary = await this.getQuizSummary(lobbyId);
@@ -243,6 +244,7 @@ export class PlayQuizService {
 
       // Stats
       if (lobby.status === QuizLobbyStatsEnum.QUESTION_RESPONSE_SUMMARY) {
+        // Correct stats
         const correctResponses = await this._lobbyPlayerResponseRepo.find(
           {
             question: lobby.currentQuestion,
@@ -257,6 +259,26 @@ export class PlayQuizService {
         if (correctResponses.length > 0) {
           questionStats.winner = correctResponses[0].player.player;
         }
+
+        // All responses
+        const allResponsesData = await this._lobbyPlayerResponseRepo.find(
+          {
+            question: lobby.currentQuestion,
+          },
+          {
+            populate: ['player.player'],
+            orderBy: { isCorrect: 'DESC', createdAt: 'ASC' },
+          },
+        );
+
+        allResponses = allResponsesData.map((r) => ({
+          id: r.id,
+          createdAt: r.createdAt.toISOString(),
+          updatedAt: r.updatedAt.toISOString(),
+          answer: r.answer,
+          isCorrect: r.isCorrect,
+          player: r.player.player,
+        }));
       }
     }
 
@@ -265,6 +287,7 @@ export class PlayQuizService {
       lastResponse,
       questionStats,
       quizSummary,
+      allResponses,
     } as unknown as FindJoinedLobbyResponseDto;
   }
 
@@ -566,6 +589,7 @@ export class PlayQuizService {
       ),
       status: QuizLobbyStatsEnum.IN_QUIZ,
       waitUntil: new Date().toISOString(),
+      currentQuestionStartedAt: new Date().toISOString(),
     });
     await this._em.flush();
     return lobby;
@@ -653,6 +677,7 @@ export class PlayQuizService {
       },
       {
         populate: ['player', 'player.player'],
+        orderBy: { createdAt: 'ASC' },
       },
     );
 

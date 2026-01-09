@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Timer } from "@/components/ui/timer";
+import { Stopwatch } from "@/components/ui/stopwatch";
 import {
   Card,
   CardContent,
@@ -18,13 +19,32 @@ import {
 } from "@/server/ws/play-quiz/hooks";
 import { alert } from "@/components/ui/alert-dialog/utils";
 
+function formatDuration(ms: number) {
+  if (ms < 0) return "00:00:00:000";
+  const hh = Math.floor(ms / 3600000);
+  const mm = Math.floor((ms % 3600000) / 60000);
+  const ss = Math.floor((ms % 60000) / 1000);
+  const mss = ms % 1000;
+  return `${String(hh).padStart(2, "0")}:${String(mm).padStart(
+    2,
+    "0"
+  )}:${String(ss).padStart(2, "0")}:${String(mss).padStart(3, "0")}`;
+}
+
 export const ManageLobbyQuestions = ({ lobby }: LobbyProps) => {
   const [selectedResponseId, setSelectedResponseId] = useState<string | null>(
     null
   );
-  const { data: responses } = useGetLobbyResponses(lobby.id);
+  const { data: responses } = useGetLobbyResponses(
+    lobby.id,
+    lobby.currentQuestion?.id
+  );
   const evaluateQuestion = useEvaluateQuestion();
   const nextQuestion = useNextQuestion();
+
+  useEffect(() => {
+    setSelectedResponseId(null);
+  }, [lobby.currentQuestion?.id]);
 
   const handleMarkCorrect = () => {
     const selected = responses?.find((a) => a.player.id === selectedResponseId);
@@ -98,10 +118,17 @@ export const ManageLobbyQuestions = ({ lobby }: LobbyProps) => {
                   </CardTitle>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Timer
-                    futureTime={new Date(lobby.waitUntil).getTime()}
-                    className="text-lg font-bold tracking-tight text-foreground"
-                  />
+                  {lobby.status === "IN_QUIZ" ? (
+                    <Stopwatch
+                      startTime={new Date(lobby.waitUntil).getTime()}
+                      className="text-lg font-bold tracking-tight text-foreground"
+                    />
+                  ) : (
+                    <Timer
+                      futureTime={new Date(lobby.waitUntil).getTime()}
+                      className="text-lg font-bold tracking-tight text-foreground"
+                    />
+                  )}
                 </div>
               </div>
             </CardHeader>
@@ -140,6 +167,11 @@ export const ManageLobbyQuestions = ({ lobby }: LobbyProps) => {
               <div className="space-y-3 pb-4">
                 {responses?.map((answer: any) => {
                   const isSelected = selectedResponseId === answer.player.id;
+                  const startedAt = (lobby as any).currentQuestionStartedAt;
+                  const duration = startedAt
+                    ? new Date(answer.createdAt).getTime() -
+                      new Date(startedAt).getTime()
+                    : null;
 
                   return (
                     <div
@@ -155,6 +187,11 @@ export const ManageLobbyQuestions = ({ lobby }: LobbyProps) => {
                         <span className="text-sm font-medium text-foreground">
                           {answer.player.name || answer.player.email}
                         </span>
+                        {duration !== null && (
+                          <span className="text-xs text-muted-foreground font-mono">
+                            {formatDuration(duration)}
+                          </span>
+                        )}
                       </div>
                       <P className="text-base">{answer.answer}</P>
                     </div>

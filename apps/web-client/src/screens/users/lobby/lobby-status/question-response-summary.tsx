@@ -7,6 +7,19 @@ import { Trophy } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { H3, P } from "@/components/ui/typography";
 import { KEYS } from "@/server/keys";
+import { ScrollArea } from "@/components/ui/scroll-area";
+
+function formatDuration(ms: number) {
+  if (ms < 0) return "00:00:00:000";
+  const hh = Math.floor(ms / 3600000);
+  const mm = Math.floor((ms % 3600000) / 60000);
+  const ss = Math.floor((ms % 60000) / 1000);
+  const mss = ms % 1000;
+  return `${String(hh).padStart(2, "0")}:${String(mm).padStart(
+    2,
+    "0"
+  )}:${String(ss).padStart(2, "0")}:${String(mss).padStart(3, "0")}`;
+}
 
 export const QuestionResponseSummary = ({ lobby }: LobbyProps) => {
   const queryClient = useQueryClient();
@@ -60,32 +73,67 @@ export const QuestionResponseSummary = ({ lobby }: LobbyProps) => {
           </Card>
         )}
 
-        {/* Winner Section */}
-        {stats.winner && (
-          <Card className="border-2 border-yellow-500/50 bg-yellow-500/5 dark:bg-yellow-500/10 flex flex-col justify-center items-center p-8 gap-4 shadow-lg shadow-yellow-500/10 w-full max-w-md">
-            <Trophy className="size-16 text-yellow-500 animate-bounce" />
-            <div className="text-center space-y-2">
-              <P className="font-semibold text-yellow-600 dark:text-yellow-400 uppercase tracking-widest">
-                Fastest Correct Answer
-              </P>
-              <Avatar className="size-24 border-4 border-yellow-500 shadow-xl mx-auto">
-                <AvatarImage
-                  src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${stats.winner.name}`}
-                />
-                <AvatarFallback>{stats.winner.name[0]}</AvatarFallback>
-              </Avatar>
-              <H3 className="text-2xl font-bold">{stats.winner.name}</H3>
+        {/* Responses List */}
+        <div className="w-full max-w-xl">
+          <H3 className="text-xl font-bold mb-4">Responses</H3>
+          <ScrollArea className="h-[300px] w-full border rounded-md bg-card">
+            <div className="divide-y">
+              {extendedLobby.allResponses?.map((resp: any, i: number) => {
+                const startedAt = extendedLobby.currentQuestionStartedAt;
+                const duration = startedAt
+                  ? new Date(resp.createdAt).getTime() -
+                    new Date(startedAt).getTime()
+                  : null;
+                return (
+                  <div
+                    key={resp.id}
+                    className={cn(
+                      "p-4 flex justify-between items-center opacity-70 transition-colors hover:bg-muted/50",
+                      resp.isCorrect && "opacity-100 bg-green-500/5"
+                    )}
+                  >
+                    <div className="flex items-center gap-3">
+                      <span className="font-mono text-muted-foreground w-6 text-right">
+                        #{i + 1}
+                      </span>
+                      <Avatar className="size-8">
+                        <AvatarImage
+                          src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${resp.player.name}`}
+                        />
+                        <AvatarFallback>{resp.player.name[0]}</AvatarFallback>
+                      </Avatar>
+                      <div>
+                        <P className="font-medium text-sm">
+                          {resp.player.name}
+                        </P>
+                        <P className="text-xs text-muted-foreground">
+                          {resp.answer}
+                        </P>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      {resp.isCorrect && (
+                        <span className="text-green-600 font-bold text-xs uppercase px-2">
+                          Correct
+                        </span>
+                      )}
+                      {duration !== null && (
+                        <P className="text-xs font-mono text-muted-foreground">
+                          {formatDuration(duration)}
+                        </P>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+              {!extendedLobby.allResponses?.length && (
+                <div className="p-8 text-center text-muted-foreground">
+                  No responses yet.
+                </div>
+              )}
             </div>
-          </Card>
-        )}
-
-        {stats.correctCount === 0 && !stats.winner && (
-          <div className="text-center p-8">
-            <H3 className="text-xl font-bold text-muted-foreground">
-              No one got it right!
-            </H3>
-          </div>
-        )}
+          </ScrollArea>
+        </div>
       </div>
     </div>
   );

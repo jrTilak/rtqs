@@ -7,16 +7,13 @@ import { H2 } from "@/components/ui/typography";
 import { useState, useCallback } from "react";
 import { useSubmitAnswer } from "@/server/ws/play-quiz/hooks";
 import { alert } from "@/components/ui/alert-dialog/utils";
-import { Timer } from "@/components/ui/timer";
+import { Stopwatch } from "@/components/ui/stopwatch";
 import { Clock } from "lucide-react";
 
 export const InQuiz = ({ lobby }: LobbyProps) => {
   const [answer, setAnswer] = useState("");
   const [isSubmitted, setIsSubmitted] = useState(false);
   const submitAnswer = useSubmitAnswer();
-
-  // 2 minutes from when the question started
-  const targetTime = new Date(lobby.waitUntil).getTime() + 120 * 1000;
 
   const handleSubmit = useCallback(() => {
     if (isSubmitted) return;
@@ -53,9 +50,8 @@ export const InQuiz = ({ lobby }: LobbyProps) => {
       <div className="flex justify-center">
         <div className="flex items-center gap-2 bg-muted px-4 py-2 rounded-full">
           <Clock className="w-5 h-5 text-primary" />
-          <Timer
-            futureTime={targetTime}
-            showHH={false}
+          <Stopwatch
+            startTime={new Date(lobby.waitUntil).getTime()}
             className="text-xl font-bold font-mono tracking-wider"
           />
         </div>

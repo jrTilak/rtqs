@@ -78,6 +78,13 @@ export class GetLobbyByIdResponseDto extends QuizLobbyDto {
     isArray: true,
   })
   quizSummary?: QuizSummaryItemDto[];
+
+  @ApiProperty({
+    type: 'string',
+    required: false,
+    nullable: true,
+  })
+  currentQuestionStartedAt?: string;
 }
 
 export class LobbyPlayerResponseDto extends BaseTableDto {
@@ -116,4 +123,12 @@ export class FindJoinedLobbyResponseDto extends OmitType(
     nullable: true,
   })
   questionStats?: QuestionStatsDto;
+
+  @ApiProperty({
+    type: LobbyPlayerResponseDto,
+    required: false,
+    nullable: true,
+    isArray: true,
+  })
+  allResponses?: LobbyPlayerResponseDto[];
 }

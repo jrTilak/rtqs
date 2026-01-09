@@ -79,10 +79,10 @@ export const useFindJoinedLobby = (params: FindJoinedLobbyParams) => {
   });
 };
 
-export const useGetLobbyResponses = (params: string) => {
+export const useGetLobbyResponses = (lobbyId: string, questionId?: string) => {
   return useQuery({
-    queryFn: () => getLobbyResponses(params).then((r) => r.data),
-    queryKey: KEYS.playQuiz.getLobbyResponses(params),
+    queryFn: () => getLobbyResponses(lobbyId).then((r) => r.data),
+    queryKey: KEYS.playQuiz.getLobbyResponses(lobbyId, questionId),
   });
 };
 export const useEvaluateQuestion = () => {
