@@ -1,0 +1,44 @@
+version: "3.8"
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: realtime_quiz
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  server:
+    build:
+      context: .
+      dockerfile: apps/server/Dockerfile
+    restart: always
+    ports:
+      - "5000:5000"
+    env_file:
+      - apps/server/.env
+    environment:
+      - DATABASE_URL=postgresql://postgres:password@postgres:5432/realtime_quiz
+      - PORT=5000
+    depends_on:
+      - postgres
+
+  web:
+    build:
+      context: .
+      dockerfile: apps/web-client/Dockerfile
+    restart: always
+    ports:
+      - "5173:3000"
+    env_file:
+      - apps/web-client/.env
+    depends_on:
+      - server
+
+volumes:
+  postgres_data:
