@@ -5,6 +5,7 @@ import {
   deleteLobbies,
   findJoinedLobby,
   getLobby,
+  getLobbyResponses,
   joinLobby,
   listLobbies,
   type CreateLobbyParams,
@@ -73,5 +74,12 @@ export const useFindJoinedLobby = (params: FindJoinedLobbyParams) => {
   return useQuery({
     queryFn: () => findJoinedLobby(params).then((r) => r.data),
     queryKey: KEYS.playQuiz.findJoinedLobby(params),
+  });
+};
+
+export const useGetLobbyResponses = (params: string) => {
+  return useQuery({
+    queryFn: () => getLobbyResponses(params).then((r) => r.data),
+    queryKey: KEYS.playQuiz.getLobbyResponses(params),
   });
 };

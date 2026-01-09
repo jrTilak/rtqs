@@ -5,6 +5,7 @@ import { MESSAGES } from "./messages";
 import type {
   JoinLobbyRoomPayload,
   NextQuestionPayload,
+  SubmitAnswerPayload,
   UpdateLobbyPayload,
 } from "./types";
 
@@ -35,6 +36,17 @@ export const nextQuestion = async (payload: NextQuestionPayload) => {
     MESSAGES.NEXT_QUESTION,
     payload
   )) as WsAckResponse<Lobby>;
+  if (!res.success) {
+    throw new Error(res.message);
+  }
+  return res.data;
+};
+
+export const submitAnswer = async (payload: SubmitAnswerPayload) => {
+  const res = (await socket.client.emitWithAck(
+    MESSAGES.SUBMIT_ANSWER,
+    payload
+  )) as WsAckResponse<void>;
   if (!res.success) {
     throw new Error(res.message);
   }

@@ -38,6 +38,7 @@ export const KEYS = {
       "findJoinedLobby",
       params,
     ],
+    getLobbyResponses: (params: string) => ["lobby", "responses", params],
   },
   users: {
     list: () => ["users"],

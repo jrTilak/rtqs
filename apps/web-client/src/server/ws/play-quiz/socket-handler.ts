@@ -84,4 +84,34 @@ export const socketHandlers: Record<string, (e: SocketHandlersProps) => void> =
         );
       }
     },
+    [MESSAGES.ANSWER_SUBMITTED]: ({ e, queryClient }) => {
+      if (!e.success || !e.data) return;
+
+      const payload = e.data as {
+        lobbyId: string;
+        user: User;
+      };
+
+      if (payload && payload.lobbyId && payload.user) {
+        const newResponse = {
+          ...payload,
+          player: payload.user,
+        };
+        queryClient.setQueryData(
+          KEYS.playQuiz.getLobbyResponses(payload.lobbyId),
+          (old: any[] | undefined) => {
+            if (!old) return [newResponse];
+            const exists = old.find(
+              (r) => r.player.id === newResponse.player.id
+            );
+            if (exists) {
+              return old.map((r) =>
+                r.player.id === newResponse.player.id ? newResponse : r
+              );
+            }
+            return [...old, newResponse];
+          }
+        );
+      }
+    },
   };

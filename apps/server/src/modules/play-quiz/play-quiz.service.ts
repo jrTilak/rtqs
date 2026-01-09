@@ -9,17 +9,20 @@ import {
   JoinLobbyRoomDto,
   ListLobbyDto,
   NextQuestionDto,
+  SubmitAnswerDto,
   UpdateLobbyDto,
 } from './dto/request/lobby.dto';
 import { InjectRepository } from '@mikro-orm/nestjs';
 import {
   LobbyPlayerEntity,
+  LobbyPlayerResponseEntity,
   QuizLobbyEntity,
   QuizLobbyEntityType,
   QuizLobbyStatsEnum,
 } from './entities';
 import {
   LobbyPlayerRepository,
+  LobbyPlayerResponseRepository,
   QuizLobbyRepository,
 } from './play-quiz.repository';
 import { QuizEntity } from '../quizzes/entities';
@@ -28,7 +31,10 @@ import { EntityManager } from '@mikro-orm/core';
 import { QuizParticipantEntity } from '../quiz-participants/entities/quiz-participant.entity';
 import { QuizParticipantsRepository } from '../quiz-participants/quiz-participants.repository';
 import { User } from '@/common/db/entities/auth.entity';
-import { GetLobbyByIdResponseDto } from './dto/response/lobby.dto';
+import {
+  GetLobbyByIdResponseDto,
+  LobbyPlayerResponseDto,
+} from './dto/response/lobby.dto';
 import { Socket } from 'socket.io';
 import { ROLES } from '@/lib/auth';
 import { getWsRoomId } from '@/lib/get-ws-room-id';
@@ -52,6 +58,9 @@ export class PlayQuizService {
 
     @InjectRepository(LobbyPlayerEntity)
     private readonly _lobbyPlayerRepo: LobbyPlayerRepository,
+
+    @InjectRepository(LobbyPlayerResponseEntity)
+    private readonly _lobbyPlayerResponseRepo: LobbyPlayerResponseRepository,
 
     @InjectRepository(QuizQuestionEntity)
     private readonly _quizQuestionRepo: QuizQuestionsRepository,
@@ -439,5 +448,100 @@ export class PlayQuizService {
     });
     await this._em.flush();
     return lobby;
+  }
+
+  async submitAnswer(data: SubmitAnswerDto, user: { id: string }) {
+    const lobby = await this._quizLobbyRepo.findOne(
+      {
+        id: data.lobbyId,
+      },
+      {
+        populate: ['quiz', 'currentQuestion'],
+      },
+    );
+
+    if (!lobby) {
+      throw new NotFoundException('Lobby not found');
+    }
+
+    if (lobby.status !== QuizLobbyStatsEnum.IN_QUIZ) {
+      throw new BadRequestException('Quiz is not active');
+    }
+
+    if (!lobby.currentQuestion) {
+      throw new BadRequestException('No question active');
+    }
+
+    const lobbyPlayer = await this._lobbyPlayerRepo.findOne({
+      lobby: lobby.id,
+      player: user.id,
+    });
+
+    if (!lobbyPlayer) {
+      throw new BadRequestException('You are not in this lobby');
+    }
+
+    let response = await this._lobbyPlayerResponseRepo.findOne({
+      player: lobbyPlayer,
+      question: lobby.currentQuestion,
+    });
+
+    if (response) {
+      throw new BadRequestException(
+        'You have already submitted an answer for this question.',
+      );
+    } else {
+      response = this._lobbyPlayerResponseRepo.create({
+        player: lobbyPlayer,
+        question: lobby.currentQuestion,
+        answer: data.answer,
+        isCorrect: false,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      });
+    }
+
+    await this._em.flush();
+
+    return response;
+  }
+  async getLobbyResponses(lobbyId: string): Promise<LobbyPlayerResponseDto[]> {
+    const lobby = await this._quizLobbyRepo.findOne(
+      {
+        id: lobbyId,
+      },
+      {
+        populate: ['currentQuestion'],
+      },
+    );
+
+    if (!lobby) {
+      throw new NotFoundException('Lobby not found');
+    }
+
+    if (!lobby.currentQuestion) {
+      return [];
+    }
+
+    const responses = await this._lobbyPlayerResponseRepo.find(
+      {
+        question: lobby.currentQuestion,
+        player: {
+          lobby: lobbyId,
+        },
+      },
+      {
+        populate: ['player', 'player.player'],
+      },
+    );
+
+    return responses.map((r) => ({
+      id: r.id,
+      createdAt: r.createdAt.toISOString(),
+      updatedAt: r.updatedAt.toISOString(),
+      answer: r.answer,
+      isCorrect: r.isCorrect,
+      player: r.player.player,
+    }));
   }
 }

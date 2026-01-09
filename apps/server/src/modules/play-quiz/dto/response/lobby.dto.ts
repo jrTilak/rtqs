@@ -2,7 +2,7 @@ import { BaseTableDto } from '@/common/dto/response/base-table.dto';
 import { ApiProperty, IntersectionType, OmitType } from '@nestjs/swagger';
 import { LobbyBaseDto } from '../lobby.dto';
 import { QuizDto } from '@/modules/quizzes/dto/response/quiz.dto';
-import { User } from '@/common/db/entities/auth.entity';
+import { User as UserEntity } from '@/common/db/entities/auth.entity';
 import { QuizModuleDto } from '@/modules/quiz-modules/dto/response/quiz-module.dto';
 import { QuizQuestionDto } from '@/modules/quiz-questions/dto/response/quiz-question.dto';
 
@@ -19,11 +19,11 @@ export class GetLobbyByIdResponseDto extends QuizLobbyDto {
   quiz: QuizDto;
 
   @ApiProperty({
-    type: User,
+    type: UserEntity,
     required: true,
     isArray: true,
   })
-  participants: User[];
+  participants: UserEntity[];
 
   @ApiProperty({
     type: QuizModuleDto,
@@ -42,3 +42,22 @@ export class FindJoinedLobbyResponseDto extends OmitType(
   GetLobbyByIdResponseDto,
   ['participants'],
 ) {}
+
+export class LobbyPlayerResponseDto extends BaseTableDto {
+  @ApiProperty({
+    type: 'string',
+    example: 'Paris',
+  })
+  answer: string;
+
+  @ApiProperty({
+    type: 'boolean',
+    example: true,
+  })
+  isCorrect: boolean;
+
+  @ApiProperty({
+    type: UserEntity,
+  })
+  player: UserEntity;
+}

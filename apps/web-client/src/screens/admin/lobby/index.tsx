@@ -11,7 +11,11 @@ export type LobbyProps = {
 
 export const LobbyPage = ({ lobby }: LobbyProps) => {
   const { isConnected } = useSocket({
-    events: [MESSAGES.LOBBY_UPDATED, MESSAGES.LOBBY_ROOM_JOINED],
+    events: [
+      MESSAGES.LOBBY_UPDATED,
+      MESSAGES.LOBBY_ROOM_JOINED,
+      MESSAGES.ANSWER_SUBMITTED,
+    ],
   });
 
   const joinLobbyRoom = useJoinLobbyRoom(

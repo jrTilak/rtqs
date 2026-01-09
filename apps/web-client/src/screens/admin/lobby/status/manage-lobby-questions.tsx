@@ -3,7 +3,6 @@ import { Timer } from "@/components/ui/timer";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
   CardFooter,
@@ -13,35 +12,9 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import type { LobbyProps } from "..";
-
-const mockData = {
-  moduleId: "1",
-  name: "General Knowledge",
-  questions: [
-    {
-      questionId: "1",
-      content: "What is the capital of France?",
-      realAnswer: "Paris",
-      answers: [
-        { userId: "1", userName: "Alice", answer: "Paris" },
-        { userId: "2", userName: "Bob", answer: "London" },
-        { userId: "3", userName: "Charlie", answer: "Paris" },
-      ],
-    },
-    {
-      questionId: "2",
-      content: "What is 2 + 2?",
-      realAnswer: "4",
-      answers: [
-        { userId: "1", userName: "Alice", answer: "4" },
-        { userId: "2", userName: "Bob", answer: "5" },
-      ],
-    },
-  ],
-};
+import { useGetLobbyResponses } from "@/server/apis/play-quiz/hooks";
 
 export const ManageLobbyQuestions = ({ lobby }: LobbyProps) => {
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedResponseId, setSelectedResponseId] = useState<string | null>(
     null
   );
@@ -49,21 +22,10 @@ export const ManageLobbyQuestions = ({ lobby }: LobbyProps) => {
     null
   );
 
-  const currentQuestion = mockData.questions[currentQuestionIndex];
-  const isLastQuestion = currentQuestionIndex === mockData.questions.length - 1;
-
-  const handleNext = () => {
-    if (!isLastQuestion) {
-      setCurrentQuestionIndex((prev) => prev + 1);
-      setSelectedResponseId(null);
-      setMarkedCorrectAnswer(null);
-    }
-  };
+  const { data: responses } = useGetLobbyResponses(lobby.id);
 
   const handleMarkCorrect = () => {
-    const selected = currentQuestion.answers.find(
-      (a) => a.userId === selectedResponseId
-    );
+    const selected = responses?.find((a) => a.player.id === selectedResponseId);
     if (selected) {
       setMarkedCorrectAnswer(selected.answer);
     }
@@ -108,7 +70,9 @@ export const ManageLobbyQuestions = ({ lobby }: LobbyProps) => {
                 <div className="space-y-2">
                   <P>Correct Answer</P>
                   <div className="bg-muted/80 p-4 rounded-md border border-green-500">
-                    <P className="text-lg">{currentQuestion.realAnswer}</P>
+                    <P className="text-lg">
+                      {lobby.currentQuestion?.answer ?? "--- "}
+                    </P>
                   </div>
                 </div>
               </div>
@@ -119,19 +83,19 @@ export const ManageLobbyQuestions = ({ lobby }: LobbyProps) => {
         <div className="min-w-[400px] shrink-0">
           <Card className="hover:shadow-lg border sticky top-2 max-h-[90vh] flex flex-col">
             <CardHeader>
-              <CardTitle>Responses (1)</CardTitle>
+              <CardTitle>Responses ({responses?.length || 0})</CardTitle>
             </CardHeader>
 
             <ScrollArea className="flex-1 px-4">
               <div className="space-y-3 pb-4">
-                {currentQuestion.answers.map((answer) => {
+                {responses?.map((answer) => {
                   const isCorrect = markedCorrectAnswer === answer.answer;
-                  const isSelected = selectedResponseId === answer.userId;
+                  const isSelected = selectedResponseId === answer.player.id;
 
                   return (
                     <div
-                      key={answer.userId}
-                      onClick={() => setSelectedResponseId(answer.userId)}
+                      key={answer.player.id}
+                      onClick={() => setSelectedResponseId(answer.player.id)}
                       className={`p-3 rounded-lg border-2 cursor-pointer transition-all ${
                         isCorrect
                           ? "bg-green-50 dark:bg-green-950/20 border-green-500"
@@ -142,7 +106,7 @@ export const ManageLobbyQuestions = ({ lobby }: LobbyProps) => {
                     >
                       <div className="flex items-start justify-between mb-2">
                         <span className="text-sm font-medium text-foreground">
-                          {answer.userName}
+                          {answer.player.name || answer.player.email}
                         </span>
                         {isCorrect && (
                           <Badge className="bg-green-500 hover:bg-green-600">

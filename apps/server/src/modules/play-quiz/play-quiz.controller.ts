@@ -25,6 +25,7 @@ import {
 import {
   FindJoinedLobbyResponseDto,
   GetLobbyByIdResponseDto,
+  LobbyPlayerResponseDto,
   QuizLobbyDto,
 } from './dto/response/lobby.dto';
 import { User } from '@/common/db/entities/auth.entity';
@@ -116,6 +117,19 @@ export class PlayQuizController {
   @ApiDeleteSuccess()
   async deleteLobbies(@Query() query: DeleteLobbyDto) {
     const res = await this._playQuizService.deleteLobby(query);
+    return new ApiResponse(res);
+  }
+  
+  @Get('/lobby/responses/:lobby_id')
+  @ApiOperation({
+    summary: 'Get lobby responses',
+  })
+  @ApiGetSuccess({
+    type: LobbyPlayerResponseDto,
+    isArray: true,
+  })
+  async getLobbyResponses(@Param('lobby_id', new ParseUUIDPipe()) id: string) {
+    const res = await this._playQuizService.getLobbyResponses(id);
     return new ApiResponse(res);
   }
 }

@@ -19,6 +19,7 @@ import { ROLES } from '@/lib/auth';
 import {
   JoinLobbyRoomDto,
   NextQuestionDto,
+  SubmitAnswerDto,
   UpdateLobbyDto,
 } from './dto/request/lobby.dto';
 import { getWsRoomId } from '@/lib/get-ws-room-id';
@@ -75,6 +76,36 @@ export class PlayQuizGateway {
     console.log(client.rooms, session.user.email);
 
     return new WsResponse();
+  }
+
+  @Roles([ROLES.USER])
+  @SubscribeMessage(GATEWAY_MESSAGES.SUBMIT_ANSWER)
+  async onSubmitAnswer(
+    @MessageBody() payload: SubmitAnswerDto,
+    @ConnectedSocket() _client: Socket,
+    @Session() session: UserSession,
+  ) {
+    const response = await this._playQuizService.submitAnswer(
+      payload,
+      session.user,
+    );
+
+    const adminRoom = getWsRoomId({
+      role: ROLES.ADMIN,
+      scope: 'lobby',
+      scopeId: payload.lobbyId,
+    });
+
+    this._server.to(adminRoom).emit(
+      GATEWAY_MESSAGES.ANSWER_SUBMITTED,
+      new WsResponse({
+        ...response,
+        user: session.user,
+        lobbyId: payload.lobbyId,
+      }),
+    );
+
+    return new WsResponse(response);
   }
 
   @SubscribeMessage(GATEWAY_MESSAGES.UPDATE_LOBBY)

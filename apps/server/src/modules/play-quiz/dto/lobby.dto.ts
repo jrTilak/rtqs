@@ -51,3 +51,5 @@ export class LobbyBaseDto {
   })
   status: QuizLobbyStatsEnum;
 }
+
+

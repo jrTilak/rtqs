@@ -21,3 +21,9 @@ export type FindJoinedLobbyParams = Parameters<typeof findJoinedLobby>[0];
 export type FindJoinedLobbyResponse = Awaited<
   ReturnType<typeof findJoinedLobby>
 >;
+
+export const getLobbyResponses = sdk.playQuizControllerGetLobbyResponses;
+export type GetLobbyResponsesParams = Parameters<typeof getLobbyResponses>[0];
+export type GetLobbyResponsesResponse = Awaited<
+  ReturnType<typeof getLobbyResponses>
+>;
