@@ -16,16 +16,16 @@ export class User extends BaseEntity {
   image?: string;
 
   @Property({ nullable: true })
-  role: string;
+  role?: string;
 
   @Property({ nullable: true })
-  banned: boolean;
+  banned?: boolean;
 
   @Property({ nullable: true })
-  banReason: string;
+  banReason?: string;
 
   @Property({ nullable: true })
-  banExpires: Date;
+  banExpires?: Date;
 }
 
 @Entity()

@@ -12,6 +12,7 @@ import { QuizModulesModule } from './modules/quiz-modules/quiz-modules.module';
 import { QuizQuestionsModule } from './modules/quiz-questions/quiz-questions.module';
 import { PlayQuizModule } from './modules/play-quiz/play-quiz.module';
 import { QuizParticipantsModule } from './modules/quiz-participants/quiz-participants.module';
+import { AdminSeederModule } from './modules/admin-seeder/admin-seeder.module';
 
 @Module({
   imports: [
@@ -47,6 +48,8 @@ import { QuizParticipantsModule } from './modules/quiz-participants/quiz-partici
     PlayQuizModule,
 
     QuizParticipantsModule,
+
+    AdminSeederModule,
   ],
   controllers: [AppController],
   providers: [AppService],

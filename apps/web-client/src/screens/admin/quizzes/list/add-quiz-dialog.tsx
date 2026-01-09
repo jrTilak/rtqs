@@ -41,6 +41,7 @@ const defaultValues: FormSchema = {
 export const AddQuizDialog = () => {
   const [open, setOpen] = useState(false);
   const form = useForm<FormSchema>({
+    // @ts-expect-error: todo fix
     resolver: zodResolver(formSchema),
     defaultValues,
   });

@@ -398,9 +398,13 @@ export interface FindJoinedLobbyResponseDto {
   /** @nullable */
   quizSummary?: QuizSummaryItemDto[] | null;
   /** @nullable */
+  currentQuestionStartedAt?: string | null;
+  /** @nullable */
   lastResponse?: FindJoinedLobbyResponseDtoLastResponse;
   /** @nullable */
   questionStats?: FindJoinedLobbyResponseDtoQuestionStats;
+  /** @nullable */
+  allResponses?: LobbyPlayerResponseDto[] | null;
 }
 
 export interface SuccessResponseTypeDtoFindJoinedLobbyResponseDto19 {
@@ -447,6 +451,8 @@ export interface GetLobbyByIdResponseDto {
   currentQuestion: QuizQuestionDto;
   /** @nullable */
   quizSummary?: QuizSummaryItemDto[] | null;
+  /** @nullable */
+  currentQuestionStartedAt?: string | null;
 }
 
 export interface SuccessResponseTypeDtoGetLobbyByIdResponseDto20 {
@@ -554,6 +560,11 @@ export interface JoinLobbyRoomDto {
 }
 
 export interface NextQuestionDto {
+  /** Lobby id */
+  lobbyId: string;
+}
+
+export interface EvaluateQuestionDto {
   /** Lobby id */
   lobbyId: string;
 }

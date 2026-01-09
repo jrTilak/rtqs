@@ -27,8 +27,3 @@ export type GetLobbyResponsesParams = Parameters<typeof getLobbyResponses>[0];
 export type GetLobbyResponsesResponse = Awaited<
   ReturnType<typeof getLobbyResponses>
 >;
-export const evaluateQuestion = sdk.playQuizControllerEvaluateQuestion;
-export type EvaluateQuestionParams = Parameters<typeof evaluateQuestion>[0];
-export type EvaluateQuestionResponse = Awaited<
-  ReturnType<typeof evaluateQuestion>
->;

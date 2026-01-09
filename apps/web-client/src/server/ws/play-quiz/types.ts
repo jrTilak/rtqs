@@ -1,8 +1,8 @@
 import type {
+  EvaluateQuestionDto,
   JoinLobbyRoomDto,
   NextQuestionDto,
   UpdateLobbyDto,
-  EvaluateQuestionDto,
 } from "@/server/apis/sdk/generated";
 
 export interface SubmitAnswerDto {

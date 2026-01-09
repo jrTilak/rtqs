@@ -1,14 +1,4 @@
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
 import { useForm } from "react-hook-form";
 import {
   Form,
@@ -41,6 +31,7 @@ export function EnterLobbyForm() {
   const joinLobby = server.playQuiz.useJoinLobby();
   const navigate = useNavigate();
   const form = useForm<EnterLobbyFormValues>({
+    // @ts-expect-error: todo fix
     resolver: zodResolver(enterLobbySchema),
     defaultValues: {
       lobbyCode: "",

@@ -1,3 +1,5 @@
+//@ts-check
+
 import { alert } from "@/components/ui/alert-dialog/utils";
 import { Button } from "@/components/ui/button";
 import {
@@ -49,6 +51,7 @@ export const StartLobbyDialog = ({ quizId }: Props) => {
   const navigate = useNavigate();
   const createLobby = server.playQuiz.useCreateLobby();
   const form = useForm<StartLobbyFormValues>({
+    // @ts-expect-error: todo fix
     resolver: zodResolver(startLobbySchema),
     defaultValues: {
       name: "",

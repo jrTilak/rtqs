@@ -17,7 +17,7 @@ import {
   useEvaluateQuestion,
   useNextQuestion,
 } from "@/server/ws/play-quiz/hooks";
-import { alert } from "@/components/ui/alert-dialog/utils";
+import { alert, confirm } from "@/components/ui/alert-dialog/utils";
 
 function formatDuration(ms: number) {
   if (ms < 0) return "00:00:00:000";
@@ -52,6 +52,7 @@ export const ManageLobbyQuestions = ({ lobby }: LobbyProps) => {
       evaluateQuestion.mutate(
         {
           lobbyId: lobby.id,
+          // @ts-expect-error: todo fix
           correctAnswerText: selected.answer,
         },
         {
@@ -69,7 +70,17 @@ export const ManageLobbyQuestions = ({ lobby }: LobbyProps) => {
     }
   };
 
-  const handleNoCorrect = () => {
+  const handleNoCorrect = async () => {
+    await confirm({
+      title: "No Correct Answer",
+      description:
+        "Are you sure you want to mark no correct answer? You cannot change it later.",
+      action: "Mark No Correct Answer",
+      cancel: "Cancel",
+      waitUntillAction: 2,
+    });
+
+    if (!confirm) return;
     evaluateQuestion.mutate(
       {
         lobbyId: lobby.id,

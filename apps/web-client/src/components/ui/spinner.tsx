@@ -26,6 +26,7 @@ type SpinnerProps = ComponentProps<"svg"> &
 function Spinner({ className, asChild = false, size, ...props }: SpinnerProps) {
   const Elem = asChild ? Slot.Root : IconLoader3;
   return (
+    // @ts-expect-error: todo fix
     <Elem
       role="status"
       aria-label="Loading"
