@@ -284,6 +284,10 @@ export class PlayQuizService {
 
     return {
       ...lobby,
+      currentQuestion:
+        lobby.currentQuestion && lobby.status === QuizLobbyStatsEnum.IN_QUIZ
+          ? { ...lobby.currentQuestion, answer: '' }
+          : lobby.currentQuestion,
       lastResponse,
       questionStats,
       quizSummary,

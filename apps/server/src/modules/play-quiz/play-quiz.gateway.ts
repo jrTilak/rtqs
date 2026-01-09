@@ -179,16 +179,28 @@ export class PlayQuizGateway {
 
         const startedLobby = await this._playQuizService.saveNextQuestion({
           id: newLobby.id,
-          currentModuleId: newLobby.currentModuleId!,
-          currentQuestionId: newLobby.currentQuestionId!,
+          currentModuleId: newLobby.currentModuleId,
+          currentQuestionId: newLobby.currentQuestionId,
         });
 
         if (startedLobby) {
           const startedRes = new WsResponse(startedLobby);
           this._server
-            .to(userRoom)
             .to(adminRoom)
             .emit(GATEWAY_MESSAGES.LOBBY_UPDATED, startedRes);
+
+          const userLobby = {
+            ...startedLobby,
+            currentQuestion: startedLobby.currentQuestion
+              ? { ...startedLobby.currentQuestion, answer: '' }
+              : startedLobby.currentQuestion,
+          };
+
+          this._server.to(userRoom).emit(
+            GATEWAY_MESSAGES.LOBBY_UPDATED,
+            //@ts-expect-error: todo fix it
+            new WsResponse(omitObj(userLobby, ['participants'])),
+          );
 
           return startedRes;
         }
