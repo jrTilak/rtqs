@@ -1,22 +1,27 @@
 ---
 ---
 
-## API Info
+## API Overview
 
-There are four type of routes:
+The API supports four types of routes:
 
-### 1. POST (CREATE)
+### 1. POST (Create)
 
-Creates a new document in the database and returns if success.
+Creates a new document in the database and returns a success response upon completion.
 
-### 2. GET (READ)
+### 2. GET (Read)
 
-Finds and return documents based on certain optional filters.
+Retrieves documents based on optional filter criteria.
 
 ### 3. DELETE
 
-Delete documents based on a certain filters
+Removes documents matching specified filters and returns the ID of the deleted document.
 
-### 4. PATCH
+### 4. PATCH (Update)
 
-Update the document generally by document Id.
+Updates an existing document, typically identified by its document ID.
+
+## Authentication
+
+Authentication is managed using Better Auth with the `magic-link` and `admin` plugins.  
+Refer to the documentation here: [Better Auth](https://www.better-auth.com/)

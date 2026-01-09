@@ -1,16 +1,16 @@
 import { sdk } from "../sdk";
 
-export const createQuiz = sdk.quizzesControllerCreateQuiz;
-export type CreateQuizParams = Parameters<typeof createQuiz>[0];
+export const create = sdk.quizzesControllerCreate;
+export type CreateParams = Parameters<typeof create>[0];
 
-export const listQuizzes = sdk.quizzesControllerListQuizzes;
-export type ListQuizzesParams = Parameters<typeof listQuizzes>[0];
+export const list = sdk.quizzesControllerListAll;
+export type ListParams = Parameters<typeof list>[0];
 
-export const getAQuiz = sdk.quizzesControllerGetAQuiz;
-export type GetAQuizParams = Parameters<typeof getAQuiz>[0];
+export const findById = sdk.quizzesControllerFindById;
+export type FindByIdParams = Parameters<typeof findById>[0];
 
-export const updateQuiz = sdk.quizzesControllerUpdateQuiz;
-export type UpdateQuizParams = Parameters<typeof updateQuiz>[0];
+export const update = sdk.quizzesControllerUpdate;
+export type UpdateParams = Parameters<typeof update>[0];
 
-export const deleteQuizzes = sdk.quizzesControllerDeleteQuizzes;
-export type DeleteQuizzesParams = Parameters<typeof deleteQuizzes>[0];
+export const deleteMany = sdk.quizzesControllerDeleteMany;
+export type DeleteManyParams = Parameters<typeof deleteMany>[0];

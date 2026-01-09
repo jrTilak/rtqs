@@ -1,9 +1,20 @@
 import { KEYS } from "@/server/keys";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
+  createLobby,
+  deleteLobbies,
+  findJoinedLobby,
+  evaluateQuestion,
   getLobby,
+  getLobbyResponses,
+  joinLobby,
   listLobbies,
+  type CreateLobbyParams,
+  type DeleteLobbiesParams,
+  type EvaluateQuestionParams,
+  type FindJoinedLobbyParams,
   type GetLobbyParams,
+  type JoinLobbyParams,
   type ListLobbiesParams,
 } from ".";
 
@@ -18,5 +29,76 @@ export const useGetLobby = (params: GetLobbyParams) => {
   return useQuery({
     queryFn: () => getLobby(params).then((r) => r.data),
     queryKey: KEYS.playQuiz.getLobby(params),
+  });
+};
+
+export const useCreateLobby = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (params: CreateLobbyParams) => createLobby(params),
+    onSuccess: (_, params) => {
+      queryClient.invalidateQueries({
+        queryKey: KEYS.playQuiz.listLobbies({ quizId: params.quizId }),
+      });
+    },
+  });
+};
+
+export const useDeleteLobbies = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (
+      params: DeleteLobbiesParams & {
+        quizId: string;
+      }
+    ) => deleteLobbies({ ids: params.ids }),
+    onSuccess: (_, params) => {
+      queryClient.invalidateQueries({
+        queryKey: KEYS.playQuiz.listLobbies({ quizId: params.quizId }),
+      });
+    },
+  });
+};
+
+export const useJoinLobby = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (params: JoinLobbyParams) => joinLobby(params),
+    onSuccess: (res) => {
+      queryClient.invalidateQueries({
+        queryKey: KEYS.playQuiz.findJoinedLobby(res.data.id),
+      });
+    },
+  });
+};
+
+export const useFindJoinedLobby = (params: FindJoinedLobbyParams) => {
+  return useQuery({
+    queryFn: () => findJoinedLobby(params).then((r) => r.data),
+    queryKey: KEYS.playQuiz.findJoinedLobby(params),
+  });
+};
+
+export const useGetLobbyResponses = (lobbyId: string, questionId?: string) => {
+  return useQuery({
+    queryFn: () => getLobbyResponses(lobbyId).then((r) => r.data),
+    queryKey: KEYS.playQuiz.getLobbyResponses(lobbyId, questionId),
+  });
+};
+export const useEvaluateQuestion = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (params: EvaluateQuestionParams) => evaluateQuestion(params),
+    onSuccess: (res) => {
+      queryClient.invalidateQueries({
+        queryKey: KEYS.playQuiz.findJoinedLobby(res.data.id),
+      });
+      queryClient.invalidateQueries({
+        queryKey: KEYS.playQuiz.getLobby(res.data.id),
+      });
+      queryClient.invalidateQueries({
+        queryKey: KEYS.playQuiz.getLobbyResponses(res.data.id),
+      });
+    },
   });
 };

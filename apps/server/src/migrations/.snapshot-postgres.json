@@ -309,133 +309,6 @@
           "length": 6,
           "mappedType": "datetime"
         },
-        "code": {
-          "name": "code",
-          "type": "varchar(255)",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "length": 255,
-          "mappedType": "string"
-        },
-        "participants_count": {
-          "name": "participants_count",
-          "type": "int",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "default": "0",
-          "mappedType": "integer"
-        },
-        "wait_in_lobby_until": {
-          "name": "wait_in_lobby_until",
-          "type": "timestamptz",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "length": 6,
-          "mappedType": "datetime"
-        },
-        "status": {
-          "name": "status",
-          "type": "text",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "default": "'IN_LOBBY'",
-          "enumItems": [
-            "IN_LOBBY",
-            "ENDED"
-          ],
-          "mappedType": "enum"
-        },
-        "quiz_id": {
-          "name": "quiz_id",
-          "type": "uuid",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "mappedType": "uuid"
-        }
-      },
-      "name": "quiz_lobby_entity",
-      "schema": "public",
-      "indexes": [
-        {
-          "columnNames": [
-            "code"
-          ],
-          "composite": false,
-          "keyName": "quiz_lobby_entity_code_index",
-          "constraint": false,
-          "primary": false,
-          "unique": false
-        },
-        {
-          "keyName": "quiz_lobby_entity_pkey",
-          "columnNames": [
-            "id"
-          ],
-          "composite": false,
-          "constraint": true,
-          "primary": true,
-          "unique": true
-        }
-      ],
-      "checks": [],
-      "foreignKeys": {
-        "quiz_lobby_entity_quiz_id_foreign": {
-          "constraintName": "quiz_lobby_entity_quiz_id_foreign",
-          "columnNames": [
-            "quiz_id"
-          ],
-          "localTableName": "public.quiz_lobby_entity",
-          "referencedColumnNames": [
-            "id"
-          ],
-          "referencedTableName": "public.quiz_entity",
-          "updateRule": "cascade"
-        }
-      },
-      "nativeEnums": {}
-    },
-    {
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "uuid",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "default": "gen_random_uuid()",
-          "mappedType": "uuid"
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamptz",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "length": 6,
-          "mappedType": "datetime"
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "timestamptz",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "length": 6,
-          "mappedType": "datetime"
-        },
         "name": {
           "name": "name",
           "type": "varchar(255)",
@@ -491,6 +364,91 @@
             "id"
           ],
           "referencedTableName": "public.quiz_entity",
+          "deleteRule": "cascade",
+          "updateRule": "cascade"
+        }
+      },
+      "nativeEnums": {}
+    },
+    {
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "default": "gen_random_uuid()",
+          "mappedType": "uuid"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamptz",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 6,
+          "mappedType": "datetime"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamptz",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 6,
+          "mappedType": "datetime"
+        },
+        "email": {
+          "name": "email",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 255,
+          "mappedType": "string"
+        },
+        "quiz_id": {
+          "name": "quiz_id",
+          "type": "uuid",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "uuid"
+        }
+      },
+      "name": "quiz_participant_entity",
+      "schema": "public",
+      "indexes": [
+        {
+          "keyName": "quiz_participant_entity_pkey",
+          "columnNames": [
+            "id"
+          ],
+          "composite": false,
+          "constraint": true,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {
+        "quiz_participant_entity_quiz_id_foreign": {
+          "constraintName": "quiz_participant_entity_quiz_id_foreign",
+          "columnNames": [
+            "quiz_id"
+          ],
+          "localTableName": "public.quiz_participant_entity",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.quiz_entity",
+          "deleteRule": "cascade",
           "updateRule": "cascade"
         }
       },
@@ -593,6 +551,204 @@
             "id"
           ],
           "referencedTableName": "public.quiz_module_entity",
+          "deleteRule": "cascade",
+          "updateRule": "cascade"
+        }
+      },
+      "nativeEnums": {}
+    },
+    {
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "default": "gen_random_uuid()",
+          "mappedType": "uuid"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamptz",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 6,
+          "mappedType": "datetime"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamptz",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 6,
+          "mappedType": "datetime"
+        },
+        "code": {
+          "name": "code",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 255,
+          "mappedType": "string"
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 255,
+          "mappedType": "string"
+        },
+        "wait_until": {
+          "name": "wait_until",
+          "type": "timestamptz",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 6,
+          "mappedType": "datetime"
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "default": "'IN_LOBBY'",
+          "enumItems": [
+            "IN_LOBBY",
+            "WAITING_FOR_NEXT_QUESTION",
+            "MODULE_BREAK",
+            "IN_QUIZ",
+            "QUESTION_RESPONSE_SUMMARY",
+            "QUIZ_SUMMARY",
+            "ENDED"
+          ],
+          "mappedType": "enum"
+        },
+        "quiz_id": {
+          "name": "quiz_id",
+          "type": "uuid",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "uuid"
+        },
+        "current_module_id": {
+          "name": "current_module_id",
+          "type": "uuid",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "uuid"
+        },
+        "current_question_id": {
+          "name": "current_question_id",
+          "type": "uuid",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "uuid"
+        }
+      },
+      "name": "quiz_lobby_entity",
+      "schema": "public",
+      "indexes": [
+        {
+          "columnNames": [
+            "code"
+          ],
+          "composite": false,
+          "keyName": "quiz_lobby_entity_code_index",
+          "constraint": false,
+          "primary": false,
+          "unique": false
+        },
+        {
+          "columnNames": [
+            "current_module_id"
+          ],
+          "composite": false,
+          "keyName": "quiz_lobby_entity_current_module_id_unique",
+          "constraint": true,
+          "primary": false,
+          "unique": true
+        },
+        {
+          "columnNames": [
+            "current_question_id"
+          ],
+          "composite": false,
+          "keyName": "quiz_lobby_entity_current_question_id_unique",
+          "constraint": true,
+          "primary": false,
+          "unique": true
+        },
+        {
+          "keyName": "quiz_lobby_entity_pkey",
+          "columnNames": [
+            "id"
+          ],
+          "composite": false,
+          "constraint": true,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {
+        "quiz_lobby_entity_quiz_id_foreign": {
+          "constraintName": "quiz_lobby_entity_quiz_id_foreign",
+          "columnNames": [
+            "quiz_id"
+          ],
+          "localTableName": "public.quiz_lobby_entity",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.quiz_entity",
+          "deleteRule": "cascade",
+          "updateRule": "cascade"
+        },
+        "quiz_lobby_entity_current_module_id_foreign": {
+          "constraintName": "quiz_lobby_entity_current_module_id_foreign",
+          "columnNames": [
+            "current_module_id"
+          ],
+          "localTableName": "public.quiz_lobby_entity",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.quiz_module_entity",
+          "deleteRule": "cascade",
+          "updateRule": "cascade"
+        },
+        "quiz_lobby_entity_current_question_id_foreign": {
+          "constraintName": "quiz_lobby_entity_current_question_id_foreign",
+          "columnNames": [
+            "current_question_id"
+          ],
+          "localTableName": "public.quiz_lobby_entity",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.quiz_question_entity",
+          "deleteRule": "cascade",
           "updateRule": "cascade"
         }
       },
@@ -836,6 +992,218 @@
       ],
       "checks": [],
       "foreignKeys": {},
+      "nativeEnums": {}
+    },
+    {
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "default": "gen_random_uuid()",
+          "mappedType": "uuid"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamptz",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 6,
+          "mappedType": "datetime"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamptz",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 6,
+          "mappedType": "datetime"
+        },
+        "lobby_id": {
+          "name": "lobby_id",
+          "type": "uuid",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "uuid"
+        },
+        "player_id": {
+          "name": "player_id",
+          "type": "uuid",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "uuid"
+        }
+      },
+      "name": "lobby_player_entity",
+      "schema": "public",
+      "indexes": [
+        {
+          "keyName": "lobby_player_entity_pkey",
+          "columnNames": [
+            "id"
+          ],
+          "composite": false,
+          "constraint": true,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {
+        "lobby_player_entity_lobby_id_foreign": {
+          "constraintName": "lobby_player_entity_lobby_id_foreign",
+          "columnNames": [
+            "lobby_id"
+          ],
+          "localTableName": "public.lobby_player_entity",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.quiz_lobby_entity",
+          "deleteRule": "cascade",
+          "updateRule": "cascade"
+        },
+        "lobby_player_entity_player_id_foreign": {
+          "constraintName": "lobby_player_entity_player_id_foreign",
+          "columnNames": [
+            "player_id"
+          ],
+          "localTableName": "public.lobby_player_entity",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.user",
+          "deleteRule": "cascade",
+          "updateRule": "cascade"
+        }
+      },
+      "nativeEnums": {}
+    },
+    {
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "default": "gen_random_uuid()",
+          "mappedType": "uuid"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamptz",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 6,
+          "mappedType": "datetime"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamptz",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 6,
+          "mappedType": "datetime"
+        },
+        "answer": {
+          "name": "answer",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 255,
+          "mappedType": "string"
+        },
+        "question_id": {
+          "name": "question_id",
+          "type": "uuid",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "uuid"
+        },
+        "player_id": {
+          "name": "player_id",
+          "type": "uuid",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "uuid"
+        },
+        "is_correct": {
+          "name": "is_correct",
+          "type": "boolean",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "default": "false",
+          "mappedType": "boolean"
+        }
+      },
+      "name": "lobby_player_response_entity",
+      "schema": "public",
+      "indexes": [
+        {
+          "keyName": "lobby_player_response_entity_pkey",
+          "columnNames": [
+            "id"
+          ],
+          "composite": false,
+          "constraint": true,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {
+        "lobby_player_response_entity_question_id_foreign": {
+          "constraintName": "lobby_player_response_entity_question_id_foreign",
+          "columnNames": [
+            "question_id"
+          ],
+          "localTableName": "public.lobby_player_response_entity",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.quiz_question_entity",
+          "deleteRule": "cascade",
+          "updateRule": "cascade"
+        },
+        "lobby_player_response_entity_player_id_foreign": {
+          "constraintName": "lobby_player_response_entity_player_id_foreign",
+          "columnNames": [
+            "player_id"
+          ],
+          "localTableName": "public.lobby_player_response_entity",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.lobby_player_entity",
+          "deleteRule": "cascade",
+          "updateRule": "cascade"
+        }
+      },
       "nativeEnums": {}
     },
     {

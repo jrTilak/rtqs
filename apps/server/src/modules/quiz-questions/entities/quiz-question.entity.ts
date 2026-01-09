@@ -21,7 +21,7 @@ export class QuizQuestionEntity extends BaseEntity {
   @Property()
   index: number;
 
-  @ManyToOne()
+  @ManyToOne({ deleteRule: 'cascade' })
   module: QuizModuleEntity;
 }
 

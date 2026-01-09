@@ -13,5 +13,4 @@ const socketClient = io(
 export const socket = {
   client: socketClient,
   handlers: socketHandlers,
-  commands: {},
 };

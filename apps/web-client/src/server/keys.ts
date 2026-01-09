@@ -1,29 +1,51 @@
-import type { GetLobbyParams, ListLobbiesParams } from "./apis/play-quiz";
-import type { ListQuizModulesParams } from "./apis/quiz-modules";
-import type { ListQuizQuestionsParams } from "./apis/quiz-questions";
-import type { GetAQuizParams } from "./apis/quizzes";
+import type {
+  FindJoinedLobbyParams,
+  GetLobbyParams,
+  ListLobbiesParams,
+} from "./apis/play-quiz";
+import type { ListParams as ListQuizModulesParams } from "./apis/quiz-modules";
+import type { ListParams as ListQuizQuestionsParams } from "./apis/quiz-questions";
+import type { FindByIdParams as FindByIdQuizParams } from "./apis/quizzes";
+import type { ListParams as ListQuizParticipantsParams } from "./apis/quiz-participants";
 
 export const KEYS = {
   quizzes: {
-    listQuizzes: () => ["list", "quizzes"],
-    getAQuiz: (params?: GetAQuizParams) => ["quiz", "getAQuiz", params],
+    list: () => ["list", "quizzes"],
+    findById: (params?: FindByIdQuizParams) => ["quiz", "findById", params],
   },
   quizModules: {
-    listQuizModules: (params?: ListQuizModulesParams) => [
+    list: (params?: ListQuizModulesParams) => ["list", "quizModules", params],
+  },
+  quizQuestions: {
+    list: (params?: ListQuizQuestionsParams) => [
       "list",
-      "quizModules",
+      "quizQuestions",
       params,
     ],
   },
-  quizQuestions: {
-    listQuizQuestions: (params?: ListQuizQuestionsParams) => [
+  quizParticipants: {
+    list: (params?: ListQuizParticipantsParams) => [
       "list",
-      "quizQuestions",
+      "quizParticipants",
       params,
     ],
   },
   playQuiz: {
     listLobbies: (params: ListLobbiesParams) => ["quiz", "lobbies", params],
     getLobby: (params: GetLobbyParams) => ["lobby", params],
+    findJoinedLobby: (params: FindJoinedLobbyParams) => [
+      "lobby",
+      "findJoinedLobby",
+      params,
+    ],
+    getLobbyResponses: (lobbyId: string, questionId?: string) => [
+      "lobby",
+      "responses",
+      lobbyId,
+      questionId,
+    ],
+  },
+  users: {
+    list: () => ["users"],
   },
 };

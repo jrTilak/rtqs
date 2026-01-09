@@ -1,58 +1,59 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import {
-  createQuizModule,
-  deleteQuizModules,
-  listQuizModules,
-  updateQuizModule,
-  type CreateQuizModuleParams,
-  type DeleteQuizModulesParams,
-  type ListQuizModulesParams,
-  type UpdateQuizModuleParams,
-} from ".";
-import { KEYS } from "../../keys";
 
-export const useCreateQuizModule = () => {
+import { KEYS } from "../../keys";
+import {
+  create,
+  deleteMany,
+  list,
+  update,
+  type CreateParams,
+  type DeleteManyParams,
+  type ListParams,
+  type UpdateParams,
+} from ".";
+
+export const useCreate = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (params: CreateQuizModuleParams) => createQuizModule(params),
+    mutationFn: (params: CreateParams) => create(params),
     onSuccess: (_, params) => {
       queryClient.invalidateQueries({
-        queryKey: KEYS.quizModules.listQuizModules({ id: params.quizId }),
+        queryKey: KEYS.quizModules.list({ quizId: params.quizId }),
       });
     },
   });
 };
 
-export const useListQuizModules = (params: ListQuizModulesParams) => {
+export const useList = (params: ListParams) => {
   return useQuery({
-    queryKey: KEYS.quizModules.listQuizModules(params),
-    queryFn: () => listQuizModules(params).then((res) => res.data),
+    queryKey: KEYS.quizModules.list(params),
+    queryFn: () => list(params).then((res) => res.data),
   });
 };
 
-export const useDeleteQuizModule = () => {
+export const useDeleteMany = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (
-      params: DeleteQuizModulesParams & {
+      params: DeleteManyParams & {
         quizId: string;
       }
-    ) => deleteQuizModules(params),
+    ) => deleteMany({ ids: params.ids }),
     onSuccess: (_, params) => {
       queryClient.invalidateQueries({
-        queryKey: KEYS.quizModules.listQuizModules({ id: params.quizId }),
+        queryKey: KEYS.quizModules.list({ quizId: params.quizId }),
       });
     },
   });
 };
 
-export const useUpdateQuizModule = () => {
+export const useUpdate = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (params: UpdateQuizModuleParams) => updateQuizModule(params),
-    onSuccess: () => {
+    mutationFn: (params: UpdateParams) => update(params),
+    onSuccess: (_, params) => {
       queryClient.invalidateQueries({
-        queryKey: KEYS.quizModules.listQuizModules(),
+        queryKey: KEYS.quizModules.list({ quizId: params.quizId! }),
       });
     },
   });

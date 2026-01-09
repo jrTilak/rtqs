@@ -12,7 +12,11 @@ import { validateEnv } from './common/validations/env.validation';
 import { AppValidationPipe } from './common/pipe/app-validation.pipe';
 import { Logger } from './lib/logger';
 import { APP_CONFIG } from './config/app.config';
-// import * as socketDto from '@/modules/play-quiz/dto';
+import {
+  JoinLobbyRoomDto,
+  NextQuestionDto,
+  UpdateLobbyDto,
+} from './modules/play-quiz/dto/request/lobby.dto';
 
 const GLOBAL_PREFIX = '/api/';
 
@@ -75,7 +79,7 @@ async function bootstrap() {
 
     const document = SwaggerModule.createDocument(app, config, {
       // webscoket is not supported by swagger, so to pass the dto to the swagger, we need extra modules
-      //  extraModels: [...Object.values(socketDto)],
+      extraModels: [UpdateLobbyDto, JoinLobbyRoomDto, NextQuestionDto],
     });
 
     const swaggerPath = process.env.SWAGGER_PATH ?? '/docs';

@@ -11,6 +11,7 @@ import { createAuth } from './lib/auth';
 import { QuizModulesModule } from './modules/quiz-modules/quiz-modules.module';
 import { QuizQuestionsModule } from './modules/quiz-questions/quiz-questions.module';
 import { PlayQuizModule } from './modules/play-quiz/play-quiz.module';
+import { QuizParticipantsModule } from './modules/quiz-participants/quiz-participants.module';
 
 @Module({
   imports: [
@@ -44,6 +45,8 @@ import { PlayQuizModule } from './modules/play-quiz/play-quiz.module';
     QuizQuestionsModule,
 
     PlayQuizModule,
+
+    QuizParticipantsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

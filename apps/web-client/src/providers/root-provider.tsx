@@ -1,23 +1,19 @@
-import { type ReactNode } from "react"
-import { QueryProvider } from "./query-provider"
-import { Toaster } from "react-hot-toast"
-import { useSocket } from "@/server/ws/hooks"
+import { type ReactNode } from "react";
+import { QueryProvider } from "./query-provider";
+import { Toaster } from "react-hot-toast";
 export type ProviderProps = {
-  children: ReactNode
-}
+  children: ReactNode;
+};
 
 export const RootProvider = ({ children }: ProviderProps) => {
-
-  useSocket()
-
   return (
     <QueryProvider>
       {children}
       <Toaster
         toastOptions={{
-          position: "top-center"
+          position: "top-center",
         }}
       />
     </QueryProvider>
-  )
-}
+  );
+};

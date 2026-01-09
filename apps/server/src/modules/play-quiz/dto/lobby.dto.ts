@@ -13,15 +13,23 @@ export class LobbyBaseDto {
     required: true,
     description: 'A unique code for this lobby',
   })
+  @ApiProperty({
+    type: 'string',
+    example: 'ACES',
+    required: true,
+    description: 'A unique code for this lobby',
+  })
   code: string;
 
+  @IsString()
+  @IsNotEmpty()
   @ApiProperty({
-    type: 'number',
-    minimum: 0,
-    description: 'Total participants',
+    type: 'string',
+    example: 'My Lobby',
     required: true,
+    description: 'Name of the lobby',
   })
-  participantsCount: number;
+  name: string;
 
   @ApiProperty({
     description: 'Till when, we will wait for other player in lobby',
@@ -33,7 +41,7 @@ export class LobbyBaseDto {
   @IsString()
   @IsNotEmpty()
   @IsISO8601({ strict: true })
-  waitInLobbyUntil: string;
+  waitUntil: string;
 
   @ApiProperty({
     description: 'Status of Lobby',
@@ -43,3 +51,5 @@ export class LobbyBaseDto {
   })
   status: QuizLobbyStatsEnum;
 }
+
+
