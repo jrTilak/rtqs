@@ -35,6 +35,9 @@ RUN pnpm --filter @rtqs/server build
 # ----------------------------
 FROM node:24-alpine AS runner
 
+# Install pnpm globally in this stage
+RUN npm install -g pnpm
+
 WORKDIR /app/apps/server
 
 # Copy node_modules from dependencies
