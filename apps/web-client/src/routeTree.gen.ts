@@ -9,25 +9,18 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as TempRouteImport } from './routes/temp'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as UsersRouteImport } from './routes/_users'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as UsersIndexRouteImport } from './routes/_users/index'
 import { Route as AdminUsersRouteImport } from './routes/admin/users'
-import { Route as AdminReviewIndexRouteImport } from './routes/admin/review/index'
 import { Route as AdminQuizzesIndexRouteImport } from './routes/admin/quizzes/index'
 import { Route as AdminLobbyIndexRouteImport } from './routes/admin/lobby/index'
 import { Route as AdminQuizzesQuizIdRouteImport } from './routes/admin/quizzes/$quiz-id'
 import { Route as AdminLobbyLobbyIdRouteImport } from './routes/admin/lobby/$lobby-id'
 import { Route as UsersLobbyLobbyIdRouteImport } from './routes/_users/lobby/$lobby-id'
 
-const TempRoute = TempRouteImport.update({
-  id: '/temp',
-  path: '/temp',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
@@ -55,11 +48,6 @@ const UsersIndexRoute = UsersIndexRouteImport.update({
 const AdminUsersRoute = AdminUsersRouteImport.update({
   id: '/users',
   path: '/users',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminReviewIndexRoute = AdminReviewIndexRouteImport.update({
-  id: '/review/',
-  path: '/review/',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminQuizzesIndexRoute = AdminQuizzesIndexRouteImport.update({
@@ -91,7 +79,6 @@ const UsersLobbyLobbyIdRoute = UsersLobbyLobbyIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/admin': typeof AdminRouteWithChildren
   '/login': typeof LoginRoute
-  '/temp': typeof TempRoute
   '/admin/users': typeof AdminUsersRoute
   '/': typeof UsersIndexRoute
   '/admin/': typeof AdminIndexRoute
@@ -100,11 +87,9 @@ export interface FileRoutesByFullPath {
   '/admin/quizzes/$quiz-id': typeof AdminQuizzesQuizIdRoute
   '/admin/lobby': typeof AdminLobbyIndexRoute
   '/admin/quizzes': typeof AdminQuizzesIndexRoute
-  '/admin/review': typeof AdminReviewIndexRoute
 }
 export interface FileRoutesByTo {
   '/login': typeof LoginRoute
-  '/temp': typeof TempRoute
   '/admin/users': typeof AdminUsersRoute
   '/': typeof UsersIndexRoute
   '/admin': typeof AdminIndexRoute
@@ -113,14 +98,12 @@ export interface FileRoutesByTo {
   '/admin/quizzes/$quiz-id': typeof AdminQuizzesQuizIdRoute
   '/admin/lobby': typeof AdminLobbyIndexRoute
   '/admin/quizzes': typeof AdminQuizzesIndexRoute
-  '/admin/review': typeof AdminReviewIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_users': typeof UsersRouteWithChildren
   '/admin': typeof AdminRouteWithChildren
   '/login': typeof LoginRoute
-  '/temp': typeof TempRoute
   '/admin/users': typeof AdminUsersRoute
   '/_users/': typeof UsersIndexRoute
   '/admin/': typeof AdminIndexRoute
@@ -129,14 +112,12 @@ export interface FileRoutesById {
   '/admin/quizzes/$quiz-id': typeof AdminQuizzesQuizIdRoute
   '/admin/lobby/': typeof AdminLobbyIndexRoute
   '/admin/quizzes/': typeof AdminQuizzesIndexRoute
-  '/admin/review/': typeof AdminReviewIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/admin'
     | '/login'
-    | '/temp'
     | '/admin/users'
     | '/'
     | '/admin/'
@@ -145,11 +126,9 @@ export interface FileRouteTypes {
     | '/admin/quizzes/$quiz-id'
     | '/admin/lobby'
     | '/admin/quizzes'
-    | '/admin/review'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/login'
-    | '/temp'
     | '/admin/users'
     | '/'
     | '/admin'
@@ -158,13 +137,11 @@ export interface FileRouteTypes {
     | '/admin/quizzes/$quiz-id'
     | '/admin/lobby'
     | '/admin/quizzes'
-    | '/admin/review'
   id:
     | '__root__'
     | '/_users'
     | '/admin'
     | '/login'
-    | '/temp'
     | '/admin/users'
     | '/_users/'
     | '/admin/'
@@ -173,25 +150,16 @@ export interface FileRouteTypes {
     | '/admin/quizzes/$quiz-id'
     | '/admin/lobby/'
     | '/admin/quizzes/'
-    | '/admin/review/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   UsersRoute: typeof UsersRouteWithChildren
   AdminRoute: typeof AdminRouteWithChildren
   LoginRoute: typeof LoginRoute
-  TempRoute: typeof TempRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/temp': {
-      id: '/temp'
-      path: '/temp'
-      fullPath: '/temp'
-      preLoaderRoute: typeof TempRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/login': {
       id: '/login'
       path: '/login'
@@ -232,13 +200,6 @@ declare module '@tanstack/react-router' {
       path: '/users'
       fullPath: '/admin/users'
       preLoaderRoute: typeof AdminUsersRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/review/': {
-      id: '/admin/review/'
-      path: '/review'
-      fullPath: '/admin/review'
-      preLoaderRoute: typeof AdminReviewIndexRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/quizzes/': {
@@ -298,7 +259,6 @@ interface AdminRouteChildren {
   AdminQuizzesQuizIdRoute: typeof AdminQuizzesQuizIdRoute
   AdminLobbyIndexRoute: typeof AdminLobbyIndexRoute
   AdminQuizzesIndexRoute: typeof AdminQuizzesIndexRoute
-  AdminReviewIndexRoute: typeof AdminReviewIndexRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
@@ -308,7 +268,6 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminQuizzesQuizIdRoute: AdminQuizzesQuizIdRoute,
   AdminLobbyIndexRoute: AdminLobbyIndexRoute,
   AdminQuizzesIndexRoute: AdminQuizzesIndexRoute,
-  AdminReviewIndexRoute: AdminReviewIndexRoute,
 }
 
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
@@ -317,7 +276,6 @@ const rootRouteChildren: RootRouteChildren = {
   UsersRoute: UsersRouteWithChildren,
   AdminRoute: AdminRouteWithChildren,
   LoginRoute: LoginRoute,
-  TempRoute: TempRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
