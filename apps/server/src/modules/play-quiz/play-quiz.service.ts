@@ -33,8 +33,11 @@ import { QuizParticipantEntity } from '../quiz-participants/entities/quiz-partic
 import { QuizParticipantsRepository } from '../quiz-participants/quiz-participants.repository';
 import { User } from '@/common/db/entities/auth.entity';
 import {
+  FindJoinedLobbyResponseDto,
   GetLobbyByIdResponseDto,
   LobbyPlayerResponseDto,
+  QuestionStatsDto,
+  QuizSummaryItemDto,
 } from './dto/response/lobby.dto';
 import { Socket } from 'socket.io';
 import { ROLES } from '@/lib/auth';
@@ -189,7 +192,7 @@ export class PlayQuizService {
   async findJoinedLobby(
     lobbyId: string,
     user: User,
-  ): Promise<QuizLobbyEntityType> {
+  ): Promise<FindJoinedLobbyResponseDto> {
     const lobby = await this._quizLobbyRepo.findOne(
       {
         id: lobbyId,
@@ -212,7 +215,92 @@ export class PlayQuizService {
       throw new NotFoundException('You are not a part of this lobby');
     }
 
-    return lobby;
+    let lastResponse;
+    const questionStats: QuestionStatsDto = {
+      correctCount: 0,
+      winner: undefined,
+    };
+    let quizSummary: QuizSummaryItemDto[] | undefined;
+
+    if (lobby.status === QuizLobbyStatsEnum.ENDED) {
+      quizSummary = await this.getQuizSummary(lobbyId);
+    }
+
+    if (lobby.currentQuestion) {
+      const responseEntity = await this._lobbyPlayerResponseRepo.findOne({
+        player: lobbyPlayer,
+        question: lobby.currentQuestion,
+      });
+
+      if (responseEntity) {
+        lastResponse = {
+          ...responseEntity,
+          createdAt: responseEntity.createdAt.toISOString(),
+          updatedAt: responseEntity.updatedAt.toISOString(),
+          player: user,
+        };
+      }
+
+      // Stats
+      if (lobby.status === QuizLobbyStatsEnum.QUESTION_RESPONSE_SUMMARY) {
+        const correctResponses = await this._lobbyPlayerResponseRepo.find(
+          {
+            question: lobby.currentQuestion,
+            isCorrect: true,
+          },
+          {
+            orderBy: { createdAt: 'ASC' },
+            populate: ['player.player'],
+          },
+        );
+        questionStats.correctCount = correctResponses.length;
+        if (correctResponses.length > 0) {
+          questionStats.winner = correctResponses[0].player.player;
+        }
+      }
+    }
+
+    return {
+      ...lobby,
+      lastResponse,
+      questionStats,
+      quizSummary,
+    } as unknown as FindJoinedLobbyResponseDto;
+  }
+
+  async getQuizSummary(lobbyId: string): Promise<QuizSummaryItemDto[]> {
+    const responses = await this._lobbyPlayerResponseRepo.find(
+      {
+        player: {
+          lobby: lobbyId,
+        },
+      },
+      {
+        populate: ['player', 'player.player'],
+      },
+    );
+
+    const scores = new Map<string, { player: User; score: number }>();
+
+    for (const response of responses) {
+      const playerId = response.player.player.id;
+      if (!scores.has(playerId)) {
+        scores.set(playerId, { player: response.player.player, score: 0 });
+      }
+      if (response.isCorrect) {
+        scores.get(playerId)!.score += 1;
+      }
+    }
+
+    const sorted = Array.from(scores.values()).sort(
+      (a, b) => b.score - a.score,
+    );
+
+    return sorted.map((item, index) => ({
+      player: item.player,
+      score: item.score,
+      rank: index + 1,
+    }));
   }
 
   async joinLobbyRoom(
@@ -279,9 +367,15 @@ export class PlayQuizService {
       },
     );
 
+    let quizSummary;
+    if (lobby.status === QuizLobbyStatsEnum.ENDED) {
+      quizSummary = await this.getQuizSummary(id);
+    }
+
     return {
       ...lobby,
       participants: participants.map((participant) => participant.player) || [],
+      quizSummary,
     } as unknown as GetLobbyByIdResponseDto;
   }
 
@@ -316,21 +410,16 @@ export class PlayQuizService {
     }
 
     if (lobby.status == QuizLobbyStatsEnum.ENDED) {
-      throw new BadRequestException('Lobby is ended');
+      // If already ended, just return current state
+      return {
+        lobby: await this.findLobbyById(lobbyId),
+        newLobby: null,
+      };
     }
 
-    const nextQuestionStartsAt = new Date();
-    nextQuestionStartsAt.setSeconds(nextQuestionStartsAt.getSeconds() + 6);
-
-    this._em.assign(lobby, {
-      status: QuizLobbyStatsEnum.WAITING_FOR_NEXT_QUESTION,
-      waitUntil: nextQuestionStartsAt.toISOString(),
-    });
-
-    await this._em.flush();
-
-    let newModuleId = lobby.currentModule?.id;
-    let newQuestionId = lobby.currentQuestion?.id;
+    let newModuleId: string | undefined;
+    let newQuestionId: string | undefined;
+    let isEnded = false;
 
     // first time
     if (!lobby.currentQuestion) {
@@ -343,21 +432,26 @@ export class PlayQuizService {
         },
       );
       if (!firstModule) {
-        throw new BadRequestException('No module found');
+        isEnded = true;
+      } else {
+        const firstQuestion = await this._quizQuestionRepo.findOne(
+          {
+            module: firstModule,
+          },
+          {
+            orderBy: { index: 'asc' },
+          },
+        );
+        if (!firstQuestion) {
+          // Module with no questions? check next module?
+          // For simplicity, if structure assumes valid modules, we might just end or logic becomes complex.
+          // Assuming if first module has no question, we might want to check next, but let's stick to existing logic: "No question found" -> matches "isEnded".
+          isEnded = true;
+        } else {
+          newModuleId = firstModule.id;
+          newQuestionId = firstQuestion.id;
+        }
       }
-      const firstQuestion = await this._quizQuestionRepo.findOne(
-        {
-          module: firstModule,
-        },
-        {
-          orderBy: { index: 'asc' },
-        },
-      );
-      if (!firstQuestion) {
-        throw new BadRequestException('No question found in this module');
-      }
-      newModuleId = firstModule.id;
-      newQuestionId = firstQuestion.id;
     } else {
       // not first time
       if (lobby.currentModule && lobby.currentQuestion) {
@@ -374,6 +468,7 @@ export class PlayQuizService {
         );
         if (nextQuestion) {
           newQuestionId = nextQuestion.id;
+          newModuleId = lobby.currentModule.id;
         } else {
           const newModule = await this._quizModuleRepo.findOne(
             {
@@ -387,7 +482,6 @@ export class PlayQuizService {
             },
           );
           if (newModule) {
-            newModuleId = newModule.id;
             const newQuestion = await this._quizQuestionRepo.findOne(
               {
                 module: newModule,
@@ -398,18 +492,44 @@ export class PlayQuizService {
             );
 
             if (!newQuestion) {
-              throw new BadRequestException('No more questions');
+              isEnded = true;
+            } else {
+              newModuleId = newModule.id;
+              newQuestionId = newQuestion.id;
             }
-
-            newQuestionId = newQuestion.id;
           } else {
-            throw new BadRequestException('No more questions');
+            isEnded = true;
           }
         }
       } else {
-        throw new BadRequestException('No module or question found');
+        // Fallback
+        isEnded = true;
       }
     }
+
+    if (isEnded) {
+      this._em.assign(lobby, {
+        status: QuizLobbyStatsEnum.ENDED,
+        waitUntil: new Date().toISOString(),
+      });
+      await this._em.flush();
+
+      const lobbyFromDb = await this.findLobbyById(lobbyId);
+      return {
+        lobby: lobbyFromDb,
+        newLobby: null,
+      };
+    }
+
+    const nextQuestionStartsAt = new Date();
+    nextQuestionStartsAt.setSeconds(nextQuestionStartsAt.getSeconds() + 6);
+
+    this._em.assign(lobby, {
+      status: QuizLobbyStatsEnum.WAITING_FOR_NEXT_QUESTION,
+      waitUntil: nextQuestionStartsAt.toISOString(),
+    });
+
+    await this._em.flush();
 
     const lobbyFromDb = await this.findLobbyById(lobbyId);
 
@@ -417,8 +537,8 @@ export class PlayQuizService {
       lobby: lobbyFromDb,
       newLobby: {
         id: lobbyId,
-        currentModuleId: newModuleId,
-        currentQuestionId: newQuestionId,
+        currentModuleId: newModuleId!,
+        currentQuestionId: newQuestionId!,
       },
     };
   }

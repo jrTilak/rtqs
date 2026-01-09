@@ -12,7 +12,10 @@ import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import type { LobbyProps } from "..";
 import { useGetLobbyResponses } from "@/server/apis/play-quiz/hooks";
-import { useEvaluateQuestion } from "@/server/ws/play-quiz/hooks";
+import {
+  useEvaluateQuestion,
+  useNextQuestion,
+} from "@/server/ws/play-quiz/hooks";
 import { alert } from "@/components/ui/alert-dialog/utils";
 
 export const ManageLobbyQuestions = ({ lobby }: LobbyProps) => {
@@ -21,6 +24,7 @@ export const ManageLobbyQuestions = ({ lobby }: LobbyProps) => {
   );
   const { data: responses } = useGetLobbyResponses(lobby.id);
   const evaluateQuestion = useEvaluateQuestion();
+  const nextQuestion = useNextQuestion();
 
   const handleMarkCorrect = () => {
     const selected = responses?.find((a) => a.player.id === selectedResponseId);
@@ -47,6 +51,22 @@ export const ManageLobbyQuestions = ({ lobby }: LobbyProps) => {
 
   const handleNoCorrect = () => {
     evaluateQuestion.mutate(
+      {
+        lobbyId: lobby.id,
+      },
+      {
+        onError: (err: any) => {
+          alert({
+            title: "Error",
+            description: err.message,
+          });
+        },
+      }
+    );
+  };
+
+  const handleNextQuestion = () => {
+    nextQuestion.mutate(
       {
         lobbyId: lobby.id,
       },
@@ -144,23 +164,35 @@ export const ManageLobbyQuestions = ({ lobby }: LobbyProps) => {
             </ScrollArea>
 
             <CardFooter className="p-4 border-t bg-muted/50 flex flex-col gap-2">
-              <Button
-                className="w-full"
-                disabled={!selectedResponseId || evaluateQuestion.isPending}
-                onClick={handleMarkCorrect}
-              >
-                {evaluateQuestion.isPending && selectedResponseId
-                  ? "Marking..."
-                  : "Mark as Correct"}
-              </Button>
-              <Button
-                className="w-full"
-                variant={"outline"}
-                disabled={evaluateQuestion.isPending}
-                onClick={handleNoCorrect}
-              >
-                No Correct Answer
-              </Button>
+              {lobby.status === "QUESTION_RESPONSE_SUMMARY" ? (
+                <Button
+                  className="w-full"
+                  disabled={nextQuestion.isPending}
+                  onClick={handleNextQuestion}
+                >
+                  {nextQuestion.isPending ? "Loading..." : "Next Question"}
+                </Button>
+              ) : (
+                <>
+                  <Button
+                    className="w-full"
+                    disabled={!selectedResponseId || evaluateQuestion.isPending}
+                    onClick={handleMarkCorrect}
+                  >
+                    {evaluateQuestion.isPending && selectedResponseId
+                      ? "Marking..."
+                      : "Mark as Correct"}
+                  </Button>
+                  <Button
+                    className="w-full"
+                    variant={"outline"}
+                    disabled={evaluateQuestion.isPending}
+                    onClick={handleNoCorrect}
+                  >
+                    No Correct Answer
+                  </Button>
+                </>
+              )}
             </CardFooter>
           </Card>
         </div>

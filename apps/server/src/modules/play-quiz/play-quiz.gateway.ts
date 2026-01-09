@@ -173,26 +173,28 @@ export class PlayQuizGateway {
           new WsResponse(omitObj(lobby, ['participants'])),
         );
 
-      // wait for 5 seconds
-      await sleep(5);
+      if (newLobby) {
+        // wait for 5 seconds
+        await sleep(5);
 
-      const startedLobby = await this._playQuizService.saveNextQuestion({
-        id: newLobby.id,
-        currentModuleId: newLobby.currentModuleId!,
-        currentQuestionId: newLobby.currentQuestionId,
-      });
+        const startedLobby = await this._playQuizService.saveNextQuestion({
+          id: newLobby.id,
+          currentModuleId: newLobby.currentModuleId!,
+          currentQuestionId: newLobby.currentQuestionId!,
+        });
 
-      if (startedLobby) {
-        const startedRes = new WsResponse(startedLobby);
-        this._server
-          .to(userRoom)
-          .to(adminRoom)
-          .emit(GATEWAY_MESSAGES.LOBBY_UPDATED, startedRes);
+        if (startedLobby) {
+          const startedRes = new WsResponse(startedLobby);
+          this._server
+            .to(userRoom)
+            .to(adminRoom)
+            .emit(GATEWAY_MESSAGES.LOBBY_UPDATED, startedRes);
 
-        return startedRes;
+          return startedRes;
+        }
       }
 
-      return new WsResponse();
+      return new WsResponse(lobby);
     } catch (error) {
       console.log(error);
     }

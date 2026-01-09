@@ -6,6 +6,40 @@ import { User as UserEntity } from '@/common/db/entities/auth.entity';
 import { QuizModuleDto } from '@/modules/quiz-modules/dto/response/quiz-module.dto';
 import { QuizQuestionDto } from '@/modules/quiz-questions/dto/response/quiz-question.dto';
 
+export class QuizSummaryItemDto {
+  @ApiProperty({
+    type: UserEntity,
+  })
+  player: UserEntity;
+
+  @ApiProperty({
+    type: 'number',
+    example: 10,
+  })
+  score: number;
+
+  @ApiProperty({
+    type: 'number',
+    example: 1,
+  })
+  rank: number;
+}
+
+export class QuestionStatsDto {
+  @ApiProperty({
+    type: 'number',
+    example: 5,
+  })
+  correctCount: number;
+
+  @ApiProperty({
+    type: UserEntity,
+    required: false,
+    nullable: true,
+  })
+  winner?: UserEntity;
+}
+
 export class QuizLobbyDto extends IntersectionType(
   BaseTableDto,
   LobbyBaseDto,
@@ -36,12 +70,15 @@ export class GetLobbyByIdResponseDto extends QuizLobbyDto {
     required: true,
   })
   currentQuestion: QuizQuestionDto;
-}
 
-export class FindJoinedLobbyResponseDto extends OmitType(
-  GetLobbyByIdResponseDto,
-  ['participants'],
-) {}
+  @ApiProperty({
+    type: QuizSummaryItemDto,
+    required: false,
+    nullable: true,
+    isArray: true,
+  })
+  quizSummary?: QuizSummaryItemDto[];
+}
 
 export class LobbyPlayerResponseDto extends BaseTableDto {
   @ApiProperty({
@@ -60,4 +97,23 @@ export class LobbyPlayerResponseDto extends BaseTableDto {
     type: UserEntity,
   })
   player: UserEntity;
+}
+
+export class FindJoinedLobbyResponseDto extends OmitType(
+  GetLobbyByIdResponseDto,
+  ['participants'],
+) {
+  @ApiProperty({
+    type: LobbyPlayerResponseDto,
+    required: false,
+    nullable: true,
+  })
+  lastResponse?: LobbyPlayerResponseDto;
+
+  @ApiProperty({
+    type: QuestionStatsDto,
+    required: false,
+    nullable: true,
+  })
+  questionStats?: QuestionStatsDto;
 }
