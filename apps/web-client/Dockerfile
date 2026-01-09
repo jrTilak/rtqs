@@ -21,4 +21,4 @@ RUN npm install -g serve
 WORKDIR /app
 COPY --from=builder /app/apps/web-client/dist ./dist
 EXPOSE 3000
-CMD ["serve", "-s", "dist", "-l", "3000"]
+CMD ["serve", "-s", "dist", "-l", "5173"]
