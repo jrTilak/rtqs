@@ -52,4 +52,4 @@ COPY --from=builder /app/apps/server/dist/mikro-orm.config.js ./dist/mikro-orm.c
 ENV NODE_ENV=production
 
 # Run migrations then start the server
-CMD pnpm dlx mikro-orm migration:up -c dist/mikro-orm.config.js && pnpm run start:prod
+CMD pnpm dlx mikro-orm migration:up -c dist/mikro-orm.config.js && node dist/src/main.js
