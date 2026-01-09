@@ -32,7 +32,6 @@ Refer to the documentation here: [Better Auth](https://www.better-auth.com/)
 
  * OpenAPI spec version: 0.0.1
  */
-import type { User } from "better-auth";
 import { apiClient } from "../axios";
 export interface CreateQuizDto {
   /** Name of quiz */
@@ -369,6 +368,10 @@ export interface SuccessResponseTypeDtoFindJoinedLobbyResponseDto19 {
   data: FindJoinedLobbyResponseDto;
 }
 
+export interface User {
+  [key: string]: unknown;
+}
+
 /**
  * Status of Lobby
  */
@@ -440,6 +443,20 @@ export interface SuccessResponseTypeDtoLobbyPlayerResponseDto22 {
   data: LobbyPlayerResponseDto[];
 }
 
+export interface EvaluateQuestionDto {
+  /** Lobby id */
+  lobbyId: string;
+}
+
+export interface SuccessResponseTypeDtoGetLobbyByIdResponseDto23 {
+  /** HTTP status code */
+  statusCode: number;
+  /** Response message */
+  message: string;
+  /** Retrieved successfully */
+  data: GetLobbyByIdResponseDto;
+}
+
 export interface QuizParticipantBaseDto {
   /** Email of the participant */
   email: string;
@@ -459,7 +476,7 @@ export interface QuizParticipantDto {
   email: string;
 }
 
-export interface SuccessResponseTypeDtoQuizParticipantDto23 {
+export interface SuccessResponseTypeDtoQuizParticipantDto24 {
   /** HTTP status code */
   statusCode: number;
   /** Response message */
@@ -468,7 +485,7 @@ export interface SuccessResponseTypeDtoQuizParticipantDto23 {
   data: QuizParticipantDto[];
 }
 
-export interface SuccessResponseTypeDtoQuizParticipantDto24 {
+export interface SuccessResponseTypeDtoQuizParticipantDto25 {
   /** HTTP status code */
   statusCode: number;
   /** Response message */
@@ -477,7 +494,7 @@ export interface SuccessResponseTypeDtoQuizParticipantDto24 {
   data: QuizParticipantDto[];
 }
 
-export interface SuccessResponseTypeDtoString25 {
+export interface SuccessResponseTypeDtoString26 {
   /** HTTP status code */
   statusCode: number;
   /** Response message */
@@ -563,6 +580,13 @@ export type PlayQuizControllerListLobbiesParams = {
    */
   quizId: string;
 };
+
+export interface EvaluateQuestionDto {
+  lobbyId: string;
+  correctAnswerText?: string;
+}
+
+export type PlayQuizControllerEvaluateQuestionParams = EvaluateQuestionDto;
 
 export type PlayQuizControllerDeleteLobbiesParams = {
   /**
@@ -949,15 +973,35 @@ Returns 'Hello World', useful for health check.
   };
 
   /**
+   * @summary Evaluate question
+   */
+  const playQuizControllerEvaluateQuestion = (
+    evaluateQuestionDto: EvaluateQuestionDto,
+    options?: SecondParameter<
+      typeof apiClient<SuccessResponseTypeDtoGetLobbyByIdResponseDto23>
+    >
+  ) => {
+    return apiClient<SuccessResponseTypeDtoGetLobbyByIdResponseDto23>(
+      {
+        url: `/api/quiz/play/evaluate`,
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        data: evaluateQuestionDto,
+      },
+      options
+    );
+  };
+
+  /**
    * @summary Create Quiz Participants
    */
   const quizParticipantsControllerCreate = (
     createQuizParticipantsDto: CreateQuizParticipantsDto,
     options?: SecondParameter<
-      typeof apiClient<SuccessResponseTypeDtoQuizParticipantDto23>
+      typeof apiClient<SuccessResponseTypeDtoQuizParticipantDto24>
     >
   ) => {
-    return apiClient<SuccessResponseTypeDtoQuizParticipantDto23>(
+    return apiClient<SuccessResponseTypeDtoQuizParticipantDto24>(
       {
         url: `/api/quiz/participants`,
         method: "POST",
@@ -974,10 +1018,10 @@ Returns 'Hello World', useful for health check.
   const quizParticipantsControllerList = (
     params: QuizParticipantsControllerListParams,
     options?: SecondParameter<
-      typeof apiClient<SuccessResponseTypeDtoQuizParticipantDto24>
+      typeof apiClient<SuccessResponseTypeDtoQuizParticipantDto25>
     >
   ) => {
-    return apiClient<SuccessResponseTypeDtoQuizParticipantDto24>(
+    return apiClient<SuccessResponseTypeDtoQuizParticipantDto25>(
       { url: `/api/quiz/participants`, method: "GET", params },
       options
     );
@@ -988,9 +1032,9 @@ Returns 'Hello World', useful for health check.
    */
   const quizParticipantsControllerDeleteMany = (
     params: QuizParticipantsControllerDeleteManyParams,
-    options?: SecondParameter<typeof apiClient<SuccessResponseTypeDtoString25>>
+    options?: SecondParameter<typeof apiClient<SuccessResponseTypeDtoString26>>
   ) => {
-    return apiClient<SuccessResponseTypeDtoString25>(
+    return apiClient<SuccessResponseTypeDtoString26>(
       { url: `/api/quiz/participants`, method: "DELETE", params },
       options
     );
@@ -1020,6 +1064,7 @@ Returns 'Hello World', useful for health check.
     playQuizControllerFindJoinedLobby,
     playQuizControllerFindLobbyById,
     playQuizControllerGetLobbyResponses,
+    playQuizControllerEvaluateQuestion,
     quizParticipantsControllerCreate,
     quizParticipantsControllerList,
     quizParticipantsControllerDeleteMany,
@@ -1229,6 +1274,15 @@ export type PlayQuizControllerGetLobbyResponsesResult = NonNullable<
       ReturnType<
         typeof getAPIDocsGoogleMaestro001Alpha
       >["playQuizControllerGetLobbyResponses"]
+    >
+  >
+>;
+export type PlayQuizControllerEvaluateQuestionResult = NonNullable<
+  Awaited<
+    ReturnType<
+      ReturnType<
+        typeof getAPIDocsGoogleMaestro001Alpha
+      >["playQuizControllerEvaluateQuestion"]
     >
   >
 >;

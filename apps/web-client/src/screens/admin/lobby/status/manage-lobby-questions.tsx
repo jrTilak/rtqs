@@ -9,26 +9,56 @@ import {
 } from "@/components/ui/card";
 import { P } from "@/components/ui/typography";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import type { LobbyProps } from "..";
 import { useGetLobbyResponses } from "@/server/apis/play-quiz/hooks";
+import { useEvaluateQuestion } from "@/server/ws/play-quiz/hooks";
+import { alert } from "@/components/ui/alert-dialog/utils";
 
 export const ManageLobbyQuestions = ({ lobby }: LobbyProps) => {
   const [selectedResponseId, setSelectedResponseId] = useState<string | null>(
     null
   );
-  const [markedCorrectAnswer, setMarkedCorrectAnswer] = useState<string | null>(
-    null
-  );
-
   const { data: responses } = useGetLobbyResponses(lobby.id);
+  const evaluateQuestion = useEvaluateQuestion();
 
   const handleMarkCorrect = () => {
     const selected = responses?.find((a) => a.player.id === selectedResponseId);
     if (selected) {
-      setMarkedCorrectAnswer(selected.answer);
+      evaluateQuestion.mutate(
+        {
+          lobbyId: lobby.id,
+          correctAnswerText: selected.answer,
+        },
+        {
+          onSuccess: () => {
+            // Status update should trigger UI change from parent
+          },
+          onError: (err: any) => {
+            alert({
+              title: "Error",
+              description: err.message,
+            });
+          },
+        }
+      );
     }
+  };
+
+  const handleNoCorrect = () => {
+    evaluateQuestion.mutate(
+      {
+        lobbyId: lobby.id,
+      },
+      {
+        onError: (err: any) => {
+          alert({
+            title: "Error",
+            description: err.message,
+          });
+        },
+      }
+    );
   };
 
   return (
@@ -88,8 +118,7 @@ export const ManageLobbyQuestions = ({ lobby }: LobbyProps) => {
 
             <ScrollArea className="flex-1 px-4">
               <div className="space-y-3 pb-4">
-                {responses?.map((answer) => {
-                  const isCorrect = markedCorrectAnswer === answer.answer;
+                {responses?.map((answer: any) => {
                   const isSelected = selectedResponseId === answer.player.id;
 
                   return (
@@ -97,9 +126,7 @@ export const ManageLobbyQuestions = ({ lobby }: LobbyProps) => {
                       key={answer.player.id}
                       onClick={() => setSelectedResponseId(answer.player.id)}
                       className={`p-3 rounded-lg border-2 cursor-pointer transition-all ${
-                        isCorrect
-                          ? "bg-green-50 dark:bg-green-950/20 border-green-500"
-                          : isSelected
+                        isSelected
                           ? "bg-primary/5 border-primary"
                           : "bg-background border-muted hover:border-primary/50"
                       }`}
@@ -108,11 +135,6 @@ export const ManageLobbyQuestions = ({ lobby }: LobbyProps) => {
                         <span className="text-sm font-medium text-foreground">
                           {answer.player.name || answer.player.email}
                         </span>
-                        {isCorrect && (
-                          <Badge className="bg-green-500 hover:bg-green-600">
-                            Correct
-                          </Badge>
-                        )}
                       </div>
                       <P className="text-base">{answer.answer}</P>
                     </div>
@@ -124,16 +146,18 @@ export const ManageLobbyQuestions = ({ lobby }: LobbyProps) => {
             <CardFooter className="p-4 border-t bg-muted/50 flex flex-col gap-2">
               <Button
                 className="w-full"
-                disabled={!selectedResponseId}
+                disabled={!selectedResponseId || evaluateQuestion.isPending}
                 onClick={handleMarkCorrect}
               >
-                Mark as Correct
+                {evaluateQuestion.isPending && selectedResponseId
+                  ? "Marking..."
+                  : "Mark as Correct"}
               </Button>
               <Button
                 className="w-full"
                 variant={"outline"}
-                disabled={!selectedResponseId}
-                onClick={handleMarkCorrect}
+                disabled={evaluateQuestion.isPending}
+                onClick={handleNoCorrect}
               >
                 No Correct Answer
               </Button>

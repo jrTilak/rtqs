@@ -119,7 +119,7 @@ export class PlayQuizController {
     const res = await this._playQuizService.deleteLobby(query);
     return new ApiResponse(res);
   }
-  
+
   @Get('/lobby/responses/:lobby_id')
   @ApiOperation({
     summary: 'Get lobby responses',

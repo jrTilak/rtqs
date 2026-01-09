@@ -1,5 +1,5 @@
 import { IntersectionType, PartialType, PickType } from '@nestjs/swagger';
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { LobbyBaseDto } from '../lobby.dto';
 import { IsId } from '@/common/decorators/validations/is-id';
 import { IsArrayOfId } from '@/common/decorators/validations/is-array-of-id';
@@ -48,4 +48,13 @@ export class SubmitAnswerDto {
   @IsString()
   @IsNotEmpty()
   answer: string;
+}
+
+export class EvaluateQuestionDto {
+  @IsId('Lobby id')
+  lobbyId: string;
+
+  @IsString()
+  @IsOptional()
+  correctAnswerText?: string;
 }

@@ -1,10 +1,11 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { KEYS } from "@/server/keys";
 import {
   joinLobbyRoom,
   nextQuestion,
   submitAnswer,
   updateLobby,
+  evaluateQuestion,
 } from "./commands";
 import type { JoinLobbyRoomPayload } from "./types";
 import type { GetLobbyResponse } from "@/server/apis/play-quiz";
@@ -53,5 +54,11 @@ export const useNextQuestion = () => {
 export const useSubmitAnswer = () => {
   return useMutation({
     mutationFn: submitAnswer,
+  });
+};
+
+export const useEvaluateQuestion = () => {
+  return useMutation({
+    mutationFn: evaluateQuestion,
   });
 };

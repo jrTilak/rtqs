@@ -17,6 +17,7 @@ import { GATEWAY_MESSAGES } from './constants/gateway-messages';
 import { Server, Socket } from 'socket.io';
 import { ROLES } from '@/lib/auth';
 import {
+  EvaluateQuestionDto,
   JoinLobbyRoomDto,
   NextQuestionDto,
   SubmitAnswerDto,
@@ -24,7 +25,6 @@ import {
 } from './dto/request/lobby.dto';
 import { getWsRoomId } from '@/lib/get-ws-room-id';
 import { WsResponse } from '@/common/dto/response/ws-response-dto';
-import { QuizLobbyStatsEnum } from './entities';
 import { omitObj } from '@/lib/omit-obj';
 import { sleep } from '@/lib/sleep';
 
@@ -196,5 +196,37 @@ export class PlayQuizGateway {
     } catch (error) {
       console.log(error);
     }
+  }
+  @SubscribeMessage(GATEWAY_MESSAGES.EVALUATE_QUESTION)
+  async onEvaluateQuestion(
+    @MessageBody() payload: EvaluateQuestionDto,
+    @ConnectedSocket() _client: Socket,
+  ) {
+    const lobby = await this._playQuizService.evaluateQuestion(payload);
+
+    const adminRoom = getWsRoomId({
+      role: ROLES.ADMIN,
+      scope: 'lobby',
+      scopeId: payload.lobbyId,
+    });
+
+    this._server
+      .to(adminRoom)
+      .emit(GATEWAY_MESSAGES.LOBBY_UPDATED, new WsResponse(lobby));
+
+    const userRoom = getWsRoomId({
+      role: ROLES.USER,
+      scope: 'lobby',
+      scopeId: payload.lobbyId,
+    });
+
+    this._server
+      .to(userRoom)
+      .emit(
+        GATEWAY_MESSAGES.LOBBY_UPDATED,
+        new WsResponse(omitObj(lobby, ['participants'])),
+      );
+
+    return new WsResponse(lobby);
   }
 }

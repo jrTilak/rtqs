@@ -7,6 +7,7 @@ import type {
   NextQuestionPayload,
   SubmitAnswerPayload,
   UpdateLobbyPayload,
+  EvaluateQuestionPayload,
 } from "./types";
 
 export const updateLobby = async (payload: UpdateLobbyPayload) => {
@@ -47,6 +48,17 @@ export const submitAnswer = async (payload: SubmitAnswerPayload) => {
     MESSAGES.SUBMIT_ANSWER,
     payload
   )) as WsAckResponse<void>;
+  if (!res.success) {
+    throw new Error(res.message);
+  }
+  return res.data;
+};
+
+export const evaluateQuestion = async (payload: EvaluateQuestionPayload) => {
+  const res = (await socket.client.emitWithAck(
+    MESSAGES.EVALUATE_QUESTION,
+    payload
+  )) as WsAckResponse<Lobby>;
   if (!res.success) {
     throw new Error(res.message);
   }

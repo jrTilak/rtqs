@@ -6,6 +6,7 @@ import {
 import {
   CreateLobbyDto,
   DeleteLobbyDto,
+  EvaluateQuestionDto,
   JoinLobbyRoomDto,
   ListLobbyDto,
   NextQuestionDto,
@@ -543,5 +544,41 @@ export class PlayQuizService {
       isCorrect: r.isCorrect,
       player: r.player.player,
     }));
+  }
+  async evaluateQuestion({ lobbyId, correctAnswerText }: EvaluateQuestionDto) {
+    const lobby = await this._quizLobbyRepo.findOne(
+      {
+        id: lobbyId,
+      },
+      {
+        populate: ['currentQuestion'],
+      },
+    );
+
+    if (!lobby) {
+      throw new NotFoundException('Lobby not found');
+    }
+
+    if (correctAnswerText) {
+      // Mark correct answers
+      await this._lobbyPlayerResponseRepo.nativeUpdate(
+        {
+          question: lobby.currentQuestion,
+          answer: correctAnswerText,
+        },
+        {
+          isCorrect: true,
+        },
+      );
+    }
+
+    this._em.assign(lobby, {
+      status: QuizLobbyStatsEnum.QUESTION_RESPONSE_SUMMARY,
+      waitUntil: new Date().toISOString(),
+    });
+
+    await this._em.flush();
+
+    return this.findLobbyById(lobbyId);
   }
 }
