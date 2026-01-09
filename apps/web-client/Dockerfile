@@ -53,4 +53,4 @@ WORKDIR /app
 COPY --from=builder /app/apps/web-client/dist ./dist
 
 # Serve SPA with fallback to index.html, using dynamic port
-CMD ["sh", "-c", "serve -s dist -l ${CLIENT_PORT}"]
+CMD sh -c "serve -s dist -l ${CLIENT_PORT:-5173}"
