@@ -75,14 +75,6 @@ export const InQuiz = ({ lobby }: LobbyProps) => {
             placeholder="Type your answer here... (Press Ctrl+Enter to submit)"
             className="min-h-37.5 resize-none text-base disabled:opacity-80"
             value={answer}
-            onBeforeInput={(e) => {
-              const ne = e.nativeEvent;
-
-              // Allow only real typing
-              if (ne.inputType !== "insertText") {
-                e.preventDefault();
-              }
-            }}
             onChange={(e) => {
               setAnswer(e.target.value);
             }}
