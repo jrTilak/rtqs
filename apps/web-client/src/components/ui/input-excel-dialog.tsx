@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as XLSX from "xlsx";
 import { IconFileSpreadsheet } from "@tabler/icons-react";
-import { ZodError, type ZodSchema } from "zod";
+import { ZodError, z } from "zod";
 
 import {
   Dialog,
@@ -14,22 +14,22 @@ import {
 import { cn } from "@/lib/utils";
 import { alert } from "./alert-dialog/utils";
 
-interface InputExcelDialogProps<T extends Array<Record<any, unknown>>> {
+interface InputExcelDialogProps<T extends Array<Record<string, string>>> {
   children?: React.ReactNode;
   onImport: (data: T) => void;
   title?: string;
   description?: string;
   className?: string;
-  schema?: ZodSchema<T>;
+  columns: string[];
 }
 
-export function InputExcelDialog<T extends Array<Record<any, unknown>>>({
+export function InputExcelDialog<T extends Array<Record<string, string>>>({
   children,
   onImport,
   title = "Import Excel",
   description = "Select an Excel file to import.",
   className,
-  schema,
+  columns,
 }: InputExcelDialogProps<T>) {
   const [isOpen, setIsOpen] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(false);
@@ -52,26 +52,68 @@ export function InputExcelDialog<T extends Array<Record<any, unknown>>>({
         const workbook = XLSX.read(data, { type: "array" });
         const sheetName = workbook.SheetNames[0];
         const worksheet = workbook.Sheets[sheetName];
-        let jsonData = XLSX.utils.sheet_to_json(worksheet) as T;
 
-        if (schema) {
-          jsonData = schema.parse(jsonData);
+        // Use raw: false to get formatted strings for everything (dates, numbers)
+        const rawData = XLSX.utils.sheet_to_json(worksheet, {
+          raw: false,
+          defval: "",
+        });
+
+        // Validate generic structure
+        const arraySchema = z.array(z.record(z.string(), z.any()));
+        let jsonData = arraySchema.parse(rawData);
+
+        // Filter empty rows (where all values are falsy or empty string)
+        jsonData = jsonData.filter((row) =>
+          Object.values(row).some(
+            (val) =>
+              val !== null && val !== undefined && String(val).trim() !== ""
+          )
+        );
+
+        // Normalize and filter by columns, converting everything to string
+        const normalizedData = (jsonData as Record<string, any>[]).map(
+          (row) => {
+            const newRow: Record<string, string> = {};
+            columns.forEach((col) => {
+              let val = row[col];
+              if (val === undefined || val === null) {
+                val = "";
+              }
+
+              if (val instanceof Date) {
+                val = val.toDateString();
+              } else if (typeof val === "object") {
+                val = JSON.stringify(val);
+              }
+
+              newRow[col] = String(val).trim();
+            });
+            return newRow;
+          }
+        ) as unknown as T;
+
+        if (normalizedData.length === 0) {
+          throw new Error("No valid data found in the Excel file.");
         }
 
-        onImport(jsonData);
+        onImport(normalizedData);
         setIsOpen(false);
       } catch (error) {
         console.error("Excel import error:", error);
         if (error instanceof ZodError) {
           alert({
             title: "Validation Error",
-            description: "Please add the excel file with given columns",
+            description: "Invalid format in Excel file.",
             variant: "destructive",
           });
         } else {
           alert({
             title: "Validation Error",
-            description: "Failed to parse Excel file",
+            description:
+              error instanceof Error
+                ? error.message
+                : "Failed to parse Excel file",
             variant: "destructive",
           });
         }

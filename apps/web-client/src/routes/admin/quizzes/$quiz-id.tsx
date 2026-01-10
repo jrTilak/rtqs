@@ -12,7 +12,7 @@ import { useState } from "react";
 import { AddParticipantDialog } from "@/screens/admin/quizzes/quiz-participants/add-participant-dialog";
 import { BreadcrumbTitle } from "@/components/layout/admin/breadcrumb";
 import { InputExcelDialog } from "@/components/ui/input-excel-dialog";
-import z from "zod";
+
 import { parseErrorMessage } from "@/lib/parse-error-message";
 
 export const Route = createFileRoute("/admin/quizzes/$quiz-id")({
@@ -63,11 +63,7 @@ function RouteComponent() {
                       });
                     }
                   }}
-                  schema={z.array(
-                    z.object({
-                      EMAIL: z.email().nonempty(),
-                    })
-                  )}
+                  columns={["EMAIL"]}
                 >
                   <Button isLoading={isPending} variant="outline" size={"icon"}>
                     <Upload />

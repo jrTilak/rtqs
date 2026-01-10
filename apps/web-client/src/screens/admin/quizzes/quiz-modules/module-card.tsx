@@ -13,7 +13,6 @@ import {
 } from "@/components/ui/collapsible";
 import { InputExcelDialog } from "@/components/ui/input-excel-dialog";
 import { parseErrorMessage } from "@/lib/parse-error-message";
-import z from "zod";
 
 interface ModuleCardProps {
   module: QuizModule;
@@ -74,12 +73,7 @@ export const ModuleCard = ({ module, quizId }: ModuleCardProps) => {
                       });
                     }
                   }}
-                  schema={z.array(
-                    z.object({
-                      ANSWER: z.string().nonempty(),
-                      QUESTION: z.string().nonempty(),
-                    })
-                  )}
+                  columns={["QUESTION", "ANSWER"]}
                 >
                   <Button
                     isLoading={addQuestions.isPending}
