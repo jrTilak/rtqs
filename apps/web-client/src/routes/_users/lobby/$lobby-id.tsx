@@ -14,7 +14,7 @@ function Lobby() {
   const lobby = server.playQuiz.useFindJoinedLobby(lobbyId);
 
   usePreventNavigation({
-    enabled: import.meta.env.DEV,
+    enabled: !import.meta.env.DEV,
   });
   useWakeLock(true);
 

@@ -11,12 +11,9 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-import { P } from "@/components/ui/typography";
+import { InputExcelDialog } from "@/components/ui/input-excel-dialog";
+import { parseErrorMessage } from "@/lib/parse-error-message";
+import z from "zod";
 
 interface ModuleCardProps {
   module: QuizModule;
@@ -37,6 +34,7 @@ export const ModuleCard = ({ module, quizId }: ModuleCardProps) => {
     if (!should) return;
     deleteModule.mutate({ ids: [module.id], quizId: quizId });
   };
+  const addQuestions = server.quizQuestions.useCreate();
   return (
     <>
       <Collapsible>
@@ -55,18 +53,42 @@ export const ModuleCard = ({ module, quizId }: ModuleCardProps) => {
                 </CardTitle>
               </div>
               <div className="flex gap-2">
-                <Tooltip>
-                  <TooltipTrigger>
-                    <Button variant="outline" size={"icon-sm"}>
-                      <Upload />
-                    </Button>
-                    <TooltipContent>
-                      <P className="text-sm">
-                        Upload questions in bulk using an Excel file.
-                      </P>
-                    </TooltipContent>
-                  </TooltipTrigger>
-                </Tooltip>
+                <InputExcelDialog
+                  title="Bulk upload questions"
+                  description="Upload an excel sheet with column QUESTION and ANSWER"
+                  onImport={async (data) => {
+                    try {
+                      await addQuestions.mutateAsync({
+                        moduleId: module.id,
+                        data: data.map((d, i) => ({
+                          answer: d.ANSWER,
+                          question: d.QUESTION,
+                          index: i + 1,
+                        })),
+                      });
+                    } catch (error) {
+                      await alert({
+                        title: "Failed to add question",
+                        description: parseErrorMessage(error),
+                        variant: "destructive",
+                      });
+                    }
+                  }}
+                  schema={z.array(
+                    z.object({
+                      ANSWER: z.string().nonempty(),
+                      QUESTION: z.string().nonempty(),
+                    })
+                  )}
+                >
+                  <Button
+                    isLoading={addQuestions.isPending}
+                    variant="outline"
+                    size={"icon"}
+                  >
+                    <Upload />
+                  </Button>
+                </InputExcelDialog>
                 <AddQuestionDialog module={module} />
                 <Button
                   variant="destructive-outline"

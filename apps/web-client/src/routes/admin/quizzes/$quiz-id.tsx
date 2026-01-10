@@ -11,11 +11,9 @@ import { ParticipantsList } from "@/screens/admin/quizzes/quiz-participants/part
 import { useState } from "react";
 import { AddParticipantDialog } from "@/screens/admin/quizzes/quiz-participants/add-participant-dialog";
 import { BreadcrumbTitle } from "@/components/layout/admin/breadcrumb";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { InputExcelDialog } from "@/components/ui/input-excel-dialog";
+import z from "zod";
+import { parseErrorMessage } from "@/lib/parse-error-message";
 
 export const Route = createFileRoute("/admin/quizzes/$quiz-id")({
   component: RouteComponent,
@@ -26,6 +24,8 @@ function RouteComponent() {
   const quiz = server.quizzes.useFindById(quizId);
 
   const [tabValue, setTabValue] = useState("quiz");
+
+  const { mutateAsync, isPending } = server.quizParticipants.useCreate();
 
   return (
     <div className="max-w-5xl w-full mx-auto">
@@ -44,18 +44,35 @@ function RouteComponent() {
               <AddModuleDialog quizId={quizId} />
             ) : (
               <div className="flex gap-2">
-                <Tooltip>
-                  <TooltipTrigger>
-                    <Button variant="outline" size={"icon"}>
-                      <Upload />
-                    </Button>
-                    <TooltipContent>
-                      <P className="text-sm">
-                        Upload participant data in bulk using an Excel file.
-                      </P>
-                    </TooltipContent>
-                  </TooltipTrigger>
-                </Tooltip>
+                <InputExcelDialog
+                  title="Bulk upload participants"
+                  description="Upload an excel sheet with column EMAIL"
+                  onImport={async (data) => {
+                    try {
+                      await mutateAsync({
+                        data: data.map((d) => ({
+                          email: d.EMAIL,
+                        })),
+                        quizId,
+                      });
+                    } catch (error) {
+                      alert({
+                        title: "Error",
+                        description: parseErrorMessage(error),
+                        variant: "destructive",
+                      });
+                    }
+                  }}
+                  schema={z.array(
+                    z.object({
+                      EMAIL: z.email().nonempty(),
+                    })
+                  )}
+                >
+                  <Button isLoading={isPending} variant="outline" size={"icon"}>
+                    <Upload />
+                  </Button>
+                </InputExcelDialog>
                 <AddParticipantDialog quizId={quizId} />
               </div>
             )}
