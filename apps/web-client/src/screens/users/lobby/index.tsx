@@ -1,3 +1,4 @@
+import { UsersHeader } from "@/components/layout/users/users-header";
 import { LobbyStatus } from "./lobby-status";
 import type { FindJoinedLobbyResponse } from "@/server/apis/play-quiz";
 import {
@@ -36,8 +37,9 @@ export const QuizLobby = ({ lobby }: LobbyProps) => {
   }, [joinLobbyRoom.isSuccess]);
 
   return (
-    <div className="flex flex-col gap-4 h-screen">
-      <header className="border-b px-6 py-3 bg-muted">
+    <div className="flex flex-col h-screen">
+      <UsersHeader>
+        <span className="text-muted-foreground/40">|</span>
         <Breadcrumb>
           <BreadcrumbList>
             <BreadcrumbItem>{lobby.quiz.name}</BreadcrumbItem>
@@ -47,7 +49,7 @@ export const QuizLobby = ({ lobby }: LobbyProps) => {
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
-      </header>
+      </UsersHeader>
       <div className="px-6 flex-1 mb-24">
         <LobbyStatus lobby={lobby} />
       </div>
