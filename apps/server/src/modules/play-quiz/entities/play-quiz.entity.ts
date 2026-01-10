@@ -82,7 +82,7 @@ export type LobbyPlayerEntityType = InstanceType<typeof LobbyPlayerEntity>;
 export class LobbyPlayerResponseEntity extends BaseEntity {
   [EntityRepositoryType]?: LobbyPlayerResponseRepository;
 
-  @Property()
+  @Property({ type: 'text' })
   answer: string;
 
   @ManyToOne({ deleteRule: 'cascade' })

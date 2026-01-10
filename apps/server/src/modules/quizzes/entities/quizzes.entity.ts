@@ -9,7 +9,7 @@ export class QuizEntity extends BaseEntity {
   @Property()
   name: string;
 
-  @Property({ nullable: true })
+  @Property({ nullable: true, type: 'text' })
   description?: string;
 }
 export type QuizEntityType = InstanceType<typeof QuizEntity>;

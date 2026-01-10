@@ -33,7 +33,7 @@ export class Session extends BaseEntity {
   @Property()
   userId: string; // FK to User
 
-  @Property()
+  @Property({ type: 'text' })
   token: string;
 
   @Property()
@@ -60,10 +60,10 @@ export class Account extends BaseEntity {
   @Property()
   providerId: string;
 
-  @Property({ nullable: true })
+  @Property({ nullable: true, type: 'text' })
   accessToken?: string;
 
-  @Property({ nullable: true })
+  @Property({ nullable: true, type: 'text' })
   refreshToken?: string;
 
   @Property({ nullable: true })
@@ -75,7 +75,7 @@ export class Account extends BaseEntity {
   @Property({ nullable: true })
   scope?: string;
 
-  @Property({ nullable: true })
+  @Property({ nullable: true, type: 'text' })
   idToken?: string;
 
   @Property({ nullable: true })
@@ -87,7 +87,7 @@ export class Verification extends BaseEntity {
   @Property()
   identifier: string;
 
-  @Property()
+  @Property({ type: 'text' })
   value: string;
 
   @Property()

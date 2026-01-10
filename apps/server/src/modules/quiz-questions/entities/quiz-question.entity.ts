@@ -12,10 +12,10 @@ import { QuizQuestionsRepository } from '../quiz-questions.repository';
 export class QuizQuestionEntity extends BaseEntity {
   [EntityRepositoryType]?: QuizQuestionsRepository;
 
-  @Property()
+  @Property({ type: 'text' })
   question: string;
 
-  @Property()
+  @Property({ type: 'text' })
   answer: string;
 
   @Property()
