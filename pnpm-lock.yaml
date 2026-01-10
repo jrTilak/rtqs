@@ -86,6 +86,9 @@ importers:
       drizzle-orm:
         specifier: ^0.45.1
         version: 0.45.1(@types/pg@8.16.0)(knex@3.1.0(pg@8.16.3))(kysely@0.28.9)(pg@8.16.3)
+      express:
+        specifier: ^5.2.1
+        version: 5.2.1
       gray-matter:
         specifier: ^4.0.3
         version: 4.0.3
