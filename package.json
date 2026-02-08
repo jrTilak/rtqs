@@ -2,8 +2,18 @@
   "name": "rtqs",
   "type": "module",
   "private": false,
+  "scripts": {
+    "plugins:save": "bun run scripts/save-plugins-import.ts"
+  },
   "workspaces": [
-    "apps/*",
-    "plugins/*"
-  ]
+    "apps/**",
+    "plugins/**",
+    "lib/**"
+  ],
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  }
 }
