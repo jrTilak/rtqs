@@ -8,7 +8,7 @@ import { PluginThemeProvider } from "./providers/plugin-theme-provider.tsx";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
+    <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
       <Suspense fallback={<div>Theme Loading...</div>}>
         <PluginThemeProvider>
           <App />

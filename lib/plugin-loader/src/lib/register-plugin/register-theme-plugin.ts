@@ -3,18 +3,24 @@ import { varsToCss } from "../vars-to-css";
 
 export const registerThemePlugin = async ({
   config,
+  name,
 }: PluginConfigSchemaType) => {
-  let allCss = "";
-
+  let cssFiles: string[] = [];
   if (config.exports?.vars) {
-    allCss += varsToCss(config.exports.vars);
+    cssFiles.push(varsToCss(config.exports.vars));
   }
 
-  if (config.exports?.rawCss) {
-    allCss += config.exports.rawCss.join("\n");
-  }
+  cssFiles.push(...(config.exports?.rawCss || []));
 
-  const sheet = new CSSStyleSheet();
-  sheet.replaceSync(allCss);
-  document.adoptedStyleSheets = [...document.adoptedStyleSheets, sheet];
+  cssFiles.forEach((css, index) => {
+    const id = `${name}__style-${index}`;
+    let styleEl = document.getElementById(id) as HTMLStyleElement | null;
+
+    if (!styleEl) {
+      styleEl = document.createElement("style");
+      styleEl.id = id;
+      document.head.appendChild(styleEl);
+    }
+    styleEl.textContent = css;
+  });
 };
