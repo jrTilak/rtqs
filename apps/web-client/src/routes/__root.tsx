@@ -5,6 +5,7 @@ import { ThemeProvider } from "@/providers/theme-provider";
 import { QueryProvider } from "@/providers/query-provider";
 import { PluginThemeProviderContextProvider } from "@/providers/plugin-theme-provider";
 import type { RouterContext } from "@/main";
+import { QUERY_KEYS } from "@/constants/query-keys";
 
 export const Route = createRootRoute({
   component: RootComponent,
@@ -12,7 +13,7 @@ export const Route = createRootRoute({
     const { queryClient } = context as RouterContext;
 
     await queryClient.ensureQueryData({
-      queryKey: ["theme-plugin", DEFAULT_THEME_PLUGIN],
+      queryKey: QUERY_KEYS.plugins.theme(DEFAULT_THEME_PLUGIN),
       queryFn: () => getPluginConfig(ThemePluginSchema, DEFAULT_THEME_PLUGIN),
     });
     return null;

@@ -1,6 +1,9 @@
 import z from "zod";
-import { ThemePluginSchema } from "../plugin-types";
+import { IllustrationPluginSchema, ThemePluginSchema } from "../plugin-types";
 
-export const PluginConfigSchema = z.union([ThemePluginSchema]);
+export const PluginConfigSchema = z.union([
+  ThemePluginSchema,
+  IllustrationPluginSchema,
+]);
 
 export type PluginConfigSchemaType = z.infer<typeof PluginConfigSchema>;

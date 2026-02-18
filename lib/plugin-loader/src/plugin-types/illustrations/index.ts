@@ -1,2 +1,2 @@
-export * from "./exports";
+export * from "./zod-schema";
 export * from "./constants";

@@ -1,0 +1,99 @@
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+// import { server } from "@/server/apis";
+import { Input } from "@/components/ui/input";
+
+const formSchema = z.object({
+  email: z
+    .string({ message: "Email is required" })
+    .trim()
+    .email({ message: "Please enter a valid email" }),
+  name: z
+    .string({ message: "Name is required" })
+    .min(1, { message: "Name must not be emtpy" }),
+});
+
+type FormSchema = z.infer<typeof formSchema>;
+const DEFAULT_FORM_VALUES: FormSchema = {
+  email: "",
+  name: "",
+};
+
+export function LoginForm({
+  className,
+  ...props
+}: React.ComponentProps<"form">) {
+  const form = useForm<FormSchema>({
+    resolver: zodResolver(formSchema),
+    defaultValues: DEFAULT_FORM_VALUES,
+  });
+  // const login = server.auth.useLoginByMagicLink();
+  const onSubmit = async (data: FormSchema) => {
+    try {
+      // await login.mutateAsync(data);
+      // alert({
+      //   description:
+      //     "A login link has been sent to your email address. Please check your inbox.",
+      //   title: "Check Mail",
+      // });
+      form.reset(DEFAULT_FORM_VALUES);
+    } catch {
+      // alert({
+      //   description: parseErrorMessage(error),
+      //   title: "Error",
+      //   variant: "destructive",
+      // });
+    }
+  };
+
+  return (
+    <Form {...form}>
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className={cn("grid gap-4", className)}
+        {...props}
+      >
+        <FormField
+          control={form.control}
+          name="name"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Name*</FormLabel>
+              <FormControl>
+                <Input {...field} autoComplete="name" />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="email"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Email*</FormLabel>
+              <FormControl>
+                <Input {...field} type="email" autoComplete="email" />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <Button size={"lg"} className="mt-2">
+          Sign In with Email
+        </Button>
+      </form>
+    </Form>
+  );
+}

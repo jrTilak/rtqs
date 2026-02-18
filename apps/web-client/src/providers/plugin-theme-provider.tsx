@@ -14,6 +14,7 @@ import {
   registerThemePlugin,
   ThemePluginSchema,
 } from "@rtqs/plugin-loader";
+import { QUERY_KEYS } from "@/constants/query-keys";
 
 type PluginThemeProviderContextType = {
   plugins: string[];
@@ -38,7 +39,7 @@ export const PluginThemeProviderContextProvider = ({
 
   const results = useQueries({
     queries: plugins.map((plugin) => ({
-      queryKey: ["theme-plugin", plugin],
+      queryKey: QUERY_KEYS.plugins.theme(plugin),
       queryFn: async () => getPluginConfig(ThemePluginSchema, plugin),
     })),
   });
