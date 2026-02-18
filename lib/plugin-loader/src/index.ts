@@ -1,4 +1,4 @@
-export * from "./lib/define-config";
-export * from "./lib/plugin-types";
-export * from "./lib/register-plugin";
+export * from "./define-config";
+export * from "./plugin-types";
 export * from "./plugins";
+export * from "./lib/get-plugin-config";

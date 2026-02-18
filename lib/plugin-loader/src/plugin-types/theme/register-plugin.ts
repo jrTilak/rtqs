@@ -1,10 +1,14 @@
-import type { PluginConfigSchemaType } from "../define-config";
-import { varsToCss } from "../vars-to-css";
+import { varsToCss } from "../../lib/vars-to-css";
+import { type ThemePluginSchemaType } from "./zod-schema";
 
+/**
+ *  Registers a theme plugin by injecting the provided CSS variables and raw CSS into the document.
+ * @warn It is not recommended to multiple MAIN theme plugins at the same time, as they may conflict with each other.
+ */
 export const registerThemePlugin = async ({
   config,
   name,
-}: PluginConfigSchemaType) => {
+}: ThemePluginSchemaType) => {
   let cssFiles: string[] = [];
   if (config.exports?.vars) {
     cssFiles.push(varsToCss(config.exports.vars));
@@ -23,4 +27,5 @@ export const registerThemePlugin = async ({
     }
     styleEl.textContent = css;
   });
+  return true;
 };

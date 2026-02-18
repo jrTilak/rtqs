@@ -1,19 +1,34 @@
-import { StrictMode, Suspense } from "react";
-import { createRoot } from "react-dom/client";
-
 import "./index.css";
-import App from "./App.tsx";
-import { ThemeProvider } from "./providers/theme-provider.tsx";
-import { PluginThemeProvider } from "./providers/plugin-theme-provider.tsx";
 
-createRoot(document.getElementById("root")!).render(
-  <StrictMode>
-    <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
-      <Suspense fallback={<div>Theme Loading...</div>}>
-        <PluginThemeProvider>
-          <App />
-        </PluginThemeProvider>
-      </Suspense>
-    </ThemeProvider>
-  </StrictMode>,
-);
+import ReactDOM from "react-dom/client";
+import { RouterProvider, createRouter } from "@tanstack/react-router";
+
+// Import the generated route tree
+import { routeTree } from "./routeTree.gen";
+import { queryClient } from "./providers/query-provider";
+
+// Create a new router instance
+const router = createRouter({
+  routeTree,
+  context: {
+    queryClient,
+  },
+});
+
+export type RouterContext = {
+  queryClient: typeof queryClient;
+};
+
+// Register the router instance for type safety
+declare module "@tanstack/react-router" {
+  interface Register {
+    router: typeof router;
+  }
+}
+
+// Render the app
+const rootElement = document.getElementById("root")!;
+if (!rootElement.innerHTML) {
+  const root = ReactDOM.createRoot(rootElement);
+  root.render(<RouterProvider router={router} />);
+}

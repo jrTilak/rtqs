@@ -1,5 +1,8 @@
-import type { ThemePluginExportsSchemaType } from "./plugin-types";
+import type { ThemePluginExportsSchemaType } from "../plugin-types";
 
+/**
+ * Converts a record of CSS variables for light and dark themes into a CSS string that can be injected into the document.
+ */
 export const varsToCss = (vars: ThemePluginExportsSchemaType["vars"]) => {
   if (!vars) return "";
 
