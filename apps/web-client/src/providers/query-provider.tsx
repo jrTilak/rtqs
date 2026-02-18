@@ -21,12 +21,24 @@ const persister = createAsyncStoragePersister({
   storage: window.localStorage,
 });
 
+const persistQueryClient: typeof persister = (() => {
+  return {
+    ...persister,
+    // Don't persist if any query has meta.persist === false
+    persistClient: async (client) => {
+      if (client.clientState.queries.find((q) => q.meta?.persist === false))
+        return;
+      await persister.persistClient(client);
+    },
+  };
+})();
+
 export const QueryProvider = ({ children }: { children: React.ReactNode }) => {
   return (
     <PersistQueryClientProvider
       client={queryClient}
       persistOptions={{
-        persister,
+        persister: persistQueryClient,
         maxAge: __CACHE_TIME__,
       }}
     >

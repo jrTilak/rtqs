@@ -1,6 +1,6 @@
 import type { ComponentProps } from "react";
 
-const LoginPageIllustration = (props: ComponentProps<"svg">) => (
+const AdventureMap = (props: ComponentProps<"svg">) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     width={800.249}
@@ -303,4 +303,4 @@ const LoginPageIllustration = (props: ComponentProps<"svg">) => (
   </svg>
 );
 
-export default LoginPageIllustration;
+export default AdventureMap;

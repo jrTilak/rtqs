@@ -13,10 +13,14 @@ type Props = {
 } & ComponentProps<"svg">;
 
 export const Illustration = ({ name, ...rest }: Props) => {
+  // TODO: figure out a way to persist the loaded illustration components
   const result = useQuery({
     queryKey: QUERY_KEYS.plugins.illustration(DEFAULT_ILLUSTRATION_PLUGIN),
     queryFn: () =>
       getPluginConfig(IllustrationPluginSchema, DEFAULT_ILLUSTRATION_PLUGIN),
+    meta: {
+      persist: false,
+    },
   });
 
   const comp = useQuery({
@@ -41,6 +45,9 @@ export const Illustration = ({ name, ...rest }: Props) => {
       return imported.default;
     },
     enabled: result.isSuccess,
+    meta: {
+      persist: false,
+    },
   });
 
   const Comp = comp.data;
