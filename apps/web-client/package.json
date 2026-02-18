@@ -21,6 +21,7 @@
     "@tanstack/react-query-persist-client": "^5.90.22",
     "@tanstack/react-router": "^1.158.4",
     "@tanstack/react-router-devtools": "^1.158.4",
+    "better-auth": "^1.4.18",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "radix-ui": "^1.4.3",
