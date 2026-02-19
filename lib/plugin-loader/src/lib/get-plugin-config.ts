@@ -10,6 +10,7 @@ export const getPluginConfig = async <T extends z.ZodSchema>(
 ) => {
   const pluginInstance: unknown = (await PLUGINS[plugin]?.()).default;
 
+  console.log("Loaded plugin instance:", plugin, { pluginInstance });
   if (!pluginInstance) {
     throw new Error(`Plugin not found: ${plugin}, Skipping registration.`);
   }

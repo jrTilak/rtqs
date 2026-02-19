@@ -26,6 +26,6 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["src/**/*", "test/**/*"],
+  "include": ["src/**/*", "test/**/*", "../web-client/src/lib/parse-error-message.ts"],
   "exclude": ["node_modules", "dist"]
 }

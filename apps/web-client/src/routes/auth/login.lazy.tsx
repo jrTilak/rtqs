@@ -39,14 +39,11 @@ function Comp() {
             </CardHeader>
             <CardContent className="mt-5">
               <LoginForm />
-              <P className=" mt-2 text-center text-sm">
-                Learn about <Link>{import.meta.env.VITE_PUBLIC_APP_NAME}</Link>
-              </P>
             </CardContent>
             <CardFooter>
               <P className="text-center text-sm">
                 For admins to manage quizzes; participants login via their org
-                portal.
+                portal. <Link>Learn More.</Link>
               </P>
             </CardFooter>
           </Card>

@@ -1,4 +1,4 @@
-import { Outlet, createRootRoute } from "@tanstack/react-router";
+import { Outlet, createRootRoute, redirect } from "@tanstack/react-router";
 import { getPluginConfig, ThemePluginSchema } from "@rtqs/plugin-loader";
 import { DEFAULT_THEME_PLUGIN } from "@/constants/plugins";
 import { ThemeProvider } from "@/providers/theme-provider";
@@ -6,17 +6,28 @@ import { QueryProvider } from "@/providers/query-provider";
 import { PluginThemeProviderContextProvider } from "@/providers/plugin-theme-provider";
 import type { RouterContext } from "@/main";
 import { QUERY_KEYS } from "@/constants/query-keys";
+import { querySessionOptions } from "@/server/rest-api/auth";
 
 export const Route = createRootRoute({
   component: RootComponent,
-  loader: async ({ context }) => {
+  loader: async ({ context, location }) => {
     const { queryClient } = context as RouterContext;
 
     await queryClient.ensureQueryData({
       queryKey: QUERY_KEYS.plugins.theme(DEFAULT_THEME_PLUGIN),
       queryFn: () => getPluginConfig(ThemePluginSchema, DEFAULT_THEME_PLUGIN),
     });
-    return null;
+
+    if (location.pathname !== "/auth/login") {
+      try {
+        const res = await queryClient.fetchQuery(querySessionOptions);
+        if (!res) {
+          throw redirect({ to: "/auth/login" });
+        }
+      } catch (error) {
+        throw redirect({ to: "/auth/login" });
+      }
+    }
   },
 });
 

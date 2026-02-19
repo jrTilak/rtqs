@@ -6,5 +6,13 @@ export const QUERY_KEYS = {
       "illustration-component",
       { plugin, name },
     ],
+    icon: (plugin: string) => ["icon-plugin", { plugin }],
+    iconComponent: (plugin: string, name: string) => [
+      "icon-component",
+      { plugin, name },
+    ],
+  },
+  auth: {
+    session: () => ["auth", "session"],
   },
 };

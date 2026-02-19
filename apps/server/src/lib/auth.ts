@@ -9,6 +9,7 @@ import { organization } from "better-auth/plugins";
 import { lastLoginMethod } from "better-auth/plugins";
 import { multiSession } from "better-auth/plugins";
 import { openAPI } from "better-auth/plugins";
+import { generateName } from "./generate-name";
 
 export const GUEST_EMAIL_DOMAIN = "guest.rtqs";
 
@@ -40,9 +41,25 @@ export const auth = betterAuth({
     }),
     anonymous({
       emailDomainName: GUEST_EMAIL_DOMAIN,
+      generateName,
     }),
     organization(),
-    lastLoginMethod(),
+    lastLoginMethod({
+      customResolveMethod(ctx) {
+        // Track magic link authentication
+        if (ctx.path === "/magic-link/verify") {
+          return "magic-link";
+        }
+
+        // Track phone authentication
+        if (ctx.path === "/sign-in/anonymous") {
+          return "anonymous";
+        }
+
+        // Return null to use default logic
+        return null;
+      },
+    }),
     multiSession(),
     openAPI({
       disableDefaultReference: true,
@@ -66,11 +83,13 @@ export const auth = betterAuth({
         // eslint-disable-next-line @typescript-eslint/require-await
         before: async (user) => {
           const username = user.username ?? serializeUsername(user.email);
+          const name = user.name ?? generateName();
           return {
             data: {
               ...user,
               username,
               displayUsername: username,
+              name,
             },
           };
         },
