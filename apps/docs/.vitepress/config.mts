@@ -12,12 +12,24 @@ export default defineConfig({
       { text: "Docs", link: "/docs/overview" },
       { text: "Developer Guide", link: "/developer/overview" },
     ],
+    logo: "/logo.svg",
 
     sidebar: {
       "/developer/": [
         {
           text: "Guide",
-          items: [],
+          collapsed: false,
+          base: "/developer/",
+          items: [
+            { text: "Overview", link: "/overview" },
+            { text: "Self Hosting", link: "/self-hosting" },
+          ],
+        },
+        {
+          text: "Plugins",
+          collapsed: false,
+          base: "/developer/plugins/",
+          items: [{ text: "Overview", link: "/overview" }],
         },
       ],
 

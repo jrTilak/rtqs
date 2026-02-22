@@ -7,7 +7,7 @@ hero:
   text: "A Real Time Quiz System"
   tagline: An open-source, fully customizable, plugin-based real-time quiz system.
   image:
-    src: /hero.svg
+    src: /logo.svg
     alt: rtqs
   actions:
     - theme: brand
