@@ -6,10 +6,9 @@ export default defineConfig({
   name: packageJson.name,
   description: packageJson.description,
   version: packageJson.version,
-  config: {
-    type: "ICON",
-    exports: ICONS,
-  },
+  type: "icon",
+  exports: ICONS,
   status: "beta",
-  targetVersion: "<1",
+  targetVersion: "0",
+  scope: ["web-client"],
 });

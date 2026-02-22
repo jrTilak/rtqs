@@ -13,7 +13,7 @@ export type IllustrationsPluginExportsSchemaType<R = any> = Record<
 >;
 
 export const IllustrationPluginSchema = createPluginConfigSchema(
-  "ILLUSTRATION",
+  "illustration",
   IllustrationsPluginExportsSchema,
 );
 export type IllustrationPluginSchemaType = z.infer<

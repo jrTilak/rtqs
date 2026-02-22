@@ -28,7 +28,7 @@ export const Icon = ({ name, defaultComponent, ...rest }: Props) => {
     queryFn: async () => {
       const plugin = result.data;
       if (!plugin) throw new Error("Icon plugin not found");
-      const comps = plugin.config.exports;
+      const comps = plugin.exports;
       const loader = comps[name];
       console.log(
         `Loading icon component for ${name} from plugin ${DEFAULT_ICON_PLUGIN}`,

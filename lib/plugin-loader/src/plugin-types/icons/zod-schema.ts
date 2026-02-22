@@ -13,7 +13,7 @@ export type IconsPluginExportsSchemaType<R = any> = Record<
 >;
 
 export const IconPluginSchema = createPluginConfigSchema(
-  "ICON",
+  "icon",
   IconsPluginExportsSchema,
 );
 export type IconPluginSchemaType = z.infer<typeof IconPluginSchema>;

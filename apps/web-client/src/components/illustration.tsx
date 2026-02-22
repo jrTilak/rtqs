@@ -33,16 +33,16 @@ export const Illustration = ({ name, ...rest }: Props) => {
     queryFn: async () => {
       const plugin = result.data;
       if (!plugin) throw new Error("Illustration plugin not found");
-      const comps = plugin.config.exports;
+      const comps = plugin.exports;
       const loader = comps[name];
       if (!loader) throw new Error(`Illustration ${name} not found in plugin`);
-      const imported = (await loader()) as {
-        default: React.ComponentType<ComponentProps<"svg">>;
-      };
-      if (!imported || !imported.default) {
+      const imported = (await loader()) as React.ComponentType<
+        ComponentProps<"svg">
+      >;
+      if (!imported) {
         throw new Error(`Failed to load illustration component for ${name}`);
       }
-      return imported.default;
+      return imported;
     },
     enabled: result.isSuccess,
     meta: {
