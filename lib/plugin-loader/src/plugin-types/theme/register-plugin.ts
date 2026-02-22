@@ -6,8 +6,8 @@ import { type ThemePluginSchemaType } from "./zod-schema";
  * @warn It is not recommended to multiple MAIN theme plugins at the same time, as they may conflict with each other.
  */
 export const registerThemePlugin = async ({
-  config,
   name,
+  ...config
 }: ThemePluginSchemaType) => {
   let cssFiles: string[] = [];
   if (config.exports?.vars) {

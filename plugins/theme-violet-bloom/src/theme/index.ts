@@ -16,8 +16,12 @@ export const VIOLET_BLOOM_THEME: ThemePluginExportsSchemaType["vars"] = {
     "--muted-foreground": "oklch(0.4386 0 0)",
     "--accent": "oklch(0.9393 0.0288 266.3680)",
     "--accent-foreground": "oklch(0.5445 0.1903 259.4848)",
+
     "--destructive": "oklch(0.6290 0.1902 23.0704)",
     "--destructive-foreground": "oklch(1.0000 0 0)",
+    "--success": "oklch(0.8003 0.1821 151.7110)",
+    "--success-foreground": "oklch(0.9551 0 0)",
+
     "--border": "oklch(0.9300 0.0094 286.2156)",
     "--input": "oklch(0.9401 0 0)",
     "--ring": "oklch(0 0 0)",
@@ -34,11 +38,11 @@ export const VIOLET_BLOOM_THEME: ThemePluginExportsSchemaType["vars"] = {
     "--sidebar-accent-foreground": "oklch(0 0 0)",
     "--sidebar-border": "oklch(0.9401 0 0)",
     "--sidebar-ring": "oklch(0 0 0)",
-    "--success": "oklch(0.8003 0.1821 151.7110)",
-    "--success-foreground": "oklch(0.9551 0 0)",
+
     "--font-body": "Outfit, sans-serif",
     "--font-heading": "Outfit, sans-serif",
     "--font-mono": "Outfit, sans-serif",
+
     "--radius": "0.5rem",
     "--shadow-x": "0px",
     "--shadow-y": "2px",
@@ -77,8 +81,12 @@ export const VIOLET_BLOOM_THEME: ThemePluginExportsSchemaType["vars"] = {
     "--muted-foreground": "oklch(0.7058 0 0)",
     "--accent": "oklch(0.2795 0.0368 260.0310)",
     "--accent-foreground": "oklch(0.7857 0.1153 246.6596)",
+
     "--destructive": "oklch(0.7106 0.1661 22.2162)",
     "--destructive-foreground": "oklch(1.0000 0 0)",
+    "--success": "oklch(0.8003 0.1821 151.7110)",
+    "--success-foreground": "oklch(0.9551 0 0)",
+
     "--border": "oklch(0.3289 0.0092 268.3843)",
     "--input": "oklch(0.3289 0.0092 268.3843)",
     "--ring": "oklch(0.6132 0.2294 291.7437)",
@@ -95,11 +103,11 @@ export const VIOLET_BLOOM_THEME: ThemePluginExportsSchemaType["vars"] = {
     "--sidebar-accent-foreground": "oklch(0.6132 0.2294 291.7437)",
     "--sidebar-border": "oklch(0.3289 0.0092 268.3843)",
     "--sidebar-ring": "oklch(0.6132 0.2294 291.7437)",
-    "--success": "oklch(0.8003 0.1821 151.7110)",
-    "--success-foreground": "oklch(0.9551 0 0)",
+
     "--font-body": "Outfit, sans-serif",
     "--font-heading": "Outfit, sans-serif",
     "--font-mono": "Outfit, sans-serif",
+
     "--radius": "0.5rem",
     "--shadow-x": "0px",
     "--shadow-y": "2px",
