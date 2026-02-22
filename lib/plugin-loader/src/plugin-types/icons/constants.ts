@@ -1,0 +1,17 @@
+export enum ICONS_ENUM {
+  // use cases related icons
+  LOGIN_LINK = "LOGIN_LINK",
+  CREATE_ORGANIZATION = "CREATE_ORGANIZATION",
+  INVITE_USER = "INVITE_USER",
+
+  // general icons
+  ORGANIZATION = "ORGANIZATION",
+  USERNAME = "USERNAME",
+  MAIL = "MAIL",
+  CHECK = "CHECK",
+  X = "X",
+  COPY = "COPY",
+  ANONYMOUS_AVATAR = "ANONYMOUS_AVATAR",
+  GOOGLE = "GOOGLE",
+  SPINNER = "SPINNER",
+}

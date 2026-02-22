@@ -1,8 +1,21 @@
-const APP_CONFIG = {
-  NAME: 'Google Maestro',
-  CURRENT_VERSION: '0.0.1',
-  API_VERSION: 'v1',
-  STATUS: 'alpha' as 'alpha' | 'beta' | 'stable',
-};
+import { version, name } from "../../package.json";
 
-export { APP_CONFIG };
+export const APP_CONFIG = (() => {
+  const [core, pre] = version.split("-");
+
+  let prerelease: string | undefined;
+  let iteration: number | undefined;
+
+  if (pre) {
+    const [tag, iter] = pre.split(".");
+    prerelease = tag;
+    iteration = iter ? Number(iter) : undefined;
+  }
+
+  return {
+    name,
+    version: core,
+    releaseChannel: prerelease,
+    iteration,
+  };
+})();

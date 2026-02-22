@@ -1,20 +1,25 @@
-import { Controller, Get } from '@nestjs/common';
-import { AppService } from './app.service';
-import { AllowAnonymous } from '@thallesp/nestjs-better-auth';
-import { ApiResponse } from './common/dto/response/api-response.dto';
-import { ApiDocs } from './common/decorators/api-docs.decorators';
+import { Controller, Get } from "@nestjs/common";
+import { ApiOperation } from "@nestjs/swagger";
+import { AppService } from "./app.service";
+import { ApiResponse } from "./common/dto/response/api-response.dto";
+import { ApiGetSuccess } from "./common/decorators/response/api-response-success.decorator";
+import { AllowAnonymous } from "@thallesp/nestjs-better-auth";
 
 @Controller()
 export class AppController {
   constructor(private readonly _appService: AppService) {}
 
-  @ApiDocs({
-    path: 'app/get-hello.md',
-  })
   @AllowAnonymous()
-  @Get('/')
-  getHello() {
-    const res = this._appService.getHello();
+  @Get()
+  @ApiOperation({
+    summary: "Hello World",
+  })
+  @ApiGetSuccess({
+    type: String,
+    example: "Hello World",
+  })
+  get(): ApiResponse<string> {
+    const res = this._appService.get();
     return new ApiResponse(res);
   }
 }

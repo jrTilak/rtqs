@@ -1,35 +1,36 @@
-import { scan } from "react-scan"; // must be imported before React and React DOM
+import "./lib/scan";
 
-import ReactDOM from 'react-dom/client'
-import { RouterProvider, createRouter } from '@tanstack/react-router'
+import "./index.css";
 
-import "./index.css"
+import ReactDOM from "react-dom/client";
+import { RouterProvider, createRouter } from "@tanstack/react-router";
 
 // Import the generated route tree
-import { routeTree } from './routeTree.gen'
-import { RootProvider } from './providers/root-provider'
+import { routeTree } from "./routeTree.gen";
+import { queryClient } from "./providers/query-provider";
 
 // Create a new router instance
-const router = createRouter({ routeTree })
-
-scan({
-  enabled: import.meta.env.DEV,
+const router = createRouter({
+  routeTree,
+  context: {
+    queryClient,
+  },
 });
 
+export type RouterContext = {
+  queryClient: typeof queryClient;
+};
+
 // Register the router instance for type safety
-declare module '@tanstack/react-router' {
+declare module "@tanstack/react-router" {
   interface Register {
-    router: typeof router
+    router: typeof router;
   }
 }
 
 // Render the app
-const rootElement = document.getElementById('root')!
+const rootElement = document.getElementById("root")!;
 if (!rootElement.innerHTML) {
-  const root = ReactDOM.createRoot(rootElement)
-  root.render(
-    <RootProvider>
-      <RouterProvider router={router} />
-    </RootProvider>,
-  )
+  const root = ReactDOM.createRoot(rootElement);
+  root.render(<RouterProvider router={router} />);
 }

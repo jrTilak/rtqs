@@ -5,7 +5,7 @@
  */
 export function isEmptyObject(obj: unknown): boolean {
   return (
-    typeof obj === 'object' &&
+    typeof obj === "object" &&
     obj !== null &&
     !Array.isArray(obj) &&
     Object.keys(obj).length === 0

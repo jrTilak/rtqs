@@ -1,16 +1,19 @@
 {
-  "name": "realtime-quiz-system",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "name": "rtqs",
+  "type": "module",
+  "private": false,
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "plugins:save": "bun run scripts/save-plugins-import.ts"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "packageManager": "pnpm@10.25.0",
-  "dependencies": {
-    "zod": "^3.24.1"
+  "workspaces": [
+    "apps/**",
+    "plugins/**",
+    "lib/**"
+  ],
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
   }
 }

@@ -1,55 +1,36 @@
-import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { LoggerModuleGlobal } from './lib/logger/logger.module';
-import { ConfigModule } from '@nestjs/config';
-import { QuizzesModule } from './modules/quizzes/quizzes.module';
-import { MikroOrmModule } from '@mikro-orm/nestjs';
-import { AuthModule } from '@thallesp/nestjs-better-auth';
-import { MikroORM } from '@mikro-orm/core';
-import { createAuth } from './lib/auth';
-import { QuizModulesModule } from './modules/quiz-modules/quiz-modules.module';
-import { QuizQuestionsModule } from './modules/quiz-questions/quiz-questions.module';
-import { PlayQuizModule } from './modules/play-quiz/play-quiz.module';
-import { QuizParticipantsModule } from './modules/quiz-participants/quiz-participants.module';
-import { AdminSeederModule } from './modules/admin-seeder/admin-seeder.module';
-
+import { Module } from "@nestjs/common";
+import { TypeOrmModule } from "@nestjs/typeorm";
+import { AuthModule } from "@thallesp/nestjs-better-auth";
+import { auth } from "@/lib/auth";
+import { dataSource } from "@/db";
+import { AppController } from "./app.controller";
+import { AppService } from "./app.service";
+import { LoggerModuleGlobal } from "./lib/logger/logger.module";
 @Module({
   imports: [
-    ConfigModule.forRoot(),
-
-    MikroOrmModule.forRoot(),
-
-    AuthModule.forRootAsync({
-      inject: [MikroORM],
-      useFactory: (orm: MikroORM) => {
-        const auth = createAuth(orm);
-
-        return {
-          auth,
-          middleware: (req: any, _res: any, next: any) => {
-            // fix for Express 5 trailing slash issue
-            req.url = req.originalUrl;
-            req.baseUrl = '';
-            next();
-          },
-        };
+    LoggerModuleGlobal,
+    TypeOrmModule.forRootAsync({
+      useFactory: () => ({
+        ...dataSource.options,
+        autoLoadEntities: true,
+      }),
+      dataSourceFactory: async () => {
+        if (!dataSource.isInitialized) {
+          await dataSource.initialize();
+        }
+        return dataSource;
       },
     }),
 
-    LoggerModuleGlobal,
-
-    QuizzesModule,
-
-    QuizModulesModule,
-
-    QuizQuestionsModule,
-
-    PlayQuizModule,
-
-    QuizParticipantsModule,
-
-    AdminSeederModule,
+    AuthModule.forRoot({
+      auth,
+      middleware: (req: any, _res: any, next: any) => {
+        // fix for Express 5 trailing slash issue
+        req.url = req.originalUrl;
+        req.baseUrl = "";
+        next();
+      },
+    }),
   ],
   controllers: [AppController],
   providers: [AppService],

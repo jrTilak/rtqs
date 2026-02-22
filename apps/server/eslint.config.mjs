@@ -1,47 +1,50 @@
 // @ts-check
-import eslint from '@eslint/js';
-import globals from 'globals';
-import tseslint from 'typescript-eslint';
+import eslint from "@eslint/js";
+import globals from "globals";
+import tseslint from "typescript-eslint";
 
-export default tseslint.config(
+export default [
   {
-    ignores: ['eslint.config.mjs', 'drizzle.config.ts'],
+    ignores: ["eslint.config.mjs", "dist/**"],
   },
+
   eslint.configs.recommended,
+
   ...tseslint.configs.recommendedTypeChecked,
+
   {
     languageOptions: {
+      parser: tseslint.parser,
+      parserOptions: {
+        project: true, // modern replacement for projectService
+        tsconfigRootDir: import.meta.dirname,
+      },
+      sourceType: "commonjs", // NestJS default
       globals: {
         ...globals.node,
         ...globals.jest,
       },
-      sourceType: 'commonjs',
-      parserOptions: {
-        projectService: true,
-        tsconfigRootDir: import.meta.dirname,
-      },
     },
   },
+
   {
     rules: {
-      '@typescript-eslint/no-explicit-any': 'off',
-      '@typescript-eslint/no-floating-promises': 'warn',
-      '@typescript-eslint/no-unsafe-argument': 'warn',
-      // TypeScript safety
-      '@typescript-eslint/no-unsafe-call': 'off',
-      '@typescript-eslint/no-unsafe-member-access': 'off',
-      '@typescript-eslint/no-unsafe-assignment': 'off',
-      '@typescript-eslint/no-unsafe-return': 'off',
-      '@typescript-eslint/no-require-imports': 'warn',
+      "@typescript-eslint/no-explicit-any": "off",
+      "@typescript-eslint/no-floating-promises": "warn",
+      "@typescript-eslint/no-unsafe-argument": "warn",
 
-      // allow _ pattern
-      '@typescript-eslint/no-unused-vars': [
-        'warn',
-        { argsIgnorePattern: '^_' },
+      "@typescript-eslint/no-unsafe-call": "off",
+      "@typescript-eslint/no-unsafe-member-access": "off",
+      "@typescript-eslint/no-unsafe-assignment": "off",
+      "@typescript-eslint/no-unsafe-return": "off",
+
+      "@typescript-eslint/no-require-imports": "warn",
+
+      // ---- Allow `_`-prefixed unused vars
+      "@typescript-eslint/no-unused-vars": [
+        "warn",
+        { argsIgnorePattern: "^_" },
       ],
     },
   },
-  {
-    ignores: ['**/migrations/**'],
-  },
-);
+];

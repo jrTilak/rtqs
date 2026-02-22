@@ -1,16 +1,16 @@
 import {
   Injectable,
   UnprocessableEntityException,
+  type ValidationError,
   ValidationPipe,
-  ValidationError,
-} from '@nestjs/common';
+} from "@nestjs/common";
 
 /**
  * Recursively extract validation errors into { field, errors[] }
  */
 function extractValidationErrors(
   errors: ValidationError[],
-  parentPath = '',
+  parentPath = "",
 ): { field: string; errors: string[] }[] {
   return errors.flatMap((err) => {
     const fieldPath = parentPath
@@ -40,11 +40,11 @@ export class AppValidationPipe extends ValidationPipe {
         const extracted = extractValidationErrors(errors);
 
         const flatMessages = extracted.map(
-          (e) => `${e.field}: ${e.errors.join(', ')}`,
+          (e) => `${e.field}: ${e.errors.join(", ")}`,
         );
 
         return new UnprocessableEntityException({
-          message: flatMessages.join('; '),
+          message: flatMessages.join("; "),
           error: extracted,
         });
       },

@@ -24,6 +24,8 @@ dist-ssr
 *.sw?
 
 
+.tanstack
+
 .env
 
-.tanstack
+routeTree.gen.ts

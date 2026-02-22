@@ -1,6 +1,8 @@
 ---
 ---
 
+# Pocket IQ
+
 ## API Overview
 
 The API supports four types of routes:
@@ -23,5 +25,4 @@ Updates an existing document, typically identified by its document ID.
 
 ## Authentication
 
-Authentication is managed using Better Auth with the `magic-link` and `admin` plugins.  
-Refer to the documentation here: [Better Auth](https://www.better-auth.com/)
+Authentication is managed using Better Auth. See [/api/auth/docs/](/api/auth/docs/) for more info.
