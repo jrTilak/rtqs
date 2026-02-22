@@ -1,5 +1,6 @@
 import { Icon } from "@/components/icon";
 import { Button } from "@/components/ui/button";
+import { alert } from "@/components/ui/confirm-dialog";
 import {
   Form,
   FormControl,
@@ -9,9 +10,12 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { parseErrorMessage } from "@/lib/parse-error-message";
+import { server } from "@/server/rest-api";
 import { useUser } from "@/server/rest-api/auth";
 import { ICONS_ENUM } from "@rtqs/plugin-loader";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useNavigate } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import z from "zod";
@@ -31,6 +35,9 @@ type FormSchemaType = z.infer<typeof formSchema>;
 
 export const CreateOrgForm = () => {
   const user = useUser();
+  const navigate = useNavigate();
+  const createOrg = useMutation(server.orgs.createOptions);
+  const queryClient = useQueryClient();
   const form = useForm<FormSchemaType>({
     defaultValues: {
       name: `${user.name.split(" ")[0]}'s Organization`,
@@ -43,9 +50,26 @@ export const CreateOrgForm = () => {
     form.setValue("slug", `org-${user.name.split(" ")[0].toLowerCase()}`);
   }, [user, form]);
 
+  const onSubmit = async (data: FormSchemaType) => {
+    try {
+      await createOrg.mutateAsync({
+        ...data,
+        keepCurrentActiveOrganization: false,
+      });
+      await queryClient.invalidateQueries(server.orgs.listOptions);
+      navigate({ to: "/", replace: true });
+    } catch (error) {
+      alert({
+        title: "Error!!",
+        description: parseErrorMessage(error),
+        variant: "destructive",
+      });
+    }
+  };
+
   return (
     <Form {...form}>
-      <form className="space-y-3">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">
         <FormField
           control={form.control}
           name="name"
@@ -82,7 +106,9 @@ export const CreateOrgForm = () => {
           )}
         />
 
-        <Button className="w-full mt-3">Create organization</Button>
+        <Button isLoading={createOrg.isPending} className="w-full mt-3">
+          Create organization
+        </Button>
       </form>
     </Form>
   );
