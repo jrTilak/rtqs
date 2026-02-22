@@ -1,5 +1,5 @@
 import { createAuthClient } from "better-auth/react";
-import { usernameClient } from "better-auth/client/plugins";
+import { organizationClient, usernameClient } from "better-auth/client/plugins";
 import { anonymousClient } from "better-auth/client/plugins";
 import { lastLoginMethodClient } from "better-auth/client/plugins";
 import { multiSessionClient } from "better-auth/client/plugins";
@@ -13,5 +13,6 @@ export const authClient = createAuthClient({
     lastLoginMethodClient(),
     multiSessionClient(),
     magicLinkClient(),
+    organizationClient(),
   ],
 });

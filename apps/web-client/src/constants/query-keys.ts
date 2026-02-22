@@ -14,5 +14,6 @@ export const QUERY_KEYS = {
   },
   auth: {
     session: () => ["auth", "session"],
+    userOrganizations: () => ["auth", "user-organizations"],
   },
 };

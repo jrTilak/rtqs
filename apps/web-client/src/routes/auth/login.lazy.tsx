@@ -17,7 +17,7 @@ export const Route = createLazyFileRoute("/auth/login")({
 
 function Comp() {
   return (
-    <div className="w-full h-dvh bg-linear-to-br from-background via-primary/5 to-background">
+    <div className="w-full h-dvh">
       <div className="h-full flex flex-col">
         <div className="bg-muted  border-b shadow-xs">
           <header className="flex container items-center gap-3 w-full p-4">

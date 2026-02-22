@@ -1,43 +1,72 @@
 import { cn } from "@/lib/utils";
-import { IconEye, IconEyeOff } from "@tabler/icons-react";
-import { type ComponentProps, useState } from "react";
+import React, { type ComponentProps, type ReactElement } from "react";
 
-function Input({ className, type, ...props }: ComponentProps<"input">) {
+function BaseInput({ className, type, ...props }: ComponentProps<"input">) {
   return (
     <input
       type={type}
       data-slot="input"
       className={cn(
-        "dark:bg-input/30 border-input focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:aria-invalid:border-destructive/50 h-9 rounded-md border bg-transparent px-2.5 py-1 text-base shadow-xs transition-[color,box-shadow] file:h-7 file:text-sm file:font-medium focus-visible:ring-[3px] aria-invalid:ring-[3px] md:text-sm file:text-foreground placeholder:text-muted-foreground w-full min-w-0 outline-none file:inline-flex file:border-0 file:bg-transparent disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50",
+        "dark:bg-input/30 border-input focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:aria-invalid:border-destructive/50 h-8 rounded-md border bg-transparent px-2.5 py-1 text-base shadow-xs transition-[color,box-shadow] file:h-7 file:text-sm file:font-medium focus-visible:ring-[3px] aria-invalid:ring-[3px] md:text-sm file:text-foreground placeholder:text-muted-foreground w-full min-w-0 outline-none file:inline-flex file:border-0 file:bg-transparent disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50",
         className,
       )}
       {...props}
     />
   );
 }
+type InputProps = ComponentProps<typeof BaseInput> & {
+  beforeContent?: ReactElement;
+  afterContent?: ReactElement;
+  containerProps?: ComponentProps<"div">;
+};
 
-function PasswordInput({
-  placeholder = "************",
+function Input({
+  className,
+  type,
+  beforeContent,
+  afterContent,
+  children,
+  containerProps: { className: containerClassName, ...containerProps } = {},
   ...props
-}: ComponentProps<typeof Input>) {
-  const [showPassword, setShowPassword] = useState(false);
+}: InputProps) {
+  if (!beforeContent && !afterContent) {
+    return <BaseInput type={type} className={className} {...props} />;
+  }
+
   return (
-    <div className="relative">
-      <Input
-        type={showPassword ? "text" : "password"}
-        className="pr-10"
-        placeholder={placeholder}
+    <div
+      className={cn("flex items-stretch", containerClassName)}
+      {...containerProps}
+    >
+      {beforeContent && (
+        <div className="flex items-center px-2 text-muted-foreground border border-input border-r-0 rounded-l-md shadow-xs transition-[color,box-shadow]">
+          {React.cloneElement<any>(beforeContent, {
+            className: "size-4 ",
+          })}
+        </div>
+      )}
+
+      <BaseInput
+        type={type}
+        className={cn(
+          beforeContent && "rounded-l-none",
+          afterContent && "rounded-r-none",
+          className,
+        )}
         {...props}
       />
-      <button
-        type="button"
-        onClick={() => setShowPassword(!showPassword)}
-        className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-muted-foreground hover:text-foreground transition-colors"
-      >
-        {showPassword ? <IconEyeOff size={18} /> : <IconEye size={18} />}
-      </button>
+
+      {afterContent && (
+        <div className="flex items-center px-2 text-muted-foreground border border-input border-l-0 rounded-r-md shadow-xs transition-[color,box-shadow]">
+          {React.cloneElement<any>(afterContent, {
+            className: "size-4",
+          })}
+        </div>
+      )}
+
+      {children}
     </div>
   );
 }
 
-export { Input, PasswordInput };
+export { Input };

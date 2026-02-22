@@ -1,4 +1,4 @@
-import { queryOptions, useMutation } from "@tanstack/react-query";
+import { queryOptions, useMutation, useQuery } from "@tanstack/react-query";
 import { authClient as auth } from "./lib";
 import type { MagicLinkLoginProps } from "./types";
 import { QUERY_KEYS } from "@/constants/query-keys";
@@ -35,6 +35,7 @@ export const useMagicLinkLogin = () => {
         email,
         callbackURL: window.location.origin,
         name,
+        newUserCallbackURL: `${window.location.origin}/onboarding`,
       }),
   });
 };
@@ -54,4 +55,25 @@ export const querySessionOptions = queryOptions({
     return res.data;
   },
   retry: false,
+});
+
+/**
+ * Use this hook when you are absolutely sure that the user is authenticated
+ */
+export const useUser = () => {
+  const { data: session } = useQuery(querySessionOptions);
+  return session?.user!;
+};
+
+export const queryUserOrganizationsOptions = queryOptions({
+  queryKey: QUERY_KEYS.auth.userOrganizations(),
+  queryFn: async () => {
+    const res = await auth.organization.list();
+    if (res.error?.code) {
+      throw new BetterAuthError(res.error.code);
+    } else if (res.error) {
+      throw new Error(res.error.message);
+    }
+    return res.data;
+  },
 });
