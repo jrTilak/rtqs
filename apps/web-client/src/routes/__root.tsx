@@ -6,10 +6,7 @@ import { QueryProvider } from "@/providers/query-provider";
 import { PluginThemeProviderContextProvider } from "@/providers/plugin-theme-provider";
 import type { RouterContext } from "@/main";
 import { QUERY_KEYS } from "@/constants/query-keys";
-import {
-  querySessionOptions,
-  queryUserOrganizationsOptions,
-} from "@/server/rest-api/auth";
+import { querySessionOptions } from "@/server/rest-api/auth";
 
 export const Route = createRootRoute({
   component: RootComponent,
