@@ -29,7 +29,10 @@ export default defineConfig({
           text: "Plugins",
           collapsed: false,
           base: "/developer/plugins/",
-          items: [{ text: "Overview", link: "/overview" }],
+          items: [
+            { text: "Overview", link: "/overview" },
+            { text: "Theme Plugin", link: "/theme-plugin" },
+          ],
         },
       ],
 
