@@ -19,6 +19,7 @@
     "zod": "^4.3.6",
     "@rtqs/plugin-theme-violet-bloom": "workspace:*",
     "@rtqs/plugin-ill-undraw": "workspace:*",
-    "@rtqs/plugin-icons-tabler": "workspace:*"
+    "@rtqs/plugin-icons-tabler": "workspace:*",
+    "@rtqs/plugin-theme-northen-lights": "workspace:*"
   }
 }

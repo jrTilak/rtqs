@@ -1,16 +1,16 @@
-export enum CSS_THEME_ENUM {
-  light = "light",
-  dark = "dark",
-}
+export const CSS_THEME_VARS_TYPE = {
+  light: "light",
+  dark: "dark",
+} as const;
 
-export enum THEME_PLUGIN_TYPE_ENUM {
+export const THEME_PLUGIN_TYPE = {
   /**
    * The main theme plugin that provides the core CSS variables and styles for the application.
    */
-  "MAIN" = "MAIN",
+  MAIN: "main",
 
   /**
    * A supplementary theme plugin that provides additional styles or overrides for specific components or features. This type of plugin is meant to be used alongside a main theme plugin and may not work properly on its own.
    */
-  "SUPPLEMENTARY" = "SUPPLEMENTARY",
-}
+  SUPPLEMENTARY: "supplementary",
+} as const;

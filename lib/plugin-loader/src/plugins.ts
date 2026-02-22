@@ -5,4 +5,5 @@ export const PLUGINS: Record<string, () => Promise<any>> = {
   "@rtqs/plugin-ill-undraw": () => import("@rtqs/plugin-ill-undraw"),
   "@rtqs/plugin-icons-tabler": () => import("@rtqs/plugin-icons-tabler"),
   "@rtqs/plugin-theme-violet-bloom": () => import("@rtqs/plugin-theme-violet-bloom"),
+  "@rtqs/plugin-theme-northen-lights": () => import("@rtqs/plugin-theme-northen-lights"),
 };
