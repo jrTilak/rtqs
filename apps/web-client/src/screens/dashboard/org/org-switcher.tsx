@@ -18,8 +18,8 @@ import { ICONS_ENUM } from "@rtqs/plugin-loader";
 import { OrgLogo } from "./org-logo";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { server } from "@/server/rest-api";
-import { useEffect, useState } from "react";
-import { useLocation, useNavigate } from "@tanstack/react-router";
+import { useState } from "react";
+import { useNavigate } from "@tanstack/react-router";
 import {
   Dialog,
   DialogContent,
@@ -36,26 +36,7 @@ export function OrgSwitcher() {
   const activeOrg = authClient.useActiveOrganization();
   const orgs = useQuery(server.orgs.listOptions);
   const navigate = useNavigate();
-  const location = useLocation();
   const setActive = useMutation(server.orgs.setActiveOptions);
-
-  useEffect(() => {
-    if (activeOrg.isPending || !location.pathname.startsWith("/d")) return;
-    // d/org/org-slug
-    const [, , orgSlug] = location.pathname.split("/").filter(Boolean);
-    if (orgSlug && orgSlug !== activeOrg.data?.slug) {
-      setActive.mutate(
-        {
-          organizationSlug: orgSlug,
-        },
-        {
-          onError: () => {
-            navigate({ to: "/error", replace: true });
-          },
-        },
-      );
-    }
-  }, [location.pathname, activeOrg.isPending, activeOrg.data]);
 
   return (
     <>

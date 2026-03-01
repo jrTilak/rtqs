@@ -38,4 +38,12 @@ export const ICONS: IconsPluginExportsSchemaType = {
   [ICONS_ENUM.LOG_OUT]: async () =>
     (await import("@tabler/icons-react")).IconLogout,
   [ICONS_ENUM.USER]: async () => (await import("@tabler/icons-react")).IconUser,
+  [ICONS_ENUM.SETTINGS]: async () =>
+    (await import("@tabler/icons-react")).IconSettings,
+  [ICONS_ENUM.CHEVRON_RIGHT]: async () =>
+    (await import("@tabler/icons-react")).IconChevronRight,
+  [ICONS_ENUM.PLUGINS]: async () =>
+    (await import("@tabler/icons-react")).IconPlugConnected,
+  [ICONS_ENUM.SEARCH]: async () =>
+    (await import("@tabler/icons-react")).IconSearch,
 };

@@ -182,7 +182,7 @@
         "typescript": "^5",
       },
     },
-    "plugins/plugin-theme-northen-lights": {
+    "plugins/theme-northen-lights": {
       "name": "@rtqs/plugin-theme-northen-lights",
       "version": "0.0.1-dev.1",
       "dependencies": {
@@ -914,7 +914,7 @@
 
     "@rtqs/plugin-theme-my-custom-theme": ["@rtqs/plugin-theme-my-custom-theme@workspace:plugin-starter/plugin-theme-starter"],
 
-    "@rtqs/plugin-theme-northen-lights": ["@rtqs/plugin-theme-northen-lights@workspace:plugins/plugin-theme-northen-lights"],
+    "@rtqs/plugin-theme-northen-lights": ["@rtqs/plugin-theme-northen-lights@workspace:plugins/theme-northen-lights"],
 
     "@rtqs/plugin-theme-violet-bloom": ["@rtqs/plugin-theme-violet-bloom@workspace:plugins/theme-violet-bloom"],
 

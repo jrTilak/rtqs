@@ -1,5 +1,6 @@
 import {
   createContext,
+  useCallback,
   useContext,
   useLayoutEffect,
   useState,
@@ -13,12 +14,13 @@ import {
   getPluginConfig,
   registerThemePlugin,
   ThemePluginSchema,
+  unregisterThemePlugin,
 } from "@rtqs/plugin-loader";
 import { QUERY_KEYS } from "@/constants/query-keys";
 
 type PluginThemeProviderContextType = {
   plugins: string[];
-  setPlugins?: Dispatch<
+  setPlugins: Dispatch<
     SetStateAction<PluginThemeProviderContextType["plugins"]>
   >;
 };
@@ -44,6 +46,25 @@ export const PluginThemeProviderContextProvider = ({
     })),
   });
 
+  const setPluginsSafe = useCallback(
+    (newPlugins: string[] | ((prevPlugins: string[]) => string[])) => {
+      setPlugins((prevPlugins) => {
+        let newComputedPlugins: string[] = [];
+        if (typeof newPlugins === "function") {
+          newComputedPlugins = newPlugins(prevPlugins);
+        } else {
+          newComputedPlugins = newPlugins;
+        }
+        const pluginsToUnregister = prevPlugins.filter(
+          (plugin) => !newComputedPlugins.includes(plugin),
+        );
+        unregisterThemePlugin(pluginsToUnregister);
+        return newComputedPlugins;
+      });
+    },
+    [setPlugins],
+  );
+
   useLayoutEffect(() => {
     results.forEach((result) => {
       if (result.isSuccess && result.data) {
@@ -53,7 +74,9 @@ export const PluginThemeProviderContextProvider = ({
   }, [results]);
 
   return (
-    <PluginThemeProviderContext.Provider value={{ plugins, setPlugins }}>
+    <PluginThemeProviderContext.Provider
+      value={{ plugins, setPlugins: setPluginsSafe }}
+    >
       {children}
     </PluginThemeProviderContext.Provider>
   );

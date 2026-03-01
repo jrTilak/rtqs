@@ -25,7 +25,7 @@ const typographyVariants = cva("antialiased", {
           lg:text-2xl
         `,
       h5: `
-          text-base leading-snug font-semibold
+          text-base leading-snug font-medium
           sm:text-lg
           lg:text-xl
         `,

@@ -7,6 +7,7 @@ import { PluginThemeProviderContextProvider } from "@/providers/plugin-theme-pro
 import type { RouterContext } from "@/main";
 import { QUERY_KEYS } from "@/constants/query-keys";
 import { querySessionOptions } from "@/server/rest-api/auth";
+import { TooltipProvider } from "@/components/ui/tooltip";
 
 export const Route = createRootRoute({
   component: RootComponent,
@@ -39,11 +40,13 @@ export const Route = createRootRoute({
 function RootComponent() {
   return (
     <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
-      <QueryProvider>
-        <PluginThemeProviderContextProvider>
-          <Outlet />
-        </PluginThemeProviderContextProvider>
-      </QueryProvider>
+      <TooltipProvider>
+        <QueryProvider>
+          <PluginThemeProviderContextProvider>
+            <Outlet />
+          </PluginThemeProviderContextProvider>
+        </QueryProvider>
+      </TooltipProvider>
     </ThemeProvider>
   );
 }

@@ -5,8 +5,10 @@ import {
   SidebarHeader,
 } from "@/components/ui/sidebar";
 
-import { OrgSwitcher } from "./org/org-switcher";
+import { NavMain } from "./nav-main";
 import { NavUser } from "./nav-user";
+import { OrgSwitcher } from "./org/org-switcher";
+import { ICONS_ENUM } from "@rtqs/plugin-loader";
 
 export function Sidebar({ ...props }: React.ComponentProps<typeof _Sidebar>) {
   return (
@@ -15,9 +17,22 @@ export function Sidebar({ ...props }: React.ComponentProps<typeof _Sidebar>) {
         <OrgSwitcher />
       </SidebarHeader>
       <SidebarContent>
-        {/* {data.navGroups.map((group) => (
-          <NavMain key={group.label} label={group.label} items={group.items} />
-        ))} */}
+        <NavMain
+          label="More"
+          className="mt-auto"
+          items={[
+            {
+              title: "Settings",
+              url: "/d/org/settings",
+              icon: ICONS_ENUM.SETTINGS,
+            },
+            {
+              title: "Plugins",
+              url: "/d/plugins",
+              icon: ICONS_ENUM.PLUGINS,
+            },
+          ]}
+        />
       </SidebarContent>
       <SidebarFooter className="border-t">
         <NavUser />
