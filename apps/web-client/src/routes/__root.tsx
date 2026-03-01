@@ -13,7 +13,7 @@ export const Route = createRootRoute({
   loader: async ({ context, location }) => {
     const { queryClient } = context as RouterContext;
 
-    await queryClient.ensureQueryData({
+    await queryClient.prefetchQuery({
       queryKey: QUERY_KEYS.plugins.theme(DEFAULT_THEME_PLUGIN),
       queryFn: () => getPluginConfig(ThemePluginSchema, DEFAULT_THEME_PLUGIN),
     });
@@ -26,7 +26,12 @@ export const Route = createRootRoute({
         throw new Error("No active session");
       }
     } catch {
-      throw redirect({ to: "/auth/login" });
+      throw redirect({
+        to: "/auth/login",
+        search: {
+          from: location.pathname,
+        },
+      });
     }
   },
 });

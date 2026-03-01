@@ -1,4 +1,10 @@
-import { queryOptions, useMutation, useQuery } from "@tanstack/react-query";
+import {
+  mutationOptions,
+  queryOptions,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { authClient as auth } from "./lib";
 import type { MagicLinkLoginProps } from "./types";
 import { QUERY_KEYS } from "@/constants/query-keys";
@@ -65,15 +71,49 @@ export const useUser = () => {
   return session?.user!;
 };
 
-export const queryUserOrganizationsOptions = queryOptions({
-  queryKey: QUERY_KEYS.auth.userOrganizations(),
+export const useRevokeSession = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (
+      params: Parameters<typeof auth.multiSession.revoke>[0],
+    ) => {
+      const res = await auth.multiSession.revoke(params);
+      if (res.error) {
+        throw new Error(res.error?.message || "Failed to revoke session");
+      }
+
+      await queryClient.invalidateQueries(querySessionOptions);
+
+      return res.data;
+    },
+  });
+};
+
+export const listSessionsOptions = queryOptions({
+  queryKey: QUERY_KEYS.auth.sessions(),
   queryFn: async () => {
-    const res = await auth.organization.list();
-    if (res.error?.code) {
-      throw new BetterAuthError(res.error.code);
-    } else if (res.error) {
+    const res = await auth.multiSession.listDeviceSessions();
+    if (res.error) {
       throw new Error(res.error.message);
     }
     return res.data;
   },
 });
+
+export const useSetActiveSession = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (
+      args: Parameters<typeof auth.multiSession.setActive>[0],
+    ) => {
+      const res = await auth.multiSession.setActive(args);
+      if (res.error) {
+        throw new Error(res.error.message);
+      }
+
+      await queryClient.invalidateQueries(querySessionOptions);
+
+      return res.data;
+    },
+  });
+};

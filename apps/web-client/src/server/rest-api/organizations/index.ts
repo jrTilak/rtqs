@@ -25,3 +25,15 @@ export const listOptions = queryOptions({
   },
   queryKey: QUERY_KEYS.organizations.list(),
 });
+
+export const setActiveOptions = mutationOptions({
+  mutationFn: async (
+    args: Parameters<typeof authClient.organization.setActive>[0],
+  ) => {
+    const res = await authClient.organization.setActive(args);
+    if (res.error) {
+      throw new BetterAuthError(res.error.message || "");
+    }
+    return res.data;
+  },
+});

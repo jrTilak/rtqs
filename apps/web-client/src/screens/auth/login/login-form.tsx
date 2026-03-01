@@ -11,17 +11,16 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-// import { server } from "@/server/apis";
 import { Input } from "@/components/ui/input";
 
 import { Icon } from "@/components/icon";
 import { ICONS_ENUM } from "@rtqs/plugin-loader";
 import { LastLoginBadge } from "./last-login-badge";
-import { authClient } from "@/lib/auth";
 import { server } from "@/server/rest-api";
 import { alert, confirm } from "@/components/ui/confirm-dialog";
-import { useNavigate } from "@tanstack/react-router";
+import { useNavigate, useSearch } from "@tanstack/react-router";
 import { parseErrorMessage } from "@/lib/parse-error-message";
+import { authClient } from "@/server/rest-api/auth/lib";
 
 const formSchema = z.object({
   email: z
@@ -42,6 +41,11 @@ export function LoginForm({
   ...props
 }: React.ComponentProps<"form">) {
   const navigate = useNavigate();
+
+  const searchParams = useSearch({
+    from: "/auth/login",
+  });
+
   const form = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
     defaultValues: DEFAULT_FORM_VALUES,
@@ -80,7 +84,7 @@ export function LoginForm({
     if (!should) return;
     try {
       await anonymousLogin.mutateAsync();
-      navigate({ to: "/" });
+      navigate({ to: decodeURIComponent(searchParams.from || "/") });
     } catch (err) {
       alert({
         title: "Error!!",

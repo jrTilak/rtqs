@@ -26,4 +26,16 @@ export const ICONS: IconsPluginExportsSchemaType = {
   [ICONS_ENUM.X]: async () => (await import("@tabler/icons-react")).IconX,
   [ICONS_ENUM.COPY]: async () =>
     (await import("@tabler/icons-react")).IconClipboardList,
+  [ICONS_ENUM.CHEVRON_UP_DOWN]: async () =>
+    (await import("@tabler/icons-react")).IconSelector,
+  [ICONS_ENUM.PLUS]: async () => (await import("@tabler/icons-react")).IconPlus,
+  [ICONS_ENUM.LIGHT_MODE]: async () =>
+    (await import("@tabler/icons-react")).IconSun,
+  [ICONS_ENUM.DARK_MODE]: async () =>
+    (await import("@tabler/icons-react")).IconMoon,
+  [ICONS_ENUM.OPTIONS]: async () =>
+    (await import("@tabler/icons-react")).IconDotsVertical,
+  [ICONS_ENUM.LOG_OUT]: async () =>
+    (await import("@tabler/icons-react")).IconLogout,
+  [ICONS_ENUM.USER]: async () => (await import("@tabler/icons-react")).IconUser,
 };

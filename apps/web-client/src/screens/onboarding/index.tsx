@@ -9,8 +9,9 @@ import { Icon } from "@/components/icon";
 import { ICONS_ENUM } from "@rtqs/plugin-loader";
 import { useState } from "react";
 import { useUser } from "@/server/rest-api/auth";
-import { CreateOrgForm } from "./create-org-form";
+import { CreateOrgForm } from "../dashboard/org/create-org-form";
 import { CopyButton } from "@/components/ui/copy-button";
+import { useNavigate } from "@tanstack/react-router";
 
 const __TABS = {
   CREATE: "create",
@@ -21,6 +22,7 @@ type TabsType = (typeof __TABS)[keyof typeof __TABS];
 export function OnboardingPage() {
   const user = useUser();
   const [activeTab, setActiveTab] = useState<TabsType>(__TABS.CREATE);
+  const navigate = useNavigate();
   return (
     <div className="flex items-center justify-center pb-20 h-dvh">
       <Card className="w-full max-w-2xl rounded-xl shadow-lg py-8">
@@ -68,7 +70,9 @@ export function OnboardingPage() {
 
           <CardContent className="mt-6 ">
             <TabsContent value={__TABS.CREATE} className="space-y-6">
-              <CreateOrgForm />
+              <CreateOrgForm
+                onCreate={() => navigate({ to: "/d", replace: true })}
+              />
             </TabsContent>
 
             {/* INVITATION */}

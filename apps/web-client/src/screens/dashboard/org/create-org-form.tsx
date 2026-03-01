@@ -33,9 +33,12 @@ const formSchema = z.object({
 
 type FormSchemaType = z.infer<typeof formSchema>;
 
-export const CreateOrgForm = () => {
+type Props = {
+  onCreate?: () => void;
+};
+
+export const CreateOrgForm = ({ onCreate }: Props) => {
   const user = useUser();
-  const navigate = useNavigate();
   const createOrg = useMutation(server.orgs.createOptions);
   const queryClient = useQueryClient();
   const form = useForm<FormSchemaType>({
@@ -57,7 +60,8 @@ export const CreateOrgForm = () => {
         keepCurrentActiveOrganization: false,
       });
       await queryClient.invalidateQueries(server.orgs.listOptions);
-      navigate({ to: "/", replace: true });
+      form.reset();
+      onCreate?.();
     } catch (error) {
       alert({
         title: "Error!!",

@@ -9,10 +9,14 @@ import { Link } from "@/components/ui/link";
 import { H4, P } from "@/components/ui/typography";
 import { LoginForm } from "@/screens/auth/login/login-form";
 import { ILLUSTRATIONS_ENUM } from "@rtqs/plugin-loader";
-import { createLazyFileRoute } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
+import z from "zod";
 
-export const Route = createLazyFileRoute("/auth/login")({
+export const Route = createFileRoute("/auth/login")({
   component: Comp,
+  validateSearch: z.object({
+    from: z.string().optional(),
+  }),
 });
 
 function Comp() {

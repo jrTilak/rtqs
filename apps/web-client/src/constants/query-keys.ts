@@ -14,7 +14,7 @@ export const QUERY_KEYS = {
   },
   auth: {
     session: () => ["auth", "session"],
-    userOrganizations: () => ["auth", "user-organizations"],
+    sessions: () => ["auth", "sessions"],
   },
   organizations: {
     list: () => ["organizations", "list"],

@@ -1,3 +1,5 @@
+@import url("./styles//circular-transition.css");
+
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
