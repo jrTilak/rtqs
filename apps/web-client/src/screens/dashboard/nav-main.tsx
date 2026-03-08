@@ -69,19 +69,17 @@ export function NavMain({
   }, [items, pathname]);
 
   useEffect(() => {
-    if (activeItem?.parent) {
-      setBreadcrumbs([
-        { title: "Dashboard", url: "/d" },
-        { title: activeItem.parent.label, url: activeItem.parent.url },
-        { title: activeItem.title, url: activeItem.url },
-      ]);
-    } else {
-      setBreadcrumbs([
-        { title: "Dashboard", url: "/d" },
-        { title: activeItem?.title || "", url: activeItem?.url || "" },
-      ]);
+    if (!activeItem) {
+      setBreadcrumbs([{ title: "Dashboard", url: "/d" }]);
+      return;
     }
-  }, [activeItem]);
+    // No nested items: Dashboard > label > title
+    setBreadcrumbs([
+      { title: "Dashboard", url: "/d" },
+      { title: label, url: activeItem.url },
+      { title: activeItem.title, url: activeItem.url },
+    ]);
+  }, [activeItem, label]);
 
   return (
     <SidebarGroup {...props}>

@@ -46,4 +46,22 @@ export const ICONS: IconsPluginExportsSchemaType = {
     (await import("@tabler/icons-react")).IconPlugConnected,
   [ICONS_ENUM.SEARCH]: async () =>
     (await import("@tabler/icons-react")).IconSearch,
+  [ICONS_ENUM.USERS]: async () =>
+    (await import("@tabler/icons-react")).IconUsers,
+  [ICONS_ENUM.TRASH]: async () =>
+    (await import("@tabler/icons-react")).IconTrash,
+  [ICONS_ENUM.REFRESH]: async () =>
+    (await import("@tabler/icons-react")).IconRefresh,
+
+  [ICONS_ENUM.SORT_ASC]: async () =>
+    (await import("@tabler/icons-react")).IconChevronsUp,
+  [ICONS_ENUM.SORT_DESC]: async () =>
+    (await import("@tabler/icons-react")).IconChevronsDown,
+  [ICONS_ENUM.SORT_NONE]: async () =>
+    (await import("@tabler/icons-react")).IconSelector,
+
+  [ICONS_ENUM.ADMIN]: async () =>
+    (await import("@tabler/icons-react")).IconShieldLock,
+  [ICONS_ENUM.ADJUSTMENTS]: async () =>
+    (await import("@tabler/icons-react")).IconAdjustmentsHorizontal,
 };

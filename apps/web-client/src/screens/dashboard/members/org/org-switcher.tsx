@@ -16,7 +16,8 @@ import {
 import { authClient } from "@/server/rest-api/auth/lib";
 import { ICONS_ENUM } from "@rtqs/plugin-loader";
 import { OrgLogo } from "./org-logo";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { QUERY_KEYS } from "@/constants/query-keys";
 import { server } from "@/server/rest-api";
 import { useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
@@ -35,13 +36,18 @@ export function OrgSwitcher() {
   const { isMobile } = useSidebar();
   const activeOrg = authClient.useActiveOrganization();
   const orgs = useQuery(server.orgs.listOptions);
+  const activeMemberRole = useQuery({
+    ...server.orgs.getActiveMemberRoleOptions,
+    enabled: !!activeOrg.data?.id,
+  });
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const setActive = useMutation(server.orgs.setActiveOptions);
 
   return (
     <>
       <SidebarMenu>
-        <SidebarMenuItem className="border rounded-md">
+        <SidebarMenuItem className="px-0 py-0">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               {activeOrg.isPending ? (
@@ -59,7 +65,9 @@ export function OrgSwitcher() {
                     <span className="truncate font-medium">
                       {activeOrg.data?.name}
                     </span>
-                    <span className="truncate text-xs">Free Plan</span>
+                    <span className="truncate text-xs capitalize">
+                      {activeMemberRole.data?.role ?? "—"}
+                    </span>
                   </div>
                   {setActive.isPending ? (
                     <Icon
@@ -76,7 +84,7 @@ export function OrgSwitcher() {
               )}
             </DropdownMenuTrigger>
             <DropdownMenuContent
-              className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
+              className="w-(--radix-dropdown-menu-trigger-width) min-w-fit rounded-lg"
               align="start"
               side={isMobile ? "bottom" : "right"}
               sideOffset={4}
@@ -97,6 +105,10 @@ export function OrgSwitcher() {
                           },
                           {
                             onSuccess: (org) => {
+                              queryClient.invalidateQueries({
+                                queryKey:
+                                  QUERY_KEYS.organizations.activeMemberRole(),
+                              });
                               navigate({
                                 to: "/d/org/$org-slug",
                                 params: { "org-slug": org.slug },
@@ -110,7 +122,10 @@ export function OrgSwitcher() {
                       <div className="flex size-6 items-center justify-center rounded-md border text-foreground">
                         <OrgLogo src={org.logo} />
                       </div>
-                      {org.name}
+                      {org.name}{" "}
+                      <span className="text-muted-foreground text-xs">
+                        (@{org.slug})
+                      </span>
                     </DropdownMenuItem>
                   ))}
                 </QueryState.Data>

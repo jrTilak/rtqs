@@ -10,7 +10,7 @@ export const Spinner = ({
   return (
     <Icon
       name={ICONS_ENUM.SPINNER}
-      className={cn("animate-spin", className)}
+      className={cn("animate-spin stroke-1", className)}
       {...props}
     />
   );

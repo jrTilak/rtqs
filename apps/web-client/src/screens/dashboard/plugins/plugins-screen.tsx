@@ -10,7 +10,7 @@ import { ICONS_ENUM, PLUGINS_INFO } from "@rtqs/plugin-loader";
 import { Input } from "@/components/ui/input";
 import { Icon } from "@/components/icon";
 import { useMemo, useState } from "react";
-import { useDebouncedValue } from "@/hooks/use-debouonced-value";
+import { useDebouncedValue } from "@/hooks/use-debounced-value";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { usePluginThemeProvider } from "@/providers/plugin-theme-provider";

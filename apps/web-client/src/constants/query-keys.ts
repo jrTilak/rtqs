@@ -1,3 +1,5 @@
+import type { ListMembersOptionsRequest } from "@/server/rest-api/organizations";
+
 export const QUERY_KEYS = {
   plugins: {
     theme: (plugin: string) => ["theme-plugin", { plugin }],
@@ -18,5 +20,15 @@ export const QUERY_KEYS = {
   },
   organizations: {
     list: () => ["organizations", "list"],
+    listMembers: (request?: ListMembersOptionsRequest) => [
+      "organizations",
+      "list",
+      "members",
+      { request },
+    ],
+    listInvitations: () => ["organizations", "list", "invitations"],
+    activeMemberRole: () => ["organizations", "activeMemberRole"],
+    listMyInvitations: () => ["organizations", "list", "my-invitations"],
+    getMyRole: () => ["organizations", "get", "my-role"],
   },
 };

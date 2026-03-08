@@ -1,6 +1,7 @@
 import { Separator } from "@/components/ui/separator";
 import { SidebarTrigger, useSidebar } from "@/components/ui/sidebar";
 import { ThemeModeToggle } from "@/components/ui/theme-mode-toggle";
+import { Fragment } from "react";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -10,6 +11,12 @@ import {
 } from "@/components/ui/breadcrumb";
 export function Header() {
   const { breadcrumbs } = useSidebar();
+
+  const nonEmptyBreadcrumbs = breadcrumbs.filter((b) => b.title);
+  const displayCrumbs =
+    nonEmptyBreadcrumbs.length > 0
+      ? nonEmptyBreadcrumbs
+      : [{ title: "Dashboard", url: "/d" }];
 
   return (
     <>
@@ -21,22 +28,20 @@ export function Header() {
               orientation="vertical"
               className="data-[orientation=vertical]:h-6 my-auto"
             />
-            {breadcrumbs.length > 0 && (
-              <Breadcrumb className="ml-2">
-                <BreadcrumbList>
-                  {breadcrumbs.map((breadcrumb, i) => (
-                    <>
-                      {i !== 0 && <BreadcrumbSeparator />}
-                      <BreadcrumbItem key={breadcrumb.url}>
-                        <BreadcrumbLink href={breadcrumb.url}>
-                          {breadcrumb.title}
-                        </BreadcrumbLink>
-                      </BreadcrumbItem>
-                    </>
-                  ))}
-                </BreadcrumbList>
-              </Breadcrumb>
-            )}
+            <Breadcrumb className="ml-2">
+              <BreadcrumbList>
+                {displayCrumbs.map((breadcrumb, i) => (
+                  <Fragment key={`${breadcrumb.url}-${i}`}>
+                    {i !== 0 && <BreadcrumbSeparator />}
+                    <BreadcrumbItem>
+                      <BreadcrumbLink href={breadcrumb.url}>
+                        {breadcrumb.title}
+                      </BreadcrumbLink>
+                    </BreadcrumbItem>
+                  </Fragment>
+                ))}
+              </BreadcrumbList>
+            </Breadcrumb>
           </div>
           <div className="ml-auto flex items-center">
             <ThemeModeToggle variant="ghost" />

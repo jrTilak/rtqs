@@ -156,6 +156,10 @@ export function NavUser() {
                 Account
                 <Icon name={ICONS_ENUM.USER} className="ml-auto" />
               </DropdownMenuItem>
+              <DropdownMenuItem>
+                <Link to="/d/invitations">Invitations</Link>
+                <Icon name={ICONS_ENUM.INVITE_USER} className="ml-auto" />
+              </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuItem

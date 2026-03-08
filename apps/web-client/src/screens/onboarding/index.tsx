@@ -9,7 +9,7 @@ import { Icon } from "@/components/icon";
 import { ICONS_ENUM } from "@rtqs/plugin-loader";
 import { useState } from "react";
 import { useUser } from "@/server/rest-api/auth";
-import { CreateOrgForm } from "../dashboard/org/create-org-form";
+import { CreateOrgForm } from "../dashboard/members/org/create-org-form";
 import { CopyButton } from "@/components/ui/copy-button";
 import { useNavigate } from "@tanstack/react-router";
 
