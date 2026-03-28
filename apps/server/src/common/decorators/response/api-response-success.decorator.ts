@@ -114,10 +114,9 @@ export const ApiDeleteSuccess = (
   options: Partial<ApiTypedResponseOptions> = {},
 ) =>
   ApiResponseSuccess({
-    type: String,
-    isArray: true,
-    description: "Array of ids that are successfully deleted",
-    example: ["34bc82e0-ce4d-42ba-a054-a953ffae44f5"],
+    type: undefined,
+    description: options.description || "Successfully deleted",
+    example: true,
     ...options,
     method: "DELETE",
   });

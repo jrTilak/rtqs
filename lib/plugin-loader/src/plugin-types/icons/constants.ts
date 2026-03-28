@@ -35,4 +35,8 @@ export enum ICONS_ENUM {
   SORT_ASC = "SORT_ASC",
   SORT_DESC = "SORT_DESC",
   SORT_NONE = "SORT_NONE",
+
+  DASHBOARD = "DASHBOARD",
+  QUIZ = "QUIZ",
+  FOLDER = "FOLDER",
 }

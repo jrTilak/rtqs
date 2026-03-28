@@ -91,6 +91,16 @@ async function bootstrap() {
         theme: "kepler",
       }),
     );
+
+    // save the openapi schema to a public folder
+    // ensure the public folder exists
+    if (!fs.existsSync("public/swagger")) {
+      fs.mkdirSync("public/swagger");
+    }
+    fs.writeFileSync(
+      path.join("public", "swagger", "api-reference.json"),
+      JSON.stringify(document),
+    );
   } else {
     logger.log("Skipping swagger docs initialization!");
   }

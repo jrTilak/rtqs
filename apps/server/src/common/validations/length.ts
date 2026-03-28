@@ -16,3 +16,6 @@ export const AMOUNT_MAX_VALUE = 999_999_999.999;
 export const QUANTITY_MAX_VALUE = 999_999_999;
 
 export const OBJECT_KEY_MAX_LENGTH = 1000;
+
+export const HEX_COLOR_MAX_LENGTH = 7;
+export const HEX_COLOR_MIN_LENGTH = 6;

@@ -1,15 +1,16 @@
 import { typeormAdapter } from "@hedystia/better-auth-typeorm";
 import { betterAuth } from "better-auth";
-import { dataSource } from "../db";
+import { dataSource } from "../../db";
 import { username } from "better-auth/plugins/username";
-import { serializeUsername } from "./serialize-username";
+import { serializeUsername } from "../serialize-username";
 import { magicLink } from "better-auth/plugins";
 import { anonymous } from "better-auth/plugins";
 import { organization } from "better-auth/plugins";
 import { lastLoginMethod } from "better-auth/plugins";
 import { multiSession } from "better-auth/plugins";
 import { openAPI } from "better-auth/plugins";
-import { generateName } from "./generate-name";
+import { generateName } from "../generate-name";
+import { ac, ROLES } from "./permissions";
 
 export const GUEST_EMAIL_DOMAIN = "guest.rtqs";
 
@@ -43,7 +44,10 @@ export const auth = betterAuth({
       emailDomainName: GUEST_EMAIL_DOMAIN,
       generateName,
     }),
-    organization(),
+    organization({
+      ac,
+      roles: ROLES,
+    }),
     lastLoginMethod({
       customResolveMethod(ctx) {
         // Track magic link authentication

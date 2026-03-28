@@ -14,7 +14,21 @@ import type { ComponentProps } from "react";
 
 const LINKS: ComponentProps<typeof NavMain>[] = [
   {
-    label: "Collobration",
+    items: [
+      {
+        title: "Dashboard",
+        url: "/d",
+        icon: ICONS_ENUM.DASHBOARD,
+      },
+      {
+        title: "Quizzes",
+        url: "/d/quizzes",
+        icon: ICONS_ENUM.QUIZ,
+      },
+    ],
+  },
+  {
+    label: "Collaboration",
     items: [
       {
         title: "Members",

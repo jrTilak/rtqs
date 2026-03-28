@@ -35,7 +35,7 @@ export function NavMain({
   items,
   ...props
 }: {
-  label: string;
+  label?: string;
   items: NavMainItem[];
 } & React.ComponentProps<typeof SidebarGroup>) {
   const location = useLocation();
@@ -73,17 +73,24 @@ export function NavMain({
       setBreadcrumbs([{ title: "Dashboard", url: "/d" }]);
       return;
     }
-    // No nested items: Dashboard > label > title
-    setBreadcrumbs([
-      { title: "Dashboard", url: "/d" },
-      { title: label, url: activeItem.url },
-      { title: activeItem.title, url: activeItem.url },
-    ]);
+    // No nested items: Dashboard > label (if present) > title
+    setBreadcrumbs(
+      label
+        ? [
+          { title: "Dashboard", url: "/d" },
+          { title: label, url: activeItem.url },
+          { title: activeItem.title, url: activeItem.url },
+        ]
+        : [
+          { title: "Dashboard", url: "/d" },
+          { title: activeItem.title, url: activeItem.url },
+        ],
+    );
   }, [activeItem, label]);
 
   return (
     <SidebarGroup {...props}>
-      <SidebarGroupLabel>{label}</SidebarGroupLabel>
+      {label && <SidebarGroupLabel>{label}</SidebarGroupLabel>}
       <SidebarMenu className="gap-1">
         {items.map((item) => (
           <SidebarMenuItem key={item.title}>

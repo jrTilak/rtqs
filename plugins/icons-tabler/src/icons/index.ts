@@ -64,4 +64,11 @@ export const ICONS: IconsPluginExportsSchemaType = {
     (await import("@tabler/icons-react")).IconShieldLock,
   [ICONS_ENUM.ADJUSTMENTS]: async () =>
     (await import("@tabler/icons-react")).IconAdjustmentsHorizontal,
+
+  [ICONS_ENUM.DASHBOARD]: async () =>
+    (await import("@tabler/icons-react")).IconDashboard,
+  [ICONS_ENUM.QUIZ]: async () =>
+    (await import("@tabler/icons-react")).IconMessageCircleQuestion,
+  [ICONS_ENUM.FOLDER]: async () =>
+    (await import("@tabler/icons-react")).IconFolder,
 };
