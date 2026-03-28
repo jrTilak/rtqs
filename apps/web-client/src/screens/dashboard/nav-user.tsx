@@ -24,7 +24,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Spinner } from "@/components/ui/spinner";
 import { UserAvatar } from "@/components/user-avatar";
 import { server } from "@/server/rest-api";
-import { useSetActiveSession, useUser } from "@/server/rest-api/auth";
+import { useSetActiveSession } from "@/server/rest-api/auth";
 import { ICONS_ENUM } from "@rtqs/plugin-loader";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
@@ -155,6 +155,10 @@ export function NavUser() {
               <DropdownMenuItem>
                 Account
                 <Icon name={ICONS_ENUM.USER} className="ml-auto" />
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <Link to="/d/invitations">Invitations</Link>
+                <Icon name={ICONS_ENUM.INVITE_USER} className="ml-auto" />
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />

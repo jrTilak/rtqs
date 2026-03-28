@@ -23,9 +23,21 @@ export const registerThemePlugin = async ({
     if (!styleEl) {
       styleEl = document.createElement("style");
       styleEl.id = id;
+      styleEl.dataset.pluginName = name;
       document.head.appendChild(styleEl);
     }
     styleEl.textContent = css;
   });
   return true;
+};
+
+export const unregisterThemePlugin = async (names: string[]) => {
+  names.forEach((name) => {
+    const styleEls = Array.from(
+      document.querySelectorAll(`style[data-plugin-name="${name}"]`),
+    );
+    styleEls.forEach((styleEl) => {
+      styleEl.remove();
+    });
+  });
 };

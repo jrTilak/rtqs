@@ -6,6 +6,7 @@ import { dataSource } from "@/db";
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
 import { LoggerModuleGlobal } from "./lib/logger/logger.module";
+import { QuizFoldersModule } from "./resources/quiz-folders/quiz-folders.module";
 @Module({
   imports: [
     LoggerModuleGlobal,
@@ -31,6 +32,8 @@ import { LoggerModuleGlobal } from "./lib/logger/logger.module";
         next();
       },
     }),
+
+    QuizFoldersModule,
   ],
   controllers: [AppController],
   providers: [AppService],

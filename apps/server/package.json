@@ -39,7 +39,7 @@
     "@nestjs/swagger": "^11.2.4",
     "@nestjs/typeorm": "^11.0.0",
     "@scalar/nestjs-api-reference": "^1.0.15",
-    "@thallesp/nestjs-better-auth": "^2.2.2",
+    "@thallesp/nestjs-better-auth": "^2.5.0",
     "better-auth": "^1.4.12",
     "better-auth-mikro-orm": "^0.4.3",
     "class-transformer": "^0.5.1",

@@ -1,7 +1,7 @@
 import { defineConfig } from "@rtqs/plugin-loader";
 import { VIOLET_BLOOM_THEME } from "./theme";
 import packageJson from "../package.json";
-import fonts from "./theme/fonts.css?raw" assert { type: "raw" };
+import fontsCss from "./theme/fonts.css?raw" assert { type: "raw" };
 
 export default defineConfig({
   name: packageJson.name,
@@ -11,7 +11,7 @@ export default defineConfig({
   scope: ["web-client"],
   exports: {
     vars: VIOLET_BLOOM_THEME,
-    rawCss: [fonts],
+    rawCss: [fontsCss],
     themeType: "main",
   },
   targetVersion: "0",

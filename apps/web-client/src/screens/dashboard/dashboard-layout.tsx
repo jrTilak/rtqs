@@ -13,14 +13,14 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
         {
           "--sidebar-width": "16rem",
           "--sidebar-width-icon": "3rem",
-          "--header-height": "calc(var(--spacing) * 14)",
+          "--header-height": "calc(var(--spacing) * 10)",
         } as React.CSSProperties
       }
     >
       <Sidebar variant={"inset"} collapsible={"offcanvas"} side={"left"} />
       <SidebarInset>
         <Header />
-        <div className="@container/main flex flex-1 flex-col gap-2">
+        <div className="@container/main flex flex-1 flex-col gap-2 p-4 md:p-6">
           {children}
         </div>
       </SidebarInset>

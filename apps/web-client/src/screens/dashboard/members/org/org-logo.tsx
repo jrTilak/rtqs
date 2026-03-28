@@ -9,11 +9,16 @@ type Props = {
 
 export const OrgLogo = ({ src, className, ...rest }: Props) => {
   if (src) {
-    <img
-      src={src}
-      className={cn("size-4 rounded-md object-cover object-center", className)}
-      {...(rest as ComponentProps<"img">)}
-    />;
+    return (
+      <img
+        src={src}
+        className={cn(
+          "size-4 rounded-md object-cover object-center",
+          className,
+        )}
+        {...(rest as ComponentProps<"img">)}
+      />
+    );
   }
   return (
     <Icon name={ICONS_ENUM.ORGANIZATION} className={cn("size-4", className)} />
