@@ -1,52 +1,26 @@
 import {
   Injectable,
   UnprocessableEntityException,
-  type ValidationError,
   ValidationPipe,
 } from "@nestjs/common";
 
-/**
- * Recursively extract validation errors into { field, errors[] }
- */
-function extractValidationErrors(
-  errors: ValidationError[],
-  parentPath = "",
-): { field: string; errors: string[] }[] {
-  return errors.flatMap((err) => {
-    const fieldPath = parentPath
-      ? `${parentPath}.${err.property}`
-      : err.property;
-
-    const messages = err.constraints ? Object.values(err.constraints) : [];
-
-    const currentError =
-      messages.length > 0 ? [{ field: fieldPath, errors: messages }] : [];
-
-    const childErrors = err.children?.length
-      ? extractValidationErrors(err.children, fieldPath)
-      : [];
-
-    return [...currentError, ...childErrors];
-  });
-}
 
 @Injectable()
 export class AppValidationPipe extends ValidationPipe {
   constructor() {
     super({
+      // Removes extra properties that are not present in specified dto
       whitelist: true,
+
+      stopAtFirstError: process.env.NODE_ENV === "prod",
       transform: true,
-      exceptionFactory: (errors: ValidationError[]) => {
-        const extracted = extractValidationErrors(errors);
+      disableErrorMessages: process.env.NODE_ENV === "prod",
 
-        const flatMessages = extracted.map(
-          (e) => `${e.field}: ${e.errors.join(", ")}`,
-        );
-
+      exceptionFactory(errors) {
         return new UnprocessableEntityException({
-          message: flatMessages.join("; "),
-          error: extracted,
-        });
+          message: "Input validation failed!",
+          error: errors
+        })
       },
     });
   }

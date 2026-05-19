@@ -2,12 +2,11 @@ import * as fs from "node:fs";
 import * as path from "node:path";
 import { Injectable, Logger as L, type LogLevel } from "@nestjs/common";
 
-type LogLevelWithInfo = LogLevel | "info";
 
 /**
  * Log levels ordered by severity, where lower number means higher priority.
  */
-const LEVELS_SEVERITY: Record<LogLevelWithInfo, number> = {
+const LEVELS_SEVERITY: Record<LogLevel, number> = {
   /**
    * Critical errors causing application shutdown or data loss.
    */
@@ -22,11 +21,6 @@ const LEVELS_SEVERITY: Record<LogLevelWithInfo, number> = {
    * Potential issues or important events that aren’t errors but might cause problems.
    */
   warn: 2,
-
-  /**
-   * General operational messages to track the flow of the application.
-   */
-  info: 3,
 
   /**
    * Normal log messages for routine events (often similar to info, less formal).
@@ -65,11 +59,11 @@ class Logger extends L {
   /**
    *  Gets the current log level from the environment variable. `LOG_LEVEL` or defaults to 'log' if not set.
    */
-  private _getLogLevel(): LogLevelWithInfo {
+  private _getLogLevel(): LogLevel {
     const envLogLevel = (
       process.env.LOG_LEVEL || ""
-    ).toLowerCase() as LogLevelWithInfo;
-    const validLevels = Object.keys(LEVELS_SEVERITY) as LogLevelWithInfo[];
+    ).toLowerCase() as LogLevel;
+    const validLevels = Object.keys(LEVELS_SEVERITY) as LogLevel[];
 
     if (validLevels.includes(envLogLevel)) {
       return envLogLevel;
@@ -97,7 +91,7 @@ class Logger extends L {
    * Checks if the given log level is enabled for current logging level based on hierarchical log levels.
    * 'info' is always enabled.
    */
-  private _isLevelEnabled(level: LogLevelWithInfo): boolean {
+  private _isLevelEnabled(level: LogLevel): boolean {
     const currentLevel = this._getLogLevel();
     const currentLevelSeverity = LEVELS_SEVERITY[currentLevel];
     const messageLevelSeverity = LEVELS_SEVERITY[level];
@@ -128,7 +122,7 @@ class Logger extends L {
    * Example: .logs/2024-01-01/WorkspaceController/00-01.log
    */
   private _writeToFile(
-    level: LogLevelWithInfo,
+    level: LogLevel,
     message: unknown,
     context?: string,
   ): void {
@@ -174,13 +168,6 @@ class Logger extends L {
     if (this._isLevelEnabled("log")) {
       super.log(message, context);
       this._writeToFile("log", message, context);
-    }
-  }
-
-  info(message: unknown, context?: string): void {
-    if (this._isLevelEnabled("info")) {
-      super.log(message, context);
-      this._writeToFile("info", message, context);
     }
   }
 

@@ -10,7 +10,11 @@ export const dataSource = new DataSource({
   type: "postgres",
   synchronize: false,
 
-  url: process.env.DB_CONNECTION_STRING,
+  database: process.env.DB_NAME,
+  host: process.env.DB_HOST,
+  port: Number(process.env.DB_PORT),
+  password: process.env.DB_PASSWORD,
+  username: process.env.DB_USERNAME,
 
   entities: [path.join(__dirname, "..", "**", "*.entity.{ts,js}")],
   migrations: [path.join(__dirname, "migrations", "*.{ts,js}")],

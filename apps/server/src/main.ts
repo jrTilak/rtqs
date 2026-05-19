@@ -17,7 +17,7 @@ const GLOBAL_PREFIX = "/api/";
 
 const logger = new Logger("Bootstrap");
 
-logger.warn(`Warning: NODE_ENV is set to ${process.env.NODE_ENV}`);
+logger.debug(`Warning: NODE_ENV is set to ${process.env.NODE_ENV}`);
 
 const PORT = process.env.SERVER_PORT || 5000;
 
@@ -28,11 +28,11 @@ async function bootstrap() {
     })
   ).setGlobalPrefix(GLOBAL_PREFIX);
 
-  logger.info(`Starting server... on port ${PORT} http://localhost:${PORT}`);
+  logger.log(`Starting server... on port ${PORT} http://localhost:${PORT}`);
 
   // logs incoming requests with method and route
   app.use((req, _res, next) => {
-    logger.info(`Incoming request: ${req.method} ${req.originalUrl}`);
+    logger.debug(`Incoming request: ${req.method} ${req.originalUrl}`);
     next();
   });
 
@@ -52,7 +52,7 @@ async function bootstrap() {
    * Enable Swagger if specified in env.
    */
   if (process.env.ENABLE_SWAGGER === "true") {
-    logger.info("Enabling Swagger");
+    logger.debug("Enabling Swagger");
 
     const description = fs.readFileSync(
       path.join("./", "src", "docs", "api-info.md"),
@@ -71,8 +71,8 @@ async function bootstrap() {
       extraModels: [],
     });
 
-    const swaggerPath = "/api/docs/";
-    const swaggerAuthPath = "/api/auth/docs/";
+    const swaggerPath = "/api/api-docs/";
+    const swaggerAuthPath = "/api/auth-docs/";
 
     app.use(
       swaggerPath,
@@ -102,7 +102,7 @@ async function bootstrap() {
       JSON.stringify(document),
     );
   } else {
-    logger.log("Skipping swagger docs initialization!");
+    logger.debug("Skipping swagger docs initialization!");
   }
 
   /**

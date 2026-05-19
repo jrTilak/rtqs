@@ -27,7 +27,25 @@ type ApiResponseSuccessOptions = {
   example?: any;
 };
 
+// this ensures the created schemas have unique names so they dont conflits with each other
 let successResponseCounter = 0;
+
+/** Determine status code and default message based on HTTP method */
+const getStatusAndMessage = (httpMethod: string) => {
+  switch (httpMethod) {
+    case "POST":
+      return { statusCode: 201, defaultMessage: "Created successfully" };
+    case "PUT":
+    case "PATCH":
+      return { statusCode: 200, defaultMessage: "Updated successfully" };
+    case "DELETE":
+      return { statusCode: 200, defaultMessage: "Deleted successfully" };
+    case "GET":
+    default:
+      return { statusCode: 200, defaultMessage: "Retrieved successfully" };
+  }
+};
+
 
 export function ApiResponseSuccess(options: ApiResponseSuccessOptions) {
   const {
@@ -39,21 +57,6 @@ export function ApiResponseSuccess(options: ApiResponseSuccessOptions) {
     example,
   } = options;
 
-  /** Determine status code and default message based on HTTP method */
-  const getStatusAndMessage = (httpMethod: string) => {
-    switch (httpMethod) {
-      case "POST":
-        return { statusCode: 201, defaultMessage: "Created successfully" };
-      case "PUT":
-      case "PATCH":
-        return { statusCode: 200, defaultMessage: "Updated successfully" };
-      case "DELETE":
-        return { statusCode: 200, defaultMessage: "Deleted successfully" };
-      case "GET":
-      default:
-        return { statusCode: 200, defaultMessage: "Retrieved successfully" };
-    }
-  };
 
   const { statusCode, defaultMessage } = getStatusAndMessage(method);
 

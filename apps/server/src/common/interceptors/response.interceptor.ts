@@ -15,9 +15,14 @@ import { Logger } from "@/lib/logger";
  * Helps ensure consistency across all API endpoints.
  */
 type Response = {
+  // Message informing the client, what the api did
   message: string;
+
+  // if success 
   data?: unknown;
-  error?: unknown;
+
+  // error if any occurred,
+  error?: any
 };
 
 @Injectable()
@@ -53,7 +58,7 @@ export class ResponseInterceptor implements NestInterceptor<unknown, unknown> {
             return data;
           }
 
-          /** Why: Build a standard response format */
+          /** Builds a standard response format */
           const response: Response = {
             message: (data?.message || responseObj.statusMessage) ?? "OK",
             data: data?.data,
@@ -106,7 +111,7 @@ export class ResponseInterceptor implements NestInterceptor<unknown, unknown> {
 
         const isServerError = statusCode >= 500;
 
-        this._logger.fatal(err);
+        if (isServerError) this._logger.fatal(err);
 
         const message = isServerError
           ? "Whoops! Something went wrong on server"

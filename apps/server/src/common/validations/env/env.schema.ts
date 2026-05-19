@@ -17,8 +17,11 @@ export const ENV_SCHEMA = [
   { name: "LOG_LEVEL", default: "info" },
   { name: "CORS_ORIGINS", required: false },
 
-  { name: "DB_CONNECTION_STRING" },
-
+  { name: "DB_HOST" },
+  { name: "DB_NAME" },
+  { name: "DB_PORT" },
+  { name: "DB_USERNAME" },
+  { name: "DB_PASSWORD" },
   { name: "BETTER_AUTH_SECRET" },
   { name: "BETTER_AUTH_URL" },
 
@@ -33,9 +36,9 @@ export const ENV_SCHEMA = [
 ] as const;
 
 export type ParsedEnvType = {
-  [K in (typeof ENV_SCHEMA)[number] as K["name"]]: K extends {
+  [K in (typeof ENV_SCHEMA)[number]as K["name"]]: K extends {
     enum: readonly string[];
   }
-    ? K["enum"][number]
-    : string;
+  ? K["enum"][number]
+  : string;
 };
